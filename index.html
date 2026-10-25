@@ -90,7 +90,7 @@
 </head>
 <body class="text-slate-700 pb-12">
 
-    <!-- Custom Notification Box (Replacing alerts) -->
+    <!-- Custom Notification Box -->
     <div id="custom-alert-box" class="fixed top-4 right-4 z-50 transform transition-all duration-300 translate-y-[-100px] opacity-0 pointer-events-none">
         <div class="bg-white border-2 border-purple-300 rounded-2xl shadow-xl p-4 flex items-center gap-3">
             <span id="custom-alert-icon" class="text-2xl">✨</span>
@@ -147,7 +147,10 @@
                 <span>🧩 Disparition</span>
             </button>
             <button onclick="switchTab('sentences')" id="tab-sentences" class="tab-btn px-3 md:px-4 py-2.5 rounded-2xl font-bold text-xs md:text-sm transition bg-white/70 text-slate-600 hover:bg-pink-100 flex items-center gap-1.5 cursor-pointer">
-                <span>✍️ Faire des phrases</span>
+                <span>✍️ Phrases</span>
+            </button>
+            <button onclick="switchTab('runner')" id="tab-runner" class="tab-btn px-3 md:px-4 py-2.5 rounded-2xl font-bold text-xs md:text-sm transition bg-white/70 text-slate-600 hover:bg-pink-100 flex items-center gap-1.5 cursor-pointer">
+                <span>🏄‍♀️ Course aux Mots</span>
             </button>
         </div>
 
@@ -345,6 +348,44 @@
             </div>
         </section>
 
+        <!-- SECTION: SUBWAY SURFER WORD RUNNER -->
+        <section id="section-runner" class="tab-content hidden space-y-4">
+            <div class="bg-white rounded-3xl p-4 md:p-6 shadow-xl border-2 border-purple-200 text-center space-y-4 max-w-2xl mx-auto relative overflow-hidden">
+                
+                <div class="flex justify-between items-center border-b border-purple-100 pb-3">
+                    <button id="runner-music-btn" onclick="toggleRunnerMusic()" class="bg-purple-100 hover:bg-purple-200 text-purple-700 text-xs font-bold px-3 py-1.5 rounded-full transition cursor-pointer">
+                        🎵 Musique: OFF
+                    </button>
+                    <div class="flex items-center gap-3 text-sm font-bold">
+                        <span class="text-yellow-500">⭐ Pièces: <span id="runner-coins">0</span></span>
+                        <span class="text-purple-600">🏆 Score: <span id="runner-score">0</span></span>
+                    </div>
+                </div>
+
+                <div class="bg-gradient-to-r from-pink-500 to-purple-600 text-white p-3 rounded-2xl shadow-md">
+                    <span class="text-xs uppercase font-bold tracking-wider opacity-80">Mot Cible à Attraper</span>
+                    <h2 id="runner-target-word" class="text-2xl font-extrabold font-title tracking-wide">RABBIT 🐰</h2>
+                </div>
+
+                <div id="runner-touch-area" class="relative w-full aspect-[4/3] max-h-[380px] bg-slate-900 rounded-2xl overflow-hidden shadow-inner border-4 border-purple-300 touch-none">
+                    <canvas id="runner-canvas" class="w-full h-full block"></canvas>
+
+                    <div id="runner-start-overlay" class="absolute inset-0 bg-slate-900/80 backdrop-blur-sm flex flex-col items-center justify-center p-6 text-white space-y-4 z-20">
+                        <span class="text-5xl animate-bounce">🏄‍♀️</span>
+                        <h3 class="text-2xl font-bold font-title">Word Surfer Adventure</h3>
+                        <p class="text-xs text-slate-300 max-w-xs">Glisse ton doigt à gauche/droite ou touche l'écran pour changer de voie et attraper le bon mot !</p>
+                        <button onclick="startRunnerGame()" class="bg-pink-500 hover:bg-pink-600 text-white font-bold py-3 px-8 rounded-2xl shadow-lg transition transform hover:scale-105 active:scale-95 cursor-pointer">
+                            Lancer la course ! 🚀
+                        </button>
+                    </div>
+                </div>
+
+                <p class="text-xs text-slate-400 font-semibold">👆 Astuce tablette : Glisse ton doigt vers la gauche ou la droite sur l'écran pour bouger.</p>
+
+                <div id="runner-feedback" class="h-6 font-bold text-sm text-purple-600"></div>
+            </div>
+        </section>
+
     </div>
 
     <!-- CERTIFICATE MODAL -->
@@ -446,25 +487,20 @@
         let currentMousePos = { x: 0, y: 0 };
         let tempErrorLine = null;
 
-        // Build a Sentence Logic State (18 phrases en situation)
+        // Build a Sentence Logic State
         const SENTENCES_DATA = [
-            // SITUATION 1 : À la récréation (Se présenter / Rencontrer un ami)
             { tag: "🏫 À la récréation", desc: "Se présenter à un autre enfant", q: "Hello! My name ___ Nouriya.", missing: "is", options: ["is", "am", "are"], fr: "Bonjour ! Je m'appelle Nouriya." },
             { tag: "🏫 À la récréation", desc: "Exprimer son humeur", q: "I ___ happy to meet you!", missing: "am", options: ["am", "is", "can"], fr: "Je suis contente de te rencontrer !" },
             { tag: "🏫 À la récréation", desc: "S'inviter à jouer", q: "Can I play ___ you?", missing: "with", options: ["with", "to", "at"], fr: "Est-ce que je peux jouer avec toi ?" },
             { tag: "🏫 À la récréation", desc: "Proposer un jeu classique", q: "Let's play ___ and seek!", missing: "hide", options: ["hide", "jump", "dance"], fr: "Jouons à cache-cache !" },
             { tag: "🏫 À la récréation", desc: "Demander le prénom", q: "What ___ your name?", missing: "is", options: ["is", "are", "do"], fr: "Comment tu t'appelles ?" },
             { tag: "🏫 À la récréation", desc: "Montrer un objet/jeu", q: "Look! This is ___ new ball.", missing: "my", options: ["my", "I", "me"], fr: "Regarde ! C'est mon nouveau ballon." },
-
-            // SITUATION 2 : Au parc de jeux (Jeux & Loisirs)
             { tag: "🛝 Au parc de jeux", desc: "Dire ce qu'on aime faire", q: "I like ___ on the swing!", missing: "swinging", options: ["swinging", "cat", "apple"], fr: "J'aime faire de la balançoire !" },
             { tag: "🛝 Au parc de jeux", desc: "Parler de ses capacités", q: "I can ___ very fast!", missing: "run", options: ["run", "is", "blue"], fr: "Je sais courir très vite !" },
             { tag: "🛝 Au parc de jeux", desc: "Faire du vélo", q: "Can you ride ___ bike?", missing: "a", options: ["a", "are", "is"], fr: "Sais-tu faire du vélo ?" },
             { tag: "🛝 Au parc de jeux", desc: "Demander gentiment", q: "Can I try ___ turn?", missing: "my", options: ["my", "I", "am"], fr: "Puis-je essayer mon tour ?" },
             { tag: "🛝 Au parc de jeux", desc: "Inviter un ami à sauter", q: "Let's ___ rope together!", missing: "jump", options: ["jump", "draw", "swim"], fr: "Sautons à la corde ensemble !" },
             { tag: "🛝 Au parc de jeux", desc: "Parler des animaux qu'on aperçoit", q: "Look at that cute ___!", missing: "dog", options: ["dog", "run", "play"], fr: "Regarde ce mignon chien !" },
-
-            // SITUATION 3 : Au parc d'attractions / Fête (Attractions & Partage)
             { tag: "🎡 Parc d'attractions", desc: "Exprimer ses envies de jeux", q: "I want ___ go on the carousel!", missing: "to", options: ["to", "is", "and"], fr: "Je veux aller sur le carrousel !" },
             { tag: "🎡 Parc d'attractions", desc: "Rejoindre un groupe d'enfants", q: "Can I ___ you in line?", missing: "join", options: ["join", "sing", "color"], fr: "Est-ce que je peux vous rejoindre dans la queue ?" },
             { tag: "🎡 Parc d'attractions", desc: "Partager une gourmandise", q: "Do you ___ ice cream?", missing: "want", options: ["want", "am", "is"], fr: "Est-ce que tu veux de la glace ?" },
@@ -472,9 +508,21 @@
             { tag: "🎡 Parc d'attractions", desc: "Encourager un ami", q: "You ___ do it! Go!", missing: "can", options: ["can", "is", "are"], fr: "Tu peux le faire ! Vas-y !" },
             { tag: "🎡 Parc d'attractions", desc: "Remercier un copain", q: "Thank you for playing ___ me!", missing: "with", options: ["with", "for", "on"], fr: "Merci d'avoir joué avec moi !" }
         ];
-
         let currentSentenceIdx = 0;
         let sentenceScore = 0;
+
+        // Runner Game State
+        let runnerCanvas, runnerCtx;
+        let runnerActive = false;
+        let runnerLane = 1; // 0: Gauche, 1: Centre, 2: Droite
+        let runnerScore = 0;
+        let runnerCoins = 0;
+        let runnerTarget = null;
+        let runnerItems = [];
+        let runnerCoinList = [];
+        let runnerSpeed = 3.5;
+        let runnerMusicPlaying = false;
+        let audioCtx = null;
 
         function showAlert(msg, icon = '✨') {
             const box = document.getElementById('custom-alert-box');
@@ -1085,7 +1133,6 @@
                 sentenceScore += 1;
                 document.getElementById('sentence-score').textContent = sentenceScore;
                 
-                // L'audio ne se joue qu'une fois la bonne réponse trouvée
                 speakSentencePrompt();
                 triggerConfetti();
             } else {
@@ -1100,8 +1147,209 @@
             renderSentenceQuestion();
         }
 
+        // --- SUBWAY SURFER WORD RUNNER LOGIC ---
+        function initRunnerCanvas() {
+            runnerCanvas = document.getElementById('runner-canvas');
+            if (!runnerCanvas) return;
+            runnerCtx = runnerCanvas.getContext('2d');
+            runnerCanvas.width = 600;
+            runnerCanvas.height = 400;
+
+            const touchArea = document.getElementById('runner-touch-area');
+            let touchStartX = 0;
+            let touchStartY = 0;
+
+            touchArea.addEventListener('touchstart', e => {
+                touchStartX = e.touches[0].clientX;
+                touchStartY = e.touches[0].clientY;
+                e.preventDefault();
+            }, { passive: false });
+
+            touchArea.addEventListener('touchend', e => {
+                let diffX = e.changedTouches[0].clientX - touchStartX;
+                let diffY = e.changedTouches[0].clientY - touchStartY;
+
+                if (Math.abs(diffX) > 30) {
+                    if (diffX > 0) moveRunnerRight();
+                    else moveRunnerLeft();
+                } else if (Math.abs(diffY) < 20) {
+                    let rect = touchArea.getBoundingClientRect();
+                    let clickX = e.changedTouches[0].clientX - rect.left;
+                    if (clickX < rect.width / 2) moveRunnerLeft();
+                    else moveRunnerRight();
+                }
+                e.preventDefault();
+            }, { passive: false });
+        }
+
+        function startRunnerGame() {
+            document.getElementById('runner-start-overlay').classList.add('hidden');
+            runnerActive = true;
+            runnerScore = 0;
+            runnerCoins = 0;
+            runnerLane = 1;
+            runnerItems = [];
+            runnerCoinList = [];
+            document.getElementById('runner-score').textContent = runnerScore;
+            document.getElementById('runner-coins').textContent = runnerCoins;
+            
+            pickNewRunnerTarget();
+            requestAnimationFrame(updateRunnerLoop);
+        }
+
+        function pickNewRunnerTarget() {
+            runnerTarget = ALL_VOCAB[Math.floor(Math.random() * ALL_VOCAB.length)];
+            document.getElementById('runner-target-word').textContent = `${runnerTarget.en} ${runnerTarget.emoji}`;
+            if (typeof speakText === 'function') speakText(runnerTarget.en);
+            spawnRunnerWave();
+        }
+
+        function spawnRunnerWave() {
+            let lanes = [0, 1, 2].sort(() => 0.5 - Math.random());
+            let correctLane = lanes[0];
+            
+            runnerItems.push({
+                lane: correctLane,
+                y: -50,
+                text: runnerTarget.en,
+                emoji: runnerTarget.emoji,
+                isCorrect: true
+            });
+
+            let wrongPool = ALL_VOCAB.filter(w => w.en !== runnerTarget.en).sort(() => 0.5 - Math.random());
+            for (let i = 1; i < 3; i++) {
+                runnerItems.push({
+                    lane: lanes[i],
+                    y: -50,
+                    text: wrongPool[i-1].en,
+                    emoji: wrongPool[i-1].emoji,
+                    isCorrect: false
+                });
+            }
+
+            let coinLane = Math.floor(Math.random() * 3);
+            for (let c = 0; c < 3; c++) {
+                runnerCoinList.push({ lane: coinLane, y: -150 - (c * 40) });
+            }
+        }
+
+        function moveRunnerLeft() { if (runnerLane > 0) runnerLane--; }
+        function moveRunnerRight() { if (runnerLane < 2) runnerLane++; }
+
+        function updateRunnerLoop() {
+            if (!runnerActive || !runnerCtx) return;
+
+            runnerCtx.fillStyle = '#1E293B';
+            runnerCtx.fillRect(0, 0, 600, 400);
+
+            runnerCtx.strokeStyle = '#475569';
+            runnerCtx.lineWidth = 3;
+            runnerCtx.beginPath();
+            runnerCtx.moveTo(200, 0); runnerCtx.lineTo(150, 400);
+            runnerCtx.moveTo(400, 0); runnerCtx.lineTo(450, 400);
+            runnerCtx.stroke();
+
+            let laneX = [130, 300, 470];
+
+            for (let i = runnerCoinList.length - 1; i >= 0; i--) {
+                let coin = runnerCoinList[i];
+                coin.y += runnerSpeed;
+
+                runnerCtx.fillStyle = '#F59E0B';
+                runnerCtx.beginPath();
+                runnerCtx.arc(laneX[coin.lane], coin.y, 10, 0, Math.PI * 2);
+                runnerCtx.fill();
+
+                if (coin.lane === runnerLane && Math.abs(coin.y - 330) < 25) {
+                    runnerCoins += 1;
+                    document.getElementById('runner-coins').textContent = runnerCoins;
+                    runnerCoinList.splice(i, 1);
+                    playBeepSound(600, 0.05);
+                } else if (coin.y > 420) {
+                    runnerCoinList.splice(i, 1);
+                }
+            }
+
+            for (let i = runnerItems.length - 1; i >= 0; i--) {
+                let item = runnerItems[i];
+                item.y += runnerSpeed;
+
+                runnerCtx.fillStyle = item.isCorrect ? '#E0E7FF' : '#F1F5F9';
+                runnerCtx.strokeStyle = '#818CF8';
+                runnerCtx.lineWidth = 2;
+                runnerCtx.beginPath();
+                runnerCtx.roundRect(laneX[item.lane] - 50, item.y - 20, 100, 40, 10);
+                runnerCtx.fill();
+                runnerCtx.stroke();
+
+                runnerCtx.fillStyle = '#312E81';
+                runnerCtx.font = 'bold 12px Nunito, sans-serif';
+                runnerCtx.textAlign = 'center';
+                runnerCtx.fillText(`${item.emoji} ${item.text}`, laneX[item.lane], item.y + 4);
+
+                if (Math.abs(item.y - 330) < 25) {
+                    if (item.lane === runnerLane) {
+                        if (item.isCorrect) {
+                            runnerScore += 10;
+                            document.getElementById('runner-score').textContent = runnerScore;
+                            document.getElementById('runner-feedback').textContent = "✨ BRAVO ! C'est le bon mot ! 🎉";
+                            document.getElementById('runner-feedback').className = "h-6 font-bold text-sm text-green-500 animate-pulse";
+                            if (typeof speakText === 'function') speakText(item.text);
+                            if (typeof triggerConfetti === 'function') triggerConfetti();
+                            playBeepSound(800, 0.15);
+                        } else {
+                            document.getElementById('runner-feedback').textContent = "Oups ! Mauvais mot ! 🌸";
+                            document.getElementById('runner-feedback').className = "h-6 font-bold text-sm text-pink-500";
+                            playBeepSound(200, 0.2);
+                        }
+                        runnerItems = [];
+                        setTimeout(pickNewRunnerTarget, 1000);
+                        break;
+                    }
+                }
+
+                if (item.y > 420) runnerItems.splice(i, 1);
+            }
+
+            let playerX = laneX[runnerLane];
+            let playerY = 330;
+
+            runnerCtx.fillStyle = '#EC4899';
+            runnerCtx.beginPath();
+            runnerCtx.arc(playerX, playerY, 18, 0, Math.PI * 2);
+            runnerCtx.fill();
+            runnerCtx.fillStyle = '#FFF';
+            runnerCtx.font = '16px sans-serif';
+            runnerCtx.fillText('🏄‍♀️', playerX, playerY + 5);
+
+            requestAnimationFrame(updateRunnerLoop);
+        }
+
+        function toggleRunnerMusic() {
+            runnerMusicPlaying = !runnerMusicPlaying;
+            const btn = document.getElementById('runner-music-btn');
+            btn.textContent = runnerMusicPlaying ? "🎵 Musique: ON" : "🎵 Musique: OFF";
+            btn.className = runnerMusicPlaying ? "bg-green-100 text-green-700 text-xs font-bold px-3 py-1.5 rounded-full" : "bg-purple-100 text-purple-700 text-xs font-bold px-3 py-1.5 rounded-full";
+        }
+
+        function playBeepSound(freq, duration) {
+            try {
+                if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                let osc = audioCtx.createOscillator();
+                let gain = audioCtx.createGain();
+                osc.frequency.value = freq;
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + duration);
+                osc.stop(audioCtx.currentTime + duration);
+            } catch(e) {}
+        }
+
         function switchTab(tabName) {
             if (memoryTimer) clearInterval(memoryTimer);
+            runnerActive = false; // Arrêter le runner si on change d'onglet
+
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
             document.querySelectorAll('.tab-btn').forEach(el => {
                 el.classList.remove('bg-purple-500', 'bg-teal-600', 'bg-indigo-600', 'text-white', 'shadow-md');
@@ -1120,6 +1368,9 @@
             } else if (tabName === 'sentences') {
                 activeTabBtn.classList.add('bg-purple-500', 'text-white', 'shadow-md');
                 initSentences();
+            } else if (tabName === 'runner') {
+                activeTabBtn.classList.add('bg-purple-500', 'text-white', 'shadow-md');
+                setTimeout(initRunnerCanvas, 50);
             } else {
                 activeTabBtn.classList.add('bg-purple-500', 'text-white', 'shadow-md');
             }
