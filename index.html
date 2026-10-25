@@ -374,7 +374,8 @@
                         <span class="text-5xl animate-bounce">🏄‍♀️</span>
                         <h3 class="text-2xl font-bold font-title">Word Surfer Adventure</h3>
                         <p class="text-xs text-slate-300 max-w-xs">Glisse ton doigt à gauche/droite ou touche l'écran pour changer de voie et attraper le bon mot !</p>
-                        <button onclick="startRunnerGame()" class="bg-pink-500 hover:bg-pink-600 text-white font-bold py-3 px-8 rounded-2xl shadow-lg transition transform hover:scale-105 active:scale-95 cursor-pointer">
+                        <!-- CORRECTION ICI : Ajout de ontouchend et pointer-events-auto -->
+                        <button onclick="startRunnerGame()" ontouchend="startRunnerGame(); event.preventDefault();" class="bg-pink-500 hover:bg-pink-600 text-white font-bold py-3 px-8 rounded-2xl shadow-lg transition transform hover:scale-105 active:scale-95 cursor-pointer pointer-events-auto">
                             Lancer la course ! 🚀
                         </button>
                     </div>
@@ -1183,13 +1184,17 @@
         }
 
         function startRunnerGame() {
-            // Initialisation de la taille dynamique au clic
             if (runnerCanvas) {
-                runnerCanvas.width = runnerCanvas.parentElement.clientWidth || 600;
+                const container = runnerCanvas.parentElement;
+                runnerCanvas.width = container && container.clientWidth ? container.clientWidth : 600;
                 runnerCanvas.height = 400;
             }
 
-            document.getElementById('runner-start-overlay').classList.add('hidden');
+            const overlay = document.getElementById('runner-start-overlay');
+            if (overlay) {
+                overlay.classList.add('hidden');
+            }
+
             runnerActive = true;
             runnerScore = 0;
             runnerCoins = 0;
