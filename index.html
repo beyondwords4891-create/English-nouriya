@@ -1183,6 +1183,12 @@
         }
 
         function startRunnerGame() {
+            // Initialisation de la taille dynamique au clic
+            if (runnerCanvas) {
+                runnerCanvas.width = runnerCanvas.parentElement.clientWidth || 600;
+                runnerCanvas.height = 400;
+            }
+
             document.getElementById('runner-start-overlay').classList.add('hidden');
             runnerActive = true;
             runnerScore = 0;
@@ -1240,16 +1246,16 @@
             if (!runnerActive || !runnerCtx) return;
 
             runnerCtx.fillStyle = '#1E293B';
-            runnerCtx.fillRect(0, 0, 600, 400);
+            runnerCtx.fillRect(0, 0, runnerCanvas.width, runnerCanvas.height);
 
             runnerCtx.strokeStyle = '#475569';
             runnerCtx.lineWidth = 3;
             runnerCtx.beginPath();
-            runnerCtx.moveTo(200, 0); runnerCtx.lineTo(150, 400);
-            runnerCtx.moveTo(400, 0); runnerCtx.lineTo(450, 400);
+            runnerCtx.moveTo(runnerCanvas.width * 0.33, 0); runnerCtx.lineTo(runnerCanvas.width * 0.25, runnerCanvas.height);
+            runnerCtx.moveTo(runnerCanvas.width * 0.66, 0); runnerCtx.lineTo(runnerCanvas.width * 0.75, runnerCanvas.height);
             runnerCtx.stroke();
 
-            let laneX = [130, 300, 470];
+            let laneX = [runnerCanvas.width * 0.22, runnerCanvas.width * 0.5, runnerCanvas.width * 0.78];
 
             for (let i = runnerCoinList.length - 1; i >= 0; i--) {
                 let coin = runnerCoinList[i];
@@ -1260,12 +1266,12 @@
                 runnerCtx.arc(laneX[coin.lane], coin.y, 10, 0, Math.PI * 2);
                 runnerCtx.fill();
 
-                if (coin.lane === runnerLane && Math.abs(coin.y - 330) < 25) {
+                if (coin.lane === runnerLane && Math.abs(coin.y - (runnerCanvas.height - 70)) < 25) {
                     runnerCoins += 1;
                     document.getElementById('runner-coins').textContent = runnerCoins;
                     runnerCoinList.splice(i, 1);
                     playBeepSound(600, 0.05);
-                } else if (coin.y > 420) {
+                } else if (coin.y > runnerCanvas.height + 20) {
                     runnerCoinList.splice(i, 1);
                 }
             }
@@ -1287,7 +1293,7 @@
                 runnerCtx.textAlign = 'center';
                 runnerCtx.fillText(`${item.emoji} ${item.text}`, laneX[item.lane], item.y + 4);
 
-                if (Math.abs(item.y - 330) < 25) {
+                if (Math.abs(item.y - (runnerCanvas.height - 70)) < 25) {
                     if (item.lane === runnerLane) {
                         if (item.isCorrect) {
                             runnerScore += 10;
@@ -1308,11 +1314,11 @@
                     }
                 }
 
-                if (item.y > 420) runnerItems.splice(i, 1);
+                if (item.y > runnerCanvas.height + 20) runnerItems.splice(i, 1);
             }
 
             let playerX = laneX[runnerLane];
-            let playerY = 330;
+            let playerY = runnerCanvas.height - 70;
 
             runnerCtx.fillStyle = '#EC4899';
             runnerCtx.beginPath();
@@ -1348,7 +1354,7 @@
 
         function switchTab(tabName) {
             if (memoryTimer) clearInterval(memoryTimer);
-            runnerActive = false; // Arrêter le runner si on change d'onglet
+            runnerActive = false;
 
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
             document.querySelectorAll('.tab-btn').forEach(el => {
