@@ -512,7 +512,7 @@
         // --- SUBWAY SURFER 3D METRO RUNNER STATE ---
         let runnerCanvas, runnerCtx;
         let runnerActive = false;
-        let runnerLane = 1; // 0: Gauche, 1: Centre, 2: Droite
+        let runnerLane = 1; 
         let runnerPlayerX = 1; 
         let runnerScore = 0;
         let runnerCoins = 0;
@@ -1257,7 +1257,7 @@
 
             runnerPlayerX += (runnerLane - runnerPlayerX) * 0.2;
 
-            // --- 1. DÉCOR 3D SUBWAY SURFERS (Ciel, Murs de tunnel, Voies) ---
+            // --- 1. DÉCOR 3D SUBWAY SURFERS (Ciel urbain, Murs de tunnel, Voies) ---
             let skyGrad = runnerCtx.createLinearGradient(0, 0, 0, h * 0.45);
             skyGrad.addColorStop(0, '#f43f5e'); 
             skyGrad.addColorStop(1, '#a855f7');
@@ -1270,7 +1270,7 @@
             let roadTopWidth = w * 0.15;
             let roadBottomWidth = w * 0.90;
 
-            // Murs latéraux
+            // Murs de tunnel latéraux avec texture briques/relief
             runnerCtx.fillStyle = '#334155'; 
             runnerCtx.beginPath();
             runnerCtx.moveTo(0, h);
@@ -1365,31 +1365,39 @@
                 }
             }
 
-            // --- 4. BARRIÈRES ET PANNEAUX DE MÉTRO 3D ---
+            // --- 4. BARRIÈRES ET PANNEAUX DE MÉTRO 3D (STYLE SUBWAY SURFERS) ---
             for (let i = runnerItems.length - 1; i >= 0; i--) {
                 let item = runnerItems[i];
                 item.z -= runnerSpeed;
 
                 let p = project(item.lane, item.z);
                 if (item.z > 0 && item.z < 400) {
-                    let boxWidth = Math.max(70, 160 * p.scale);
-                    let boxHeight = Math.max(35, 75 * p.scale);
+                    let boxWidth = Math.max(80, 180 * p.scale);
+                    let boxHeight = Math.max(45, 90 * p.scale);
 
+                    // Poteaux de soutien de la barrière 3D
+                    runnerCtx.fillStyle = '#475569';
+                    runnerCtx.fillRect(p.x - boxWidth / 2 + 5, p.y - boxHeight / 2, 8, boxHeight);
+                    runnerCtx.fillRect(p.x + boxWidth / 2 - 13, p.y - boxHeight / 2, 8, boxHeight);
+
+                    // Panneau principal de la barrière
                     runnerCtx.fillStyle = item.isCorrect ? '#fbcfe8' : '#e2e8f0';
                     runnerCtx.strokeStyle = item.isCorrect ? '#ec4899' : '#64748b';
-                    runnerCtx.lineWidth = Math.max(2, 4 * p.scale);
+                    runnerCtx.lineWidth = Math.max(3, 5 * p.scale);
                     
                     runnerCtx.beginPath();
-                    runnerCtx.roundRect(p.x - boxWidth / 2, p.y - boxHeight, boxWidth, boxHeight, 10);
+                    runnerCtx.roundRect(p.x - boxWidth / 2, p.y - boxHeight, boxWidth, boxHeight, 12);
                     runnerCtx.fill();
                     runnerCtx.stroke();
 
-                    let fontSize = Math.max(10, Math.floor(15 * p.scale));
+                    // Texte du mot anglais sur la barrière 3D
+                    let fontSize = Math.max(11, Math.floor(17 * p.scale));
                     runnerCtx.fillStyle = item.isCorrect ? '#831843' : '#334155';
                     runnerCtx.font = `bold ${fontSize}px Fredoka, sans-serif`;
                     runnerCtx.textAlign = 'center';
                     runnerCtx.fillText(`${item.emoji} ${item.text}`, p.x, p.y - boxHeight / 2 + fontSize * 0.35);
 
+                    // Collision joueur / barrière
                     if (item.z < 25 && item.z > -10 && Math.abs(item.lane - runnerPlayerX) < 0.45) {
                         if (item.isCorrect) {
                             runnerScore += 10;
@@ -1400,6 +1408,7 @@
                             if (typeof triggerConfetti === 'function') triggerConfetti();
                             playBeepSound(800, 0.15);
                         } else {
+                            runnerItems = [];
                             document.getElementById('runner-feedback').textContent = "Oups ! Mauvais mot ! 🌸";
                             document.getElementById('runner-feedback').className = "h-6 font-bold text-sm text-pink-500";
                             playBeepSound(200, 0.2);
@@ -1413,23 +1422,27 @@
                 }
             }
 
-            // --- 5. L'AVATAR DE LA PETITE FILLE (VUE DE DOS) ---
+            // --- 5. L'AVATAR DE LA PETITE FILLE (VUE DE DOS AVEC CASQUETTE ET ROBE) ---
             let playerProj = project(runnerPlayerX, 0);
             let pX = playerProj.x;
             let pY = h - 65;
 
+            // Ombre au sol
             runnerCtx.fillStyle = 'rgba(0, 0, 0, 0.4)';
             runnerCtx.beginPath();
             runnerCtx.ellipse(pX, pY + 30, 22, 8, 0, 0, Math.PI * 2);
             runnerCtx.fill();
 
+            // Rebond de course fluide
             let bounce = Math.sin(Date.now() * 0.015) * 4;
 
+            // Tête & Casquette
             runnerCtx.fillStyle = '#fbcfe8';
             runnerCtx.beginPath(); runnerCtx.arc(pX, pY - 20 + bounce, 12, 0, Math.PI * 2); runnerCtx.fill();
             runnerCtx.fillStyle = '#ec4899'; 
             runnerCtx.beginPath(); runnerCtx.arc(pX, pY - 24 + bounce, 10, Math.PI, Math.PI * 2); runnerCtx.fill();
 
+            // Robe / Corps coloré
             runnerCtx.fillStyle = '#8b5cf6'; 
             runnerCtx.beginPath(); runnerCtx.roundRect(pX - 10, pY - 8 + bounce, 20, 18, 4); runnerCtx.fill();
             runnerCtx.fillStyle = '#ec4899'; 
