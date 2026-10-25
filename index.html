@@ -12,8 +12,6 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Canvas Confetti Library -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-    <!-- Three.js Library -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -100,7 +98,7 @@
         </div>
     </div>
 
-    <!-- Header & Audio Activation Banner -->
+    <!-- Header -->
     <header class="bg-white/85 backdrop-blur-md sticky top-0 z-40 border-b border-pink-200 shadow-sm">
         <div class="max-w-5xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-2">
             <div class="flex items-center gap-3">
@@ -120,13 +118,13 @@
 
     <div class="max-w-5xl mx-auto px-4 pt-6 space-y-8">
 
-        <!-- Banner Welcome -->
+        <!-- Welcome Banner -->
         <div class="bg-gradient-to-r from-pink-100 via-purple-100 to-indigo-100 rounded-3xl p-6 shadow-sm border border-white flex flex-col md:flex-row items-center gap-6">
             <div class="text-6xl animate-bounce">🦄</div>
             <div class="space-y-2 text-center md:text-left flex-1">
                 <h2 class="text-2xl md:text-3xl font-bold text-purple-800">Coucou Championne ! 👋</h2>
                 <p class="text-slate-600 text-sm md:text-base">
-                    Découvre les activités et les animaux en anglais avec Samantha, entraîne ton vocabulaire, teste tes jeux et valide ton <strong>Passeport</strong> !
+                    Découvre les activités et les animaux en anglais, entraîne ton vocabulaire, teste tes jeux et valide ton <strong>Passeport</strong> !
                 </p>
             </div>
         </div>
@@ -149,10 +147,7 @@
                 <span>🧩 Disparition</span>
             </button>
             <button onclick="switchTab('sentences')" id="tab-sentences" class="tab-btn px-3 md:px-4 py-2.5 rounded-2xl font-bold text-xs md:text-sm transition bg-white/70 text-slate-600 hover:bg-pink-100 flex items-center gap-1.5 cursor-pointer">
-                <span>✍️ Phrases</span>
-            </button>
-            <button onclick="switchTab('runner')" id="tab-runner" class="tab-btn px-3 md:px-4 py-2.5 rounded-2xl font-bold text-xs md:text-sm transition bg-white/70 text-slate-600 hover:bg-pink-100 flex items-center gap-1.5 cursor-pointer">
-                <span>🏄‍♀️ Course aux Mots 3D</span>
+                <span>✍️ Faire des phrases</span>
             </button>
         </div>
 
@@ -259,7 +254,7 @@
 
                 <div class="space-y-3">
                     <h2 class="text-2xl font-bold text-purple-800">Écoute et devine le mot !</h2>
-                    <p class="text-sm text-slate-500">Clique sur le gros bouton audio pour écouter Samantha, puis choisis le mot correct.</p>
+                    <p class="text-sm text-slate-500">Clique sur le gros bouton audio pour écouter, puis choisis le mot correct.</p>
                 </div>
 
                 <div class="py-4">
@@ -323,21 +318,20 @@
         <section id="section-sentences" class="tab-content hidden space-y-6">
             <div class="bg-white rounded-3xl p-6 md:p-8 shadow-xl border-2 border-pink-200 text-center space-y-6 max-w-2xl mx-auto">
                 <div class="flex justify-between items-center border-b border-pink-100 pb-4">
-                    <span id="sentence-badge-context" class="bg-purple-100 text-purple-700 font-bold px-3 py-1 rounded-full text-xs">🏫 À la récréation</span>
+                    <span class="bg-pink-100 text-pink-600 font-bold px-3 py-1 rounded-full text-xs">Construction de phrases</span>
                     <div class="flex items-center gap-1 text-yellow-500 font-bold text-lg">
                         <span>⭐</span> <span id="sentence-score">0</span>
                     </div>
                 </div>
 
-                <div class="space-y-2">
-                    <p id="sentence-context-desc" class="text-xs font-bold uppercase tracking-wider text-purple-500">Se présenter aux autres enfants</p>
+                <div class="space-y-3">
                     <h2 class="text-2xl font-bold text-purple-800">Construis ta phrase ! ✍️</h2>
-                    <p class="text-sm text-slate-500">Choisis le bon mot pour compléter la conversation en anglais.</p>
+                    <p class="text-sm text-slate-500">Choisis le bon mot pour compléter la phrase en anglais.</p>
                 </div>
 
-                <div class="p-6 bg-gradient-to-r from-pink-50 to-purple-50 rounded-2xl border border-pink-100 space-y-2">
-                    <p id="sentence-prompt" class="text-xl md:text-2xl font-bold text-purple-900">My name ___ Emma.</p>
-                    <p id="sentence-translation" class="text-xs text-slate-500 italic">Traduction : Je m'appelle Emma.</p>
+                <div class="p-6 bg-pink-50 rounded-2xl border border-pink-100 space-y-2">
+                    <p id="sentence-prompt" class="text-2xl font-bold text-purple-900">My name ___ Emma.</p>
+                    <p id="sentence-translation" class="text-xs text-slate-500 italic">Je m'appelle Emma.</p>
                 </div>
 
                 <div class="grid grid-cols-1 gap-3" id="sentence-options"></div>
@@ -347,45 +341,6 @@
                 <button onclick="nextSentenceQuestion()" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2.5 px-6 rounded-2xl shadow transition cursor-pointer">
                     Phrase suivante ➔
                 </button>
-            </div>
-        </section>
-
-        <!-- SECTION: ADVANCED 3D THREE.JS SUBWAY RUNNER -->
-        <section id="section-runner" class="tab-content hidden space-y-4">
-            <div class="bg-white rounded-3xl p-4 md:p-6 shadow-xl border-2 border-purple-200 text-center space-y-4 max-w-2xl mx-auto relative overflow-hidden">
-                
-                <div class="flex justify-between items-center border-b border-purple-100 pb-3">
-                    <button id="runner-music-btn" onclick="toggleRunnerMusic()" class="bg-purple-100 hover:bg-purple-200 text-purple-700 text-xs font-bold px-3 py-1.5 rounded-full transition cursor-pointer">
-                        🎵 Musique: OFF
-                    </button>
-                    <div class="flex items-center gap-3 text-sm font-bold">
-                        <span class="text-yellow-500">⭐ Pièces: <span id="runner-coins">0</span></span>
-                        <span class="text-purple-600">🏆 Score: <span id="runner-score">0</span></span>
-                    </div>
-                </div>
-
-                <div class="bg-gradient-to-r from-pink-500 to-purple-600 text-white p-3 rounded-2xl shadow-md">
-                    <span class="text-xs uppercase font-bold tracking-wider opacity-80">Mot Cible à Attraper</span>
-                    <h2 id="runner-target-word" class="text-2xl font-extrabold font-title tracking-wide">RABBIT 🐰</h2>
-                </div>
-
-                <div id="runner-touch-area" class="relative w-full aspect-[4/3] max-h-[380px] bg-slate-900 rounded-2xl overflow-hidden shadow-inner border-4 border-purple-300 touch-none">
-                    <!-- Three.js Canvas Container -->
-                    <div id="three-container" class="w-full h-full absolute inset-0"></div>
-
-                    <div id="runner-start-overlay" class="absolute inset-0 bg-slate-900/85 backdrop-blur-sm flex flex-col items-center justify-center p-6 text-white space-y-4 z-20">
-                        <span class="text-5xl animate-bounce">🏄‍♀️✨</span>
-                        <h3 class="text-2xl font-bold font-title">Subway English Runner 3D</h3>
-                        <p class="text-xs text-slate-300 max-w-xs">Moteur 3D style Subway Surfers : change de voie, saute et attrape le bon mot de vocabulaire !</p>
-                        <button onclick="startRunnerGame()" ontouchend="startRunnerGame(); event.preventDefault();" class="bg-pink-500 hover:bg-pink-600 text-white font-bold py-3 px-8 rounded-2xl shadow-lg transition transform hover:scale-105 active:scale-95 cursor-pointer pointer-events-auto">
-                            Lancer la course 3D ! 🚀
-                        </button>
-                    </div>
-                </div>
-
-                <p class="text-xs text-slate-400 font-semibold">👆 Commandes : Flèches Gauche/Droite (ou Swipe), Flèche Haut pour Sauter, Flèche Bas pour Glisser.</p>
-
-                <div id="runner-feedback" class="h-6 font-bold text-sm text-purple-600"></div>
             </div>
         </section>
 
@@ -434,12 +389,7 @@
             { id: "a11", en: "Tag", fr: "Jeu du chat", emoji: "🏷️" },
             { id: "a12", en: "Board games", fr: "Jeux de société", emoji: "🎲" },
             { id: "a13", en: "Puzzles", fr: "Puzzles", emoji: "🧩" },
-            { id: "a14", en: "Jump rope", fr: "Corde à sauter", emoji: "🪢" },
-            { id: "a15", en: "Play football", fr: "Jouer au football", emoji: "⚽" },
-            { id: "a16", en: "Play basketball", fr: "Jouer au basket", emoji: "🏀" },
-            { id: "a17", en: "Ride a bike", fr: "Faire du vélo", emoji: "🚲" },
-            { id: "a18", en: "Swim", fr: "Nager", emoji: "🏊" },
-            { id: "a19", en: "Skate", fr: "Faire du skate", emoji: "🛹" }
+            { id: "a14", en: "Jump rope", fr: "Corde à sauter", emoji: "🪢" }
         ];
 
         const ANIMALS_DATA = [
@@ -479,6 +429,7 @@
         let memoryTimer = null;
         let memoryTotalTime = 13;
 
+        // Matching Game Canvas & Drawing State
         let matchRoundItems = [];
         let completedMatches = [];
         let matchScoreCount = 0;
@@ -489,422 +440,642 @@
         let currentMousePos = { x: 0, y: 0 };
         let tempErrorLine = null;
 
+        // Build a Sentence Logic State
         const SENTENCES_DATA = [
-            { tag: "🏫 À la récréation", desc: "Se présenter à un autre enfant", q: "Hello! My name ___ Nouriya.", missing: "is", options: ["is", "am", "are"], fr: "Bonjour ! Je m'appelle Nouriya." },
-            { tag: "🏫 À la récréation", desc: "Exprimer son humeur", q: "I ___ happy to meet you!", missing: "am", options: ["am", "is", "can"], fr: "Je suis contente de te rencontrer !" },
-            { tag: "🏫 À la récréation", desc: "S'inviter à jouer", q: "Can I play ___ you?", missing: "with", options: ["with", "to", "at"], fr: "Est-ce que je peux jouer avec toi ?" },
-            { tag: "🏫 À la récréation", desc: "Proposer un jeu classique", q: "Let's play ___ and seek!", missing: "hide", options: ["hide", "jump", "dance"], fr: "Jouons à cache-cache !" },
-            { tag: "🏫 À la récréation", desc: "Demander le prénom", q: "What ___ your name?", missing: "is", options: ["is", "are", "do"], fr: "Comment tu t'appelles ?" },
-            { tag: "🏫 À la récréation", desc: "Montrer un objet/jeu", q: "Look! This is ___ new ball.", missing: "my", options: ["my", "I", "me"], fr: "Regarde ! C'est mon nouveau ballon." },
-            { tag: "🛝 Au parc de jeux", desc: "Dire ce qu'on aime faire", q: "I like ___ on the swing!", missing: "swinging", options: ["swinging", "cat", "apple"], fr: "J'aime faire de la balançoire !" },
-            { tag: "🛝 Au parc de jeux", desc: "Parler de ses capacités", q: "I can ___ very fast!", missing: "run", options: ["run", "is", "blue"], fr: "Je sais courir très vite !" },
-            { tag: "🛝 Au parc de jeux", desc: "Faire du vélo", q: "Can you ride ___ bike?", missing: "a", options: ["a", "are", "is"], fr: "Sais-tu faire du vélo ?" },
-            { tag: "🛝 Au parc de jeux", desc: "Demander gentiment", q: "Can I try ___ turn?", missing: "my", options: ["my", "I", "am"], fr: "Puis-je essayer mon tour ?" },
-            { tag: "🛝 Au parc de jeux", desc: "Inviter un ami à sauter", q: "Let's ___ rope together!", missing: "jump", options: ["jump", "draw", "swim"], fr: "Sautons à la corde ensemble !" },
-            { tag: "🛝 Au parc de jeux", desc: "Parler des animaux qu'on aperçoit", q: "Look at that cute ___!", missing: "dog", options: ["dog", "run", "play"], fr: "Regarde ce mignon chien !" },
-            { tag: "🎡 Parc d'attractions", desc: "Exprimer ses envies de jeux", q: "I want ___ go on the carousel!", missing: "to", options: ["to", "is", "and"], fr: "Je veux aller sur le carrousel !" },
-            { tag: "🎡 Parc d'attractions", desc: "Rejoindre un groupe d'enfants", q: "Can I ___ you in line?", missing: "join", options: ["join", "sing", "color"], fr: "Est-ce que je peux vous rejoindre dans la queue ?" },
-            { tag: "🎡 Parc d'attractions", desc: "Partager une gourmandise", q: "Do you ___ ice cream?", missing: "want", options: ["want", "am", "is"], fr: "Est-ce que tu veux de la glace ?" },
-            { tag: "🎡 Parc d'attractions", desc: "Dire ce qu'on n'aime pas trop", q: "I don't ___ fast rides.", missing: "like", options: ["like", "can", "am"], fr: "Je n'aime pas les manèges trop rapides." },
-            { tag: "🎡 Parc d'attractions", desc: "Encourager un ami", q: "You ___ do it! Go!", missing: "can", options: ["can", "is", "are"], fr: "Tu peux le faire ! Vas-y !" },
-            { tag: "🎡 Parc d'attractions", desc: "Remercier un copain", q: "Thank you for playing ___ me!", missing: "with", options: ["with", "for", "on"], fr: "Merci d'avoir joué avec moi !" }
+            { q: "My name ___ Emma.", missing: "is", options: ["is", "am", "are"], fr: "Je m'appelle Emma." },
+            { q: "I ___ happy.", missing: "am", options: ["is", "am", "are"], fr: "Je suis contente." },
+            { q: "I like ___.", missing: "dancing", options: ["dancing", "football", "cat"], fr: "J'aime danser." },
+            { q: "I can ___.", missing: "swim", options: ["swim", "dog", "book"], fr: "Je sais nager." },
+            { q: "I want ___ play.", missing: "to", options: ["to", "is", "a"], fr: "Je veux jouer." }
         ];
         let currentSentenceIdx = 0;
         let sentenceScore = 0;
 
-        // ==========================================
-        // ADVANCED 3D THREE.JS SUBWAY RUNNER ENGINE
-        // ==========================================
-        let threeScene, threeCamera, threeRenderer;
-        let runnerActive = false;
-        let runnerLane = 1; // 0: Left (-2.2), 1: Center (0), 2: Right (2.2)
-        let targetLaneX = 0;
-        let playerMesh = null;
-        let runnerScore = 0;
-        let runnerCoins = 0;
-        let runnerTarget = null;
-        let runnerObjects = []; 
-        let runnerSpeed = 0.4;
-        let runnerMusicPlaying = false;
-        let audioCtx = null;
-        let playerVelocityY = 0;
-        let isJumping = false;
-        let isSliding = false;
-        let slideTimer = 0;
+        function showAlert(msg, icon = '✨') {
+            const box = document.getElementById('custom-alert-box');
+            document.getElementById('custom-alert-msg').textContent = msg;
+            document.getElementById('custom-alert-icon').textContent = icon;
+            box.classList.remove('translate-y-[-100px]', 'opacity-0', 'pointer-events-none');
+            setTimeout(() => {
+                box.classList.add('translate-y-[-100px]', 'opacity-0', 'pointer-events-none');
+            }, 3000);
+        }
 
-        function initThreeRunner() {
-            const container = document.getElementById('three-container');
-            if (!container) return;
+        function initAudioEngine() {
+            if (!('speechSynthesis' in window)) return;
+            window.speechSynthesis.cancel();
+            const unlock = new SpeechSynthesisUtterance('');
+            window.speechSynthesis.speak(unlock);
+
+            const voices = window.speechSynthesis.getVoices();
+            const preferred = ["Samantha", "Google US English", "Karen", "Victoria", "Microsoft Zira", "Fiona", "en-US"];
+
+            for (let name of preferred) {
+                const found = voices.find(v => v.lang.startsWith('en') && v.name.includes(name));
+                if (found) { selectedVoice = found; break; }
+            }
+            if (!selectedVoice) selectedVoice = voices.find(v => v.lang.startsWith('en')) || null;
+
+            const badge = document.getElementById('voice-badge');
+            if (selectedVoice) {
+                badge.textContent = selectedVoice.name.split(' ')[0] + " 🌸";
+                badge.className = "bg-green-100 text-green-700 text-xs px-2 py-0.5 rounded-full font-bold";
+            }
+        }
+
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.onvoiceschanged = initAudioEngine;
+        }
+
+        function speakText(text, buttonElement = null) {
+            if (!('speechSynthesis' in window)) return;
+            window.speechSynthesis.cancel();
+
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'en-US';
+            utterance.rate = 0.85; 
+            utterance.pitch = 1.08; 
+
+            if (selectedVoice) utterance.voice = selectedVoice;
+
+            if (buttonElement) {
+                buttonElement.classList.add('pulse-audio', 'bg-pink-200');
+                utterance.onend = () => buttonElement.classList.remove('pulse-audio', 'bg-pink-200');
+                utterance.onerror = () => buttonElement.classList.remove('pulse-audio', 'bg-pink-200');
+            }
+            window.speechSynthesis.speak(utterance);
+        }
+
+        function renderCards() {
+            const actContainer = document.getElementById('cards-activities');
+            actContainer.innerHTML = '';
+            ACTIVITIES_DATA.forEach(item => {
+                const card = document.createElement('div');
+                card.className = "bg-white rounded-2xl p-4 border border-pink-100 shadow-sm hover:shadow-md card-hover flex flex-col justify-between space-y-3";
+                card.innerHTML = `
+                    <div class="flex items-start justify-between gap-2">
+                        <span class="text-3xl">${item.emoji}</span>
+                        <button onclick="speakText('${item.en.replace(/'/g, "\\'")}', this)" class="bg-pink-50 hover:bg-pink-100 text-pink-600 font-bold px-3 py-1.5 rounded-xl text-xs flex items-center gap-1.5 border border-pink-200 transition active:scale-95 shadow-sm cursor-pointer">
+                            <span class="text-sm">🔊</span> Écouter
+                        </button>
+                    </div>
+                    <div>
+                        <h3 class="text-base font-bold text-purple-900 leading-snug">${item.en}</h3>
+                        <p class="text-xs text-slate-500 mt-0.5">${item.fr}</p>
+                    </div>
+                `;
+                actContainer.appendChild(card);
+            });
+
+            const animContainer = document.getElementById('cards-animals');
+            animContainer.innerHTML = '';
+            ANIMALS_DATA.forEach(item => {
+                const card = document.createElement('div');
+                card.className = "bg-white rounded-2xl p-4 border border-purple-100 shadow-sm hover:shadow-md card-hover flex flex-col justify-between space-y-3";
+                card.innerHTML = `
+                    <div class="flex items-start justify-between gap-2">
+                        <span class="text-3xl">${item.emoji}</span>
+                        <button onclick="speakText('${item.en.replace(/'/g, "\\'")}', this)" class="bg-purple-50 hover:bg-purple-100 text-purple-600 font-bold px-3 py-1.5 rounded-xl text-xs flex items-center gap-1.5 border border-purple-200 transition active:scale-95 shadow-sm cursor-pointer">
+                            <span class="text-sm">🔊</span> Écouter
+                        </button>
+                    </div>
+                    <div>
+                        <h3 class="text-base font-bold text-purple-900 leading-snug">${item.en}</h3>
+                        <p class="text-xs text-slate-500 mt-0.5">${item.fr}</p>
+                    </div>
+                `;
+                animContainer.appendChild(card);
+            });
+        }
+
+        function renderChecklist() {
+            const container = document.getElementById('checklist-container');
             container.innerHTML = '';
+            let checkedCount = 0;
 
-            threeScene = new THREE.Scene();
-            threeScene.background = new THREE.Color(0x0f172a); 
-            threeScene.fog = new THREE.FogExp2(0x0f172a, 0.02);
+            CHECKLIST_ITEMS.forEach(item => {
+                const isChecked = !!checklistState[item.id];
+                if (isChecked) checkedCount++;
 
-            threeCamera = new THREE.PerspectiveCamera(65, container.clientWidth / container.clientHeight, 0.1, 1000);
-            threeCamera.position.set(0, 3.2, 5.5);
-            threeCamera.lookAt(0, 1.2, -3);
+                const card = document.createElement('div');
+                card.className = `p-4 rounded-2xl border transition flex items-center gap-3 cursor-pointer ${
+                    isChecked ? 'bg-pink-50/80 border-pink-300' : 'bg-slate-50 border-slate-200 hover:border-pink-200'
+                }`;
+                card.onclick = (e) => { if (e.target.tagName !== 'INPUT') toggleChecklistItem(item.id); };
+                card.innerHTML = `
+                    <input type="checkbox" id="${item.id}" ${isChecked ? 'checked' : ''} onchange="toggleChecklistItem('${item.id}')" class="w-5 h-5 accent-pink-500 rounded cursor-pointer">
+                    <div class="flex-1">
+                        <label for="${item.id}" class="text-sm font-semibold text-slate-800 cursor-pointer block">${item.fr}</label>
+                        <span class="text-xs font-bold text-purple-600 bg-purple-50 px-2 py-0.5 rounded-md inline-block mt-1">${item.word}</span>
+                    </div>
+                    <button onclick="event.stopPropagation(); speakText('${item.word.replace(/'/g, "\\'")}', this)" class="text-slate-400 hover:text-pink-500 p-2 rounded-full hover:bg-white text-sm transition cursor-pointer">🔊</button>
+                `;
+                container.appendChild(card);
+            });
 
-            threeRenderer = new THREE.WebGLRenderer({ antialias: true });
-            threeRenderer.setSize(container.clientWidth, container.clientHeight);
-            threeRenderer.shadowMap.enabled = true;
-            container.appendChild(threeRenderer.domElement);
+            const percent = Math.round((checkedCount / CHECKLIST_ITEMS.length) * 100);
+            document.getElementById('passport-progress-bar').style.width = percent + '%';
+            document.getElementById('passport-percent-text').textContent = percent + '%';
 
-            const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
-            threeScene.add(ambientLight);
-
-            const dirLight = new THREE.DirectionalLight(0xfff5f5, 0.9);
-            dirLight.position.set(10, 20, 10);
-            dirLight.castShadow = true;
-            threeScene.add(dirLight);
-
-            const purpleLight = new THREE.PointLight(0xa855f7, 1, 50);
-            purpleLight.position.set(-5, 5, -10);
-            threeScene.add(purpleLight);
-
-            createUrbanEnvironment();
-            createAdvancedPlayer3D();
-            setupRunnerControls();
-
-            window.addEventListener('resize', onWindowResize);
+            const certBtn = document.getElementById('certificate-btn');
+            if (percent === 100) {
+                certBtn.disabled = false;
+                certBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                certBtn.classList.add('animate-bounce');
+            } else {
+                certBtn.disabled = true;
+                certBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                certBtn.classList.remove('animate-bounce');
+            }
         }
 
-        function createUrbanEnvironment() {
-            const groundGeo = new THREE.PlaneGeometry(25, 500);
-            const groundMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.8 });
-            const ground = new THREE.Mesh(groundGeo, groundMat);
-            ground.rotation.x = -Math.PI / 2;
-            ground.position.z = -200;
-            threeScene.add(ground);
+        function toggleChecklistItem(id) {
+            checklistState[id] = !checklistState[id];
+            localStorage.setItem('english_passport_state', JSON.stringify(checklistState));
+            renderChecklist();
+            if (CHECKLIST_ITEMS.every(item => checklistState[item.id])) {
+                triggerConfetti();
+                setTimeout(openCertificateModal, 600);
+            }
+        }
 
-            const wallGeo = new THREE.BoxGeometry(2, 15, 500);
-            const wallMat = new THREE.MeshStandardMaterial({ color: 0x334155, roughness: 0.9 });
+        function resetChecklist() {
+            checklistState = {};
+            localStorage.removeItem('english_passport_state');
+            renderChecklist();
+            showAlert("Passeport réinitialisé avec succès !", "🔄");
+        }
+
+        // --- MATCHING GAME LOGIC ---
+        function initMatchGame() {
+            matchScoreCount = 0;
+            completedMatches = [];
+            isDrawingMatch = false;
+            startMatchNode = null;
+            tempErrorLine = null;
+
+            document.getElementById('match-score').textContent = matchScoreCount;
+            document.getElementById('match-feedback').textContent = "Trace une ligne du mot en anglais à gauche vers sa bonne image à droite !";
+            document.getElementById('match-feedback').className = "h-8 font-bold text-base text-indigo-600";
+
+            matchRoundItems = [...ALL_VOCAB].sort(() => 0.5 - Math.random()).slice(0, matchTotalRounds);
+            renderMatchColumns();
+            setTimeout(resizeMatchCanvas, 100);
+        }
+
+        function resizeMatchCanvas() {
+            const canvas = document.getElementById('match-canvas');
+            const wrapper = document.getElementById('match-game-wrapper');
+            if (!canvas || !wrapper) return;
             
-            const leftWall = new THREE.Mesh(wallGeo, wallMat);
-            leftWall.position.set(-6, 7.5, -200);
-            threeScene.add(leftWall);
+            canvas.width = wrapper.offsetWidth;
+            canvas.height = wrapper.offsetHeight;
+            redrawMatchCanvas();
+        }
 
-            const rightWall = new THREE.Mesh(wallGeo, wallMat);
-            rightWall.position.set(6, 7.5, -200);
-            threeScene.add(rightWall);
+        function renderMatchColumns() {
+            const leftCol = document.getElementById('match-left-column');
+            const rightCol = document.getElementById('match-right-column');
+            leftCol.innerHTML = '';
+            rightCol.innerHTML = '';
 
-            [-2.2, 0, 2.2].forEach(xLane => {
-                const railGeo = new THREE.BoxGeometry(0.12, 0.08, 500);
-                const railMat = new THREE.MeshStandardMaterial({ color: 0xccbdcc, metalness: 0.9, roughness: 0.2 });
+            const shuffledEnglish = [...matchRoundItems].sort(() => 0.5 - Math.random());
+            const shuffledRight = [...matchRoundItems].sort(() => 0.5 - Math.random());
+
+            shuffledEnglish.forEach(item => {
+                const btn = document.createElement('div');
+                btn.id = `en-node-${item.id}`;
+                btn.setAttribute('data-id', item.id);
+                btn.className = "match-node-left relative w-full p-2.5 md:p-3 bg-white hover:bg-indigo-50 border-2 border-indigo-200 rounded-xl font-bold text-indigo-900 text-xs md:text-sm transition flex items-center justify-between shadow-sm cursor-grab active:cursor-grabbing select-none";
+                btn.innerHTML = `
+                    <span>${item.en}</span>
+                    <div class="flex items-center gap-1">
+                        <span class="text-xs text-indigo-400">✏️</span>
+                        <div class="w-3 h-3 rounded-full bg-indigo-400 border border-white shadow-sm"></div>
+                    </div>
+                `;
                 
-                const rail1 = new THREE.Mesh(railGeo, railMat);
-                rail1.position.set(xLane - 0.35, 0.04, -200);
-                threeScene.add(rail1);
+                btn.addEventListener('mousedown', (e) => startDrawingLine(e, item, btn, 'left'));
+                btn.addEventListener('touchstart', (e) => startDrawingLine(e, item, btn, 'left'), { passive: false });
 
-                const rail2 = new THREE.Mesh(railGeo, railMat);
-                rail2.position.set(xLane + 0.35, 0.04, -200);
-                threeScene.add(rail2);
-            });
-        }
-
-        function createAdvancedPlayer3D() {
-            playerMesh = new THREE.Group();
-
-            const bodyGeo = new THREE.BoxGeometry(0.65, 0.9, 0.4);
-            const bodyMat = new THREE.MeshStandardMaterial({ color: 0xec4899 });
-            const body = new THREE.Mesh(bodyGeo, bodyMat);
-            body.position.y = 0.55;
-            playerMesh.add(body);
-
-            const headGeo = new THREE.SphereGeometry(0.32, 16, 16);
-            const headMat = new THREE.MeshStandardMaterial({ color: 0xfbcfe8 });
-            const head = new THREE.Mesh(headGeo, headMat);
-            head.position.y = 1.25;
-            playerMesh.add(head);
-
-            const capGeo = new THREE.BoxGeometry(0.42, 0.15, 0.5);
-            const capMat = new THREE.MeshStandardMaterial({ color: 0x8b5cf6 });
-            const cap = new THREE.Mesh(capGeo, capMat);
-            cap.position.set(0, 1.45, 0.08);
-            playerMesh.add(cap);
-
-            playerMesh.position.set(0, 0, 0);
-            threeScene.add(playerMesh);
-        }
-
-        function setupRunnerControls() {
-            window.addEventListener('keydown', (e) => {
-                if (!runnerActive) return;
-                if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') moveRunnerLeft();
-                if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') moveRunnerRight();
-                if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W' || e.key === ' ') {
-                    e.preventDefault();
-                    triggerJump();
-                }
-                if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') {
-                    e.preventDefault();
-                    triggerSlide();
-                }
+                leftCol.appendChild(btn);
             });
 
-            const touchArea = document.getElementById('runner-touch-area');
-            let touchStartX = 0;
-            let touchStartY = 0;
+            shuffledRight.forEach(item => {
+                const btn = document.createElement('div');
+                btn.id = `fr-node-${item.id}`;
+                btn.setAttribute('data-id', item.id);
+                btn.className = "match-node-right relative w-full p-2.5 bg-white hover:bg-pink-50 border-2 border-pink-200 rounded-xl font-semibold text-slate-700 text-xs md:text-sm transition flex items-center gap-2 md:gap-3 shadow-sm cursor-pointer select-none";
+                btn.innerHTML = `
+                    <div class="w-3 h-3 rounded-full bg-pink-400 border border-white shadow-sm"></div>
+                    <span class="text-xl md:text-2xl p-1 bg-pink-50 rounded-lg">${item.emoji}</span>
+                    <span class="flex-1 text-left truncate">${item.fr}</span>
+                `;
 
-            touchArea.addEventListener('touchstart', e => {
-                touchStartX = e.touches[0].clientX;
-                touchStartY = e.touches[0].clientY;
-                e.preventDefault();
-            }, { passive: false });
+                btn.addEventListener('mousedown', (e) => startDrawingLine(e, item, btn, 'right'));
+                btn.addEventListener('touchstart', (e) => startDrawingLine(e, item, btn, 'right'), { passive: false });
 
-            touchArea.addEventListener('touchend', e => {
-                let diffX = e.changedTouches[0].clientX - touchStartX;
-                let diffY = e.changedTouches[0].clientY - touchStartY;
+                rightCol.appendChild(btn);
+            });
 
-                if (Math.abs(diffX) > Math.abs(diffY)) {
-                    if (diffX > 30) moveRunnerRight();
-                    else if (diffX < -30) moveRunnerLeft();
+            const wrapper = document.getElementById('match-game-wrapper');
+            wrapper.onmousemove = onMatchPointerMove;
+            wrapper.ontouchmove = onMatchPointerMove;
+            window.onmouseup = onMatchPointerUp;
+            window.ontouchend = onMatchPointerUp;
+        }
+
+        function startDrawingLine(e, item, element, side) {
+            if (e.type === 'touchstart') e.preventDefault();
+            if (completedMatches.some(m => m.itemId === item.id)) return;
+
+            speakText(item.en);
+
+            isDrawingMatch = true;
+            const pointer = getPointerPos(e);
+            const wrapperRect = document.getElementById('match-game-wrapper').getBoundingClientRect();
+            
+            const elemRect = element.getBoundingClientRect();
+            const startX = side === 'left' 
+                ? (elemRect.right - wrapperRect.left) 
+                : (elemRect.left - wrapperRect.left);
+            const startY = (elemRect.top + elemRect.height / 2) - wrapperRect.top;
+
+            startMatchNode = {
+                item: item,
+                element: element,
+                side: side,
+                x: startX,
+                y: startY
+            };
+            currentMousePos = { x: pointer.x - wrapperRect.left, y: pointer.y - wrapperRect.top };
+
+            document.getElementById('match-feedback').textContent = `Crayon activé pour "${item.en}" ! Relie-le !`;
+            document.getElementById('match-feedback').className = "h-8 font-bold text-base text-indigo-600";
+
+            redrawMatchCanvas();
+        }
+
+        function getPointerPos(e) {
+            if (e.touches && e.touches.length > 0) {
+                return { x: e.touches[0].clientX, y: e.touches[0].clientY };
+            }
+            return { x: e.clientX, y: e.clientY };
+        }
+
+        function onMatchPointerMove(e) {
+            if (!isDrawingMatch || !startMatchNode) return;
+            if (e.type === 'touchmove') e.preventDefault();
+
+            const pointer = getPointerPos(e);
+            const wrapperRect = document.getElementById('match-game-wrapper').getBoundingClientRect();
+            
+            currentMousePos = {
+                x: pointer.x - wrapperRect.left,
+                y: pointer.y - wrapperRect.top
+            };
+
+            redrawMatchCanvas();
+        }
+
+        function onMatchPointerUp(e) {
+            if (!isDrawingMatch || !startMatchNode) return;
+            isDrawingMatch = false;
+
+            const wrapperRect = document.getElementById('match-game-wrapper').getBoundingClientRect();
+            const pointer = getPointerPos(e.changedTouches ? { touches: e.changedTouches } : e);
+            const dropX = pointer.x - wrapperRect.left;
+            const dropY = pointer.y - wrapperRect.top;
+
+            const targetSide = startMatchNode.side === 'left' ? 'right' : 'left';
+            const targetNodes = document.querySelectorAll(targetSide === 'left' ? '.match-node-left' : '.match-node-right');
+            
+            let matchedTarget = null;
+            targetNodes.forEach(node => {
+                const nodeRect = node.getBoundingClientRect();
+                const nX = targetSide === 'left' 
+                    ? (nodeRect.right - wrapperRect.left) 
+                    : (nodeRect.left - wrapperRect.left);
+                const nY = (nodeRect.top + nodeRect.height / 2) - wrapperRect.top;
+
+                const dist = Math.hypot(nX - dropX, nY - dropY);
+                if (dist < 80) {
+                    const itemId = node.getAttribute('data-id');
+                    const itemObj = matchRoundItems.find(i => i.id === itemId);
+                    matchedTarget = { item: itemObj, element: node, x: nX, y: nY };
+                }
+            });
+
+            if (matchedTarget) {
+                if (startMatchNode.item.id === matchedTarget.item.id) {
+                    completedMatches.push({
+                        itemId: startMatchNode.item.id,
+                        x1: startMatchNode.x,
+                        y1: startMatchNode.y,
+                        x2: matchedTarget.x,
+                        y2: matchedTarget.y
+                    });
+
+                    const leftElem = document.getElementById(`en-node-${startMatchNode.item.id}`);
+                    const rightElem = document.getElementById(`fr-node-${startMatchNode.item.id}`);
+
+                    if (leftElem) {
+                        leftElem.className = "relative w-full p-2.5 md:p-3 bg-green-100 border-2 border-green-400 text-green-800 font-bold rounded-xl text-xs md:text-sm opacity-90 select-none shadow-sm flex items-center justify-between";
+                    }
+                    if (rightElem) {
+                        rightElem.className = "relative w-full p-2.5 bg-green-100 border-2 border-green-400 text-green-800 font-bold rounded-xl text-xs md:text-sm opacity-90 select-none shadow-sm flex items-center gap-2 md:gap-3";
+                    }
+
+                    matchScoreCount++;
+                    document.getElementById('match-score').textContent = matchScoreCount;
+
+                    document.getElementById('match-feedback').textContent = "✨ Super trait ! Bonne association ! 🎉";
+                    document.getElementById('match-feedback').className = "h-8 font-bold text-base text-green-600 animate-pulse";
+                    triggerConfetti();
+
+                    if (matchScoreCount === matchRoundItems.length) {
+                        document.getElementById('match-feedback').textContent = "🏆 Bravo ! Tu as relié tous les mots avec succès ! 🎉";
+                        document.getElementById('match-feedback').className = "h-8 font-bold text-lg text-purple-700 animate-bounce";
+                        triggerConfetti();
+                    }
                 } else {
-                    if (diffY < -30) triggerJump();
-                    else if (diffY > 30) triggerSlide();
+                    tempErrorLine = {
+                        x1: startMatchNode.x,
+                        y1: startMatchNode.y,
+                        x2: matchedTarget.x,
+                        y2: matchedTarget.y
+                    };
+                    document.getElementById('match-feedback').textContent = "Oups ! Ce n'est pas le bon mot. Réessaie le crayon ! 🌸";
+                    document.getElementById('match-feedback').className = "h-8 font-bold text-base text-pink-600";
+
+                    setTimeout(() => {
+                        tempErrorLine = null;
+                        redrawMatchCanvas();
+                    }, 800);
                 }
-                e.preventDefault();
-            }, { passive: false });
-        }
-
-        function moveRunnerLeft() {
-            if (runnerLane > 0) runnerLane--;
-            updateTargetLaneX();
-        }
-
-        function moveRunnerRight() {
-            if (runnerLane < 2) runnerLane++;
-            updateTargetLaneX();
-        }
-
-        function updateTargetLaneX() {
-            const lanes = [-2.2, 0, 2.2];
-            targetLaneX = lanes[runnerLane];
-        }
-
-        function triggerJump() {
-            if (!isJumping && !isSliding) {
-                isJumping = true;
-                playerVelocityY = 0.24;
-                playBeepSound(600, 0.1);
-            }
-        }
-
-        function triggerSlide() {
-            if (!isJumping && !isSliding) {
-                isSliding = true;
-                slideTimer = 45; 
-                if (playerMesh) playerMesh.scale.set(1, 0.45, 1);
-                playBeepSound(400, 0.1);
-            }
-        }
-
-        function startRunnerGame() {
-            if (!threeScene) initThreeRunner();
-
-            const overlay = document.getElementById('runner-start-overlay');
-            if (overlay) overlay.classList.add('hidden');
-
-            runnerActive = true;
-            runnerScore = 0;
-            runnerCoins = 0;
-            runnerLane = 1;
-            updateTargetLaneX();
-            runnerObjects.forEach(obj => threeScene.remove(obj.mesh));
-            runnerObjects = [];
-
-            document.getElementById('runner-score').textContent = runnerScore;
-            document.getElementById('runner-coins').textContent = runnerCoins;
-
-            pickNewRunnerTarget();
-            animateRunnerLoop();
-        }
-
-        function pickNewRunnerTarget() {
-            runnerTarget = ALL_VOCAB[Math.floor(Math.random() * ALL_VOCAB.length)];
-            document.getElementById('runner-target-word').textContent = `${runnerTarget.en} ${runnerTarget.emoji}`;
-            speakText(runnerTarget.en);
-            spawnRunnerWave();
-        }
-
-        function spawnRunnerWave() {
-            let lanes = [0, 1, 2].sort(() => 0.5 - Math.random());
-            let correctLane = lanes[0];
-            let zPos = -140;
-
-            spawnDetailedBarrier(correctLane, zPos, runnerTarget.en, runnerTarget.emoji, true);
-
-            let wrongPool = ALL_VOCAB.filter(w => w.en !== runnerTarget.en).sort(() => 0.5 - Math.random());
-            for (let i = 1; i < 3; i++) {
-                spawnDetailedBarrier(lanes[i], zPos, wrongPool[i-1].en, wrongPool[i-1].emoji, false);
+            } else {
+                document.getElementById('match-feedback').textContent = "Trace ton trait jusqu'à une carte de l'autre côté ! ✏️";
+                document.getElementById('match-feedback').className = "h-8 font-bold text-base text-indigo-500";
             }
 
-            let coinLane = Math.floor(Math.random() * 3);
-            for (let c = 0; c < 5; c++) {
-                spawn3DCoin(coinLane, zPos + 20 + (c * 6));
-            }
+            startMatchNode = null;
+            redrawMatchCanvas();
         }
 
-        function spawnDetailedBarrier(lane, z, text, emoji, isCorrect) {
-            const lanesX = [-2.2, 0, 2.2];
-            const group = new THREE.Group();
+        function redrawMatchCanvas() {
+            const canvas = document.getElementById('match-canvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            const boxGeo = new THREE.BoxGeometry(1.7, 1.2, 0.6);
-            const boxMat = new THREE.MeshStandardMaterial({
-                color: isCorrect ? 0xf472b6 : 0x64748b,
-                roughness: 0.4,
-                metalness: 0.3
+            completedMatches.forEach(m => {
+                ctx.beginPath();
+                ctx.moveTo(m.x1, m.y1);
+                ctx.lineTo(m.x2, m.y2);
+                ctx.strokeStyle = '#10B981';
+                ctx.lineWidth = 5;
+                ctx.lineCap = 'round';
+                ctx.setLineDash([3, 3]);
+                ctx.stroke();
+                ctx.setLineDash([]);
+
+                ctx.fillStyle = '#059669';
+                ctx.beginPath(); ctx.arc(m.x1, m.y1, 6, 0, Math.PI * 2); ctx.fill();
+                ctx.beginPath(); ctx.arc(m.x2, m.y2, 6, 0, Math.PI * 2); ctx.fill();
             });
-            const mesh = new THREE.Mesh(boxGeo, boxMat);
-            mesh.position.y = 0.6;
-            group.add(mesh);
 
-            const panelGeo = new THREE.BoxGeometry(1.5, 0.4, 0.1);
-            const panelMat = new THREE.MeshBasicMaterial({ color: isCorrect ? 0xfdf2f8 : 0xf1f5f9 });
-            const panel = new THREE.Mesh(panelGeo, panelMat);
-            panel.position.set(0, 1.35, 0);
-            group.add(panel);
+            if (isDrawingMatch && startMatchNode) {
+                ctx.beginPath();
+                ctx.moveTo(startMatchNode.x, startMatchNode.y);
+                ctx.lineTo(currentMousePos.x, currentMousePos.y);
+                ctx.strokeStyle = '#6366F1';
+                ctx.lineWidth = 4;
+                ctx.lineCap = 'round';
+                ctx.stroke();
 
-            group.position.set(lanesX[lane], 0, z);
-            threeScene.add(group);
+                ctx.fillStyle = '#4F46E5';
+                ctx.beginPath();
+                ctx.arc(currentMousePos.x, currentMousePos.y, 7, 0, Math.PI * 2);
+                ctx.fill();
+            }
 
-            runnerObjects.push({
-                mesh: group,
-                lane: lane,
-                z: z,
-                isCorrect: isCorrect,
-                text: text,
-                type: 'barrier'
+            if (tempErrorLine) {
+                ctx.beginPath();
+                ctx.moveTo(tempErrorLine.x1, tempErrorLine.y1);
+                ctx.lineTo(tempErrorLine.x2, tempErrorLine.y2);
+                ctx.strokeStyle = '#EF4444';
+                ctx.lineWidth = 5;
+                ctx.lineCap = 'round';
+                ctx.stroke();
+            }
+        }
+
+        // --- QUIZ LOGIC ---
+        function initQuiz() { nextQuizQuestion(); }
+
+        function nextQuizQuestion() {
+            document.getElementById('quiz-feedback').textContent = '';
+            currentQuizItem = ALL_VOCAB[Math.floor(Math.random() * ALL_VOCAB.length)];
+
+            const distractors = ALL_VOCAB.filter(i => i.id !== currentQuizItem.id).sort(() => 0.5 - Math.random()).slice(0, 2);
+            const options = [currentQuizItem, ...distractors].sort(() => 0.5 - Math.random());
+            const optionsContainer = document.getElementById('quiz-options');
+            optionsContainer.innerHTML = '';
+
+            options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = "w-full p-4 rounded-2xl border-2 border-slate-100 hover:border-purple-300 bg-slate-50 hover:bg-purple-50 font-semibold text-slate-700 text-left transition flex items-center justify-between text-sm md:text-base shadow-sm cursor-pointer";
+                btn.innerHTML = `<span>${opt.fr} (${opt.en})</span><span class="text-xl">${opt.emoji}</span>`;
+                btn.onclick = () => checkQuizAnswer(opt, btn);
+                optionsContainer.appendChild(btn);
+            });
+            setTimeout(playQuizTargetAudio, 400);
+        }
+
+        function playQuizTargetAudio() {
+            if (currentQuizItem) speakText(currentQuizItem.en, document.getElementById('quiz-audio-btn'));
+        }
+
+        function checkQuizAnswer(selected, buttonElem) {
+            const feedback = document.getElementById('quiz-feedback');
+            if (selected.id === currentQuizItem.id) {
+                feedback.textContent = "✨ Bravo ! C'est la bonne réponse ! 🎉";
+                feedback.className = "h-8 font-bold text-base text-green-600 animate-pulse";
+                buttonElem.classList.add('bg-green-100', 'border-green-400');
+                quizStars += 1;
+                document.getElementById('quiz-stars').textContent = quizStars;
+                triggerConfetti();
+            } else {
+                feedback.textContent = "Oups ! Réécoute bien et réessaye ! 🌸";
+                feedback.className = "h-8 font-bold text-base text-pink-600";
+                buttonElem.classList.add('bg-pink-100', 'border-pink-300');
+            }
+        }
+
+        // --- MEMORY GAME LOGIC ---
+        function initMemoryGame() { resetMemoryUI(); }
+
+        function resetMemoryUI() {
+            document.getElementById('memory-feedback').textContent = '';
+            document.getElementById('memory-options-container').classList.add('hidden');
+            document.getElementById('memory-timer-box').classList.add('hidden');
+            document.getElementById('memory-start-btn').classList.remove('hidden');
+            document.getElementById('memory-instruction').textContent = "Regarde et mémorise bien ces 6 cartes pendant 13 secondes...";
+            
+            memoryRoundCards = [...ALL_VOCAB].sort(() => 0.5 - Math.random()).slice(0, 6);
+            renderMemoryGrid(memoryRoundCards, false);
+        }
+
+        function renderMemoryGrid(cardsToDisplay, isOpaque = false) {
+            const grid = document.getElementById('memory-grid');
+            grid.innerHTML = '';
+            cardsToDisplay.forEach(item => {
+                const card = document.createElement('div');
+                card.className = `bg-teal-50 border-2 border-teal-200 rounded-2xl p-2 text-center flex flex-col items-center justify-center space-y-1 transition-all ${isOpaque ? 'opacity-40 filter grayscale' : 'shadow-sm'}`;
+                card.innerHTML = `
+                    <span class="text-2xl">${item.emoji}</span>
+                    <span class="text-[12px] font-bold text-teal-900 leading-tight">${item.en}</span>
+                `;
+                grid.appendChild(card);
             });
         }
 
-        function spawn3DCoin(lane, z) {
-            const lanesX = [-2.2, 0, 2.2];
-            const coinGeo = new THREE.CylinderGeometry(0.35, 0.35, 0.1, 20);
-            const coinMat = new THREE.MeshStandardMaterial({ color: 0xfbbf24, metalness: 0.9, roughness: 0.1 });
-            const coin = new THREE.Mesh(coinGeo, coinMat);
-            coin.rotation.x = Math.PI / 2;
-            coin.position.set(lanesX[lane], 1.2, z);
-            threeScene.add(coin);
+        function startMemoryRound() {
+            document.getElementById('memory-start-btn').classList.add('hidden');
+            document.getElementById('memory-timer-box').classList.remove('hidden');
+            document.getElementById('memory-feedback').textContent = '';
 
-            runnerObjects.push({
-                mesh: coin,
-                lane: lane,
-                z: z,
-                type: 'coin'
+            let timeLeft = memoryTotalTime;
+            document.getElementById('memory-timer-count').textContent = timeLeft + 's';
+            document.getElementById('memory-timer-bar').style.width = '100%';
+
+            renderMemoryGrid(memoryRoundCards, false);
+
+            if (memoryTimer) clearInterval(memoryTimer);
+
+            memoryTimer = setInterval(() => {
+                timeLeft--;
+                document.getElementById('memory-timer-count').textContent = timeLeft + 's';
+                document.getElementById('memory-timer-bar').style.width = ((timeLeft / memoryTotalTime) * 100) + '%';
+
+                if (timeLeft <= 0) {
+                    clearInterval(memoryTimer);
+                    hideCardAndAsk();
+                }
+            }, 1000);
+        }
+
+        function hideCardAndAsk() {
+            document.getElementById('memory-timer-box').classList.add('hidden');
+            document.getElementById('memory-instruction').textContent = "Hop ! Une carte a disparu. Laquelle manque ?";
+
+            const missingIdx = Math.floor(Math.random() * memoryRoundCards.length);
+            missingCard = memoryRoundCards[missingIdx];
+
+            const remainingCards = memoryRoundCards.filter((_, idx) => idx !== missingIdx).sort(() => 0.5 - Math.random());
+            renderMemoryGrid(remainingCards, true);
+
+            const remainingIds = new Set(remainingCards.map(c => c.id));
+            const candidateDistractors = ALL_VOCAB.filter(i => !remainingIds.has(i.id) && i.id !== missingCard.id);
+            const hiddenPool = candidateDistractors.sort(() => 0.5 - Math.random()).slice(0, 3);
+            
+            const choices = [missingCard, ...hiddenPool].sort(() => 0.5 - Math.random());
+
+            const choicesContainer = document.getElementById('memory-choices');
+            choicesContainer.innerHTML = '';
+
+            choices.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = "p-3 bg-white hover:bg-teal-50 border-2 border-teal-200 rounded-2xl flex flex-col items-center justify-center space-y-1 transition transform active:scale-95 shadow-sm cursor-pointer";
+                btn.innerHTML = `
+                    <span class="text-2xl">${opt.emoji}</span>
+                    <span class="text-xs font-bold text-slate-700">${opt.en}</span>
+                `;
+                btn.onclick = () => checkMemoryAnswer(opt);
+                choicesContainer.appendChild(btn);
             });
+
+            document.getElementById('memory-options-container').classList.remove('hidden');
         }
 
-        function animateRunnerLoop() {
-            if (!runnerActive) return;
+        function checkMemoryAnswer(selectedOpt) {
+            const feedback = document.getElementById('memory-feedback');
+            document.getElementById('memory-options-container').classList.add('hidden');
 
-            if (playerMesh) {
-                playerMesh.position.x += (targetLaneX - playerMesh.position.x) * 0.25;
-
-                if (isJumping) {
-                    playerMesh.position.y += playerVelocityY;
-                    playerVelocityY -= 0.016;
-                    if (playerMesh.position.y <= 0) {
-                        playerMesh.position.y = 0;
-                        isJumping = false;
-                        playerVelocityY = 0;
-                    }
-                }
-
-                if (isSliding) {
-                    slideTimer--;
-                    if (slideTimer <= 0) {
-                        isSliding = false;
-                        playerMesh.scale.set(1, 1, 1);
-                    }
-                }
-
-                if (!isJumping) {
-                    playerMesh.rotation.z = Math.sin(Date.now() * 0.02) * 0.06;
-                }
+            if (selectedOpt.id === missingCard.id) {
+                feedback.textContent = "🌟 Incroyable ! Tu as retrouvé la bonne carte ! 🎉";
+                feedback.className = "h-8 font-bold text-base text-teal-600 animate-pulse";
+                memoryScore += 20;
+                document.getElementById('memory-score').textContent = memoryScore;
+                triggerConfetti();
+            } else {
+                feedback.textContent = `Oups ! C'était "${missingCard.en}" (${missingCard.fr}). Réessaie ! 🌸`;
+                feedback.className = "h-8 font-bold text-base text-pink-600";
             }
 
-            for (let i = runnerObjects.length - 1; i >= 0; i--) {
-                let obj = runnerObjects[i];
-                obj.z += runnerSpeed;
-                obj.mesh.position.z = obj.z;
+            document.getElementById('memory-instruction').textContent = "Prête pour une nouvelle manche ?";
+            document.getElementById('memory-start-btn').textContent = "Manche suivante ➔";
+            document.getElementById('memory-start-btn').classList.remove('hidden');
+        }
 
-                if (obj.type === 'coin') {
-                    obj.mesh.rotation.y += 0.08;
-                }
+        // --- BUILD A SENTENCE LOGIC ---
+        // STRICT RULE: No audio plays when loading/displaying sentence. Audio ONLY plays upon correct selection.
+        function initSentences() {
+            currentSentenceIdx = Math.floor(Math.random() * SENTENCES_DATA.length);
+            renderSentenceQuestion();
+        }
 
-                if (Math.abs(obj.z) < 0.7 && obj.lane === runnerLane) {
-                    if (obj.type === 'coin') {
-                        runnerCoins += 1;
-                        document.getElementById('runner-coins').textContent = runnerCoins;
-                        threeScene.remove(obj.mesh);
-                        runnerObjects.splice(i, 1);
-                        playBeepSound(750, 0.05);
-                    } else if (obj.type === 'barrier') {
-                        if (obj.isCorrect) {
-                            runnerScore += 20;
-                            document.getElementById('runner-score').textContent = runnerScore;
-                            document.getElementById('runner-feedback').textContent = `✨ EXCELLENT ! "${obj.text}" attrapé ! 🎉`;
-                            document.getElementById('runner-feedback').className = "h-6 font-bold text-sm text-green-500 animate-pulse";
-                            speakText(obj.text);
-                            triggerConfetti();
-                            playBeepSound(950, 0.15);
-                        } else {
-                            document.getElementById('runner-feedback').textContent = `Oups ! Ce n'était pas le bon mot ! 🌸`;
-                            document.getElementById('runner-feedback').className = "h-6 font-bold text-sm text-pink-500";
-                            playBeepSound(200, 0.2);
-                        }
+        function renderSentenceQuestion() {
+            const item = SENTENCES_DATA[currentSentenceIdx];
+            document.getElementById('sentence-feedback').textContent = '';
+            document.getElementById('sentence-prompt').textContent = item.q;
+            document.getElementById('sentence-translation').textContent = item.fr;
 
-                        runnerObjects.forEach(o => threeScene.remove(o.mesh));
-                        runnerObjects = [];
-                        setTimeout(pickNewRunnerTarget, 700);
-                        break;
-                    }
-                }
+            const optionsContainer = document.getElementById('sentence-options');
+            optionsContainer.innerHTML = '';
 
-                if (obj.z > 10) {
-                    threeScene.remove(obj.mesh);
-                    runnerObjects.splice(i, 1);
-                }
+            const shuffledOpts = [...item.options].sort(() => 0.5 - Math.random());
+            shuffledOpts.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = "w-full p-4 rounded-2xl border-2 border-slate-100 hover:border-pink-300 bg-slate-50 hover:bg-pink-50 font-semibold text-slate-700 text-center transition text-base shadow-sm cursor-pointer";
+                btn.textContent = opt;
+                btn.onclick = () => checkSentenceAnswer(opt, item.missing, btn);
+                optionsContainer.appendChild(btn);
+            });
+            // Intentionally NO audio play call here!
+        }
+
+        function checkSentenceAnswer(selected, correct, btnElem) {
+            const feedback = document.getElementById('sentence-feedback');
+            const item = SENTENCES_DATA[currentSentenceIdx];
+
+            if (selected === correct) {
+                const completeSentence = item.q.replace('___', correct);
+                document.getElementById('sentence-prompt').textContent = completeSentence;
+
+                feedback.textContent = "✨ Super ! C'est exact ! 🎉";
+                feedback.className = "h-8 font-bold text-base text-green-600 animate-pulse";
+                btnElem.classList.add('bg-green-100', 'border-green-400');
+                sentenceScore += 1;
+                document.getElementById('sentence-score').textContent = sentenceScore;
+                
+                // Audio plays ONLY NOW when answer is validated and correct
+                speakText(completeSentence);
+                triggerConfetti();
+            } else {
+                feedback.textContent = `Oups ! Ce n'est pas la bonne réponse. Réessaie ! 🌸`;
+                feedback.className = "h-8 font-bold text-base text-pink-600";
+                btnElem.classList.add('bg-pink-100', 'border-pink-300');
             }
-
-            threeRenderer.render(threeScene, threeCamera);
-            requestAnimationFrame(animateRunnerLoop);
         }
 
-        function onWindowResize() {
-            const container = document.getElementById('three-container');
-            if (!container || !threeCamera || !threeRenderer) return;
-            threeCamera.aspect = container.clientWidth / container.clientHeight;
-            threeCamera.updateProjectionMatrix();
-            threeRenderer.setSize(container.clientWidth, container.clientHeight);
-        }
-
-        function toggleRunnerMusic() {
-            runnerMusicPlaying = !runnerMusicPlaying;
-            const btn = document.getElementById('runner-music-btn');
-            btn.textContent = runnerMusicPlaying ? "🎵 Musique: ON" : "🎵 Musique: OFF";
-            btn.className = runnerMusicPlaying ? "bg-green-100 text-green-700 text-xs font-bold px-3 py-1.5 rounded-full" : "bg-purple-100 text-purple-700 text-xs font-bold px-3 py-1.5 rounded-full";
-        }
-
-        function playBeepSound(freq, duration) {
-            try {
-                if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                let osc = audioCtx.createOscillator();
-                let gain = audioCtx.createGain();
-                osc.frequency.value = freq;
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-                osc.start();
-                gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + duration);
-                osc.stop(audioCtx.currentTime + duration);
-            } catch(e) {}
+        function nextSentenceQuestion() {
+            currentSentenceIdx = (currentSentenceIdx + 1) % SENTENCES_DATA.length;
+            renderSentenceQuestion();
         }
 
         function switchTab(tabName) {
             if (memoryTimer) clearInterval(memoryTimer);
-            runnerActive = false;
-
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
             document.querySelectorAll('.tab-btn').forEach(el => {
                 el.classList.remove('bg-purple-500', 'bg-teal-600', 'bg-indigo-600', 'text-white', 'shadow-md');
@@ -923,9 +1094,6 @@
             } else if (tabName === 'sentences') {
                 activeTabBtn.classList.add('bg-purple-500', 'text-white', 'shadow-md');
                 initSentences();
-            } else if (tabName === 'runner') {
-                activeTabBtn.classList.add('bg-purple-500', 'text-white', 'shadow-md');
-                setTimeout(initThreeRunner, 100);
             } else {
                 activeTabBtn.classList.add('bg-purple-500', 'text-white', 'shadow-md');
             }
