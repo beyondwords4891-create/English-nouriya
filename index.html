@@ -372,9 +372,8 @@
 
                     <div id="runner-start-overlay" class="absolute inset-0 bg-slate-900/80 backdrop-blur-sm flex flex-col items-center justify-center p-6 text-white space-y-4 z-20">
                         <span class="text-5xl animate-bounce">🏄‍♀️</span>
-                        <h3 class="text-2xl font-bold font-title">Word Surfer Adventure</h3>
-                        <p class="text-xs text-slate-300 max-w-xs">Glisse ton doigt à gauche/droite ou touche l'écran pour changer de voie et attraper le bon mot !</p>
-                        <!-- CORRECTION ICI : Ajout de ontouchend et pointer-events-auto -->
+                        <h3 class="text-2xl font-bold font-title">Word Surfer 3D</h3>
+                        <p class="text-xs text-slate-300 max-w-xs">Glisse ton doigt à gauche/droite ou touche l'écran pour changer de voie tranquillement dans la rue !</p>
                         <button onclick="startRunnerGame()" ontouchend="startRunnerGame(); event.preventDefault();" class="bg-pink-500 hover:bg-pink-600 text-white font-bold py-3 px-8 rounded-2xl shadow-lg transition transform hover:scale-105 active:scale-95 cursor-pointer pointer-events-auto">
                             Lancer la course ! 🚀
                         </button>
@@ -512,16 +511,18 @@
         let currentSentenceIdx = 0;
         let sentenceScore = 0;
 
-        // Runner Game State
+        // --- SUBWAY SURFER 3D IMMERSIVE RUNNER STATE (Vitesse ralentie à 2.0) ---
         let runnerCanvas, runnerCtx;
         let runnerActive = false;
         let runnerLane = 1; // 0: Gauche, 1: Centre, 2: Droite
+        let runnerPlayerX = 1; 
         let runnerScore = 0;
         let runnerCoins = 0;
         let runnerTarget = null;
         let runnerItems = [];
         let runnerCoinList = [];
-        let runnerSpeed = 3.5;
+        let runnerRoadOffset = 0; 
+        let runnerSpeed = 2.0; // Vitesse ralentie pour bien lire
         let runnerMusicPlaying = false;
         let audioCtx = null;
 
@@ -1148,7 +1149,7 @@
             renderSentenceQuestion();
         }
 
-        // --- SUBWAY SURFER WORD RUNNER LOGIC ---
+        // --- SUBWAY SURFER 3D IMMERSIVE RUNNER LOGIC ---
         function initRunnerCanvas() {
             runnerCanvas = document.getElementById('runner-canvas');
             if (!runnerCanvas) return;
@@ -1199,8 +1200,11 @@
             runnerScore = 0;
             runnerCoins = 0;
             runnerLane = 1;
+            runnerPlayerX = 1; 
             runnerItems = [];
             runnerCoinList = [];
+            runnerRoadOffset = 0;
+            
             document.getElementById('runner-score').textContent = runnerScore;
             document.getElementById('runner-coins').textContent = runnerCoins;
             
@@ -1215,13 +1219,13 @@
             spawnRunnerWave();
         }
 
-        function spawnRunnerWave() {
+    function spawnRunnerWave() {
             let lanes = [0, 1, 2].sort(() => 0.5 - Math.random());
             let correctLane = lanes[0];
             
             runnerItems.push({
                 lane: correctLane,
-                y: -50,
+                z: 400,
                 text: runnerTarget.en,
                 emoji: runnerTarget.emoji,
                 isCorrect: true
@@ -1231,7 +1235,7 @@
             for (let i = 1; i < 3; i++) {
                 runnerItems.push({
                     lane: lanes[i],
-                    y: -50,
+                    z: 400,
                     text: wrongPool[i-1].en,
                     emoji: wrongPool[i-1].emoji,
                     isCorrect: false
@@ -1240,7 +1244,7 @@
 
             let coinLane = Math.floor(Math.random() * 3);
             for (let c = 0; c < 3; c++) {
-                runnerCoinList.push({ lane: coinLane, y: -150 - (c * 40) });
+                runnerCoinList.push({ lane: coinLane, z: 400 + (c * 60) });
             }
         }
 
@@ -1250,56 +1254,136 @@
         function updateRunnerLoop() {
             if (!runnerActive || !runnerCtx) return;
 
-            runnerCtx.fillStyle = '#1E293B';
-            runnerCtx.fillRect(0, 0, runnerCanvas.width, runnerCanvas.height);
+            const w = runnerCanvas.width;
+            const h = runnerCanvas.height;
 
-            runnerCtx.strokeStyle = '#475569';
-            runnerCtx.lineWidth = 3;
+            runnerPlayerX += (runnerLane - runnerPlayerX) * 0.2;
+
+            // --- 1. DÉCOR 3D DE LA RUE ---
+            let skyGrad = runnerCtx.createLinearGradient(0, 0, 0, h * 0.45);
+            skyGrad.addColorStop(0, '#38bdf8');
+            skyGrad.addColorStop(1, '#e879f9');
+            runnerCtx.fillStyle = skyGrad;
+            runnerCtx.fillRect(0, 0, w, h);
+
+            let horizonY = h * 0.45;
+            let centerX = w / 2;
+
+            let roadTopWidth = w * 0.15;
+            let roadBottomWidth = w * 0.85;
+
+            // Trottoirs gauche/droite
+            runnerCtx.fillStyle = '#94a3b8';
             runnerCtx.beginPath();
-            runnerCtx.moveTo(runnerCanvas.width * 0.33, 0); runnerCtx.lineTo(runnerCanvas.width * 0.25, runnerCanvas.height);
-            runnerCtx.moveTo(runnerCanvas.width * 0.66, 0); runnerCtx.lineTo(runnerCanvas.width * 0.75, runnerCanvas.height);
-            runnerCtx.stroke();
+            runnerCtx.moveTo(0, h);
+            runnerCtx.lineTo(centerX - roadBottomWidth / 2, h);
+            runnerCtx.lineTo(centerX - roadTopWidth / 2, horizonY);
+            runnerCtx.lineTo(0, horizonY);
+            runnerCtx.fill();
 
-            let laneX = [runnerCanvas.width * 0.22, runnerCanvas.width * 0.5, runnerCanvas.width * 0.78];
+            runnerCtx.fillStyle = '#64748b';
+            runnerCtx.beginPath();
+            runnerCtx.moveTo(w, h);
+            runnerCtx.lineTo(centerX + roadBottomWidth / 2, h);
+            runnerCtx.lineTo(centerX + roadTopWidth / 2, horizonY);
+            runnerCtx.lineTo(w, horizonY);
+            runnerCtx.fill();
 
+            // Route principale
+            runnerCtx.fillStyle = '#1e293b';
+            runnerCtx.beginPath();
+            runnerCtx.moveTo(centerX - roadBottomWidth / 2, h);
+            runnerCtx.lineTo(centerX + roadBottomWidth / 2, h);
+            runnerCtx.lineTo(centerX + roadTopWidth / 2, horizonY);
+            runnerCtx.lineTo(centerX - roadTopWidth / 2, horizonY);
+            runnerCtx.fill();
+
+            // Lignes de séparation de voies (vitesse ralentie à runnerSpeed)
+            runnerRoadOffset = (runnerRoadOffset + runnerSpeed) % 40;
+            runnerCtx.strokeStyle = '#cbd5e1';
+            runnerCtx.lineWidth = 3;
+            for (let l = 1; l < 3; l++) {
+                let bottomX = centerX - roadBottomWidth / 2 + (roadBottomWidth / 3) * l;
+                let topX = centerX - roadTopWidth / 2 + (roadTopWidth / 3) * l;
+                
+                runnerCtx.beginPath();
+                for (let y = horizonY + runnerRoadOffset; y < h; y += 40) {
+                    let progress = (y - horizonY) / (h - horizonY);
+                    let currX = topX + (bottomX - topX) * progress;
+                    runnerCtx.moveTo(currX, y);
+                    runnerCtx.lineTo(currX, Math.min(h, y + 20));
+                }
+                runnerCtx.stroke();
+            }
+
+            function project(lane, z) {
+                let scale = 200 / (200 + z);
+                let roadWidthAtZ = roadTopWidth + (roadBottomWidth - roadTopWidth) * (1 - (z / 400));
+                let laneWidthAtZ = roadWidthAtZ / 3;
+                let leftEdge = centerX - roadWidthAtZ / 2;
+                
+                let x = leftEdge + laneWidthAtZ * (lane + 0.5);
+                let y = horizonY + (h - horizonY) * (1 - (z / 400));
+                return { x, y, scale };
+            }
+
+            // --- 2. PIÈCES ---
             for (let i = runnerCoinList.length - 1; i >= 0; i--) {
                 let coin = runnerCoinList[i];
-                coin.y += runnerSpeed;
+                coin.z -= runnerSpeed;
 
-                runnerCtx.fillStyle = '#F59E0B';
-                runnerCtx.beginPath();
-                runnerCtx.arc(laneX[coin.lane], coin.y, 10, 0, Math.PI * 2);
-                runnerCtx.fill();
+                let p = project(coin.lane, coin.z);
+                if (coin.z > 0 && coin.z < 400) {
+                    let radius = Math.max(4, 14 * p.scale);
+                    runnerCtx.fillStyle = '#fbbf24';
+                    runnerCtx.beginPath();
+                    runnerCtx.arc(p.x, p.y, radius, 0, Math.PI * 2);
+                    runnerCtx.fill();
+                    runnerCtx.strokeStyle = '#d97706';
+                    runnerCtx.lineWidth = 2;
+                    runnerCtx.stroke();
+                    runnerCtx.fillStyle = '#fff';
+                    runnerCtx.font = `${Math.max(8, Math.floor(12 * p.scale))}px sans-serif`;
+                    runnerCtx.textAlign = 'center';
+                    runnerCtx.fillText('★', p.x, p.y + radius * 0.4);
 
-                if (coin.lane === runnerLane && Math.abs(coin.y - (runnerCanvas.height - 70)) < 25) {
-                    runnerCoins += 1;
-                    document.getElementById('runner-coins').textContent = runnerCoins;
-                    runnerCoinList.splice(i, 1);
-                    playBeepSound(600, 0.05);
-                } else if (coin.y > runnerCanvas.height + 20) {
+                    if (coin.z < 20 && Math.abs(coin.lane - runnerPlayerX) < 0.4) {
+                        runnerCoins += 1;
+                        document.getElementById('runner-coins').textContent = runnerCoins;
+                        runnerCoinList.splice(i, 1);
+                        playBeepSound(600, 0.05);
+                    }
+                } else if (coin.z <= 0) {
                     runnerCoinList.splice(i, 1);
                 }
             }
 
+            // --- 3. MOTS (OBJETS 3D) ---
             for (let i = runnerItems.length - 1; i >= 0; i--) {
                 let item = runnerItems[i];
-                item.y += runnerSpeed;
+                item.z -= runnerSpeed;
 
-                runnerCtx.fillStyle = item.isCorrect ? '#E0E7FF' : '#F1F5F9';
-                runnerCtx.strokeStyle = '#818CF8';
-                runnerCtx.lineWidth = 2;
-                runnerCtx.beginPath();
-                runnerCtx.roundRect(laneX[item.lane] - 50, item.y - 20, 100, 40, 10);
-                runnerCtx.fill();
-                runnerCtx.stroke();
+                let p = project(item.lane, item.z);
+                if (item.z > 0 && item.z < 400) {
+                    let boxWidth = Math.max(60, 140 * p.scale);
+                    let boxHeight = Math.max(30, 70 * p.scale);
 
-                runnerCtx.fillStyle = '#312E81';
-                runnerCtx.font = 'bold 12px Nunito, sans-serif';
-                runnerCtx.textAlign = 'center';
-                runnerCtx.fillText(`${item.emoji} ${item.text}`, laneX[item.lane], item.y + 4);
+                    runnerCtx.fillStyle = item.isCorrect ? '#e0e7ff' : '#f1f5f9';
+                    runnerCtx.strokeStyle = '#6366f1';
+                    runnerCtx.lineWidth = Math.max(1, 3 * p.scale);
+                    
+                    runnerCtx.beginPath();
+                    runnerCtx.roundRect(p.x - boxWidth / 2, p.y - boxHeight / 2, boxWidth, boxHeight, 8);
+                    runnerCtx.fill();
+                    runnerCtx.stroke();
 
-                if (Math.abs(item.y - (runnerCanvas.height - 70)) < 25) {
-                    if (item.lane === runnerLane) {
+                    let fontSize = Math.max(10, Math.floor(16 * p.scale));
+                    runnerCtx.fillStyle = '#312e81';
+                    runnerCtx.font = `bold ${fontSize}px Fredoka, sans-serif`;
+                    runnerCtx.textAlign = 'center';
+                    runnerCtx.fillText(`${item.emoji} ${item.text}`, p.x, p.y + fontSize * 0.35);
+
+                    if (item.z < 25 && item.z > -10 && Math.abs(item.lane - runnerPlayerX) < 0.45) {
                         if (item.isCorrect) {
                             runnerScore += 10;
                             document.getElementById('runner-score').textContent = runnerScore;
@@ -1317,21 +1401,26 @@
                         setTimeout(pickNewRunnerTarget, 1000);
                         break;
                     }
+                } else if (item.z <= 0) {
+                    runnerItems.splice(i, 1);
                 }
-
-                if (item.y > runnerCanvas.height + 20) runnerItems.splice(i, 1);
             }
 
-            let playerX = laneX[runnerLane];
-            let playerY = runnerCanvas.height - 70;
+            // --- 4. AVATAR AU PREMIER PLAN ---
+            let playerProj = project(runnerPlayerX, 0);
+            let pX = playerProj.x;
+            let pY = h - 60;
 
-            runnerCtx.fillStyle = '#EC4899';
+            runnerCtx.fillStyle = 'rgba(0, 0, 0, 0.3)';
             runnerCtx.beginPath();
-            runnerCtx.arc(playerX, playerY, 18, 0, Math.PI * 2);
+            runnerCtx.ellipse(pX, pY + 25, 25, 10, 0, 0, Math.PI * 2);
             runnerCtx.fill();
-            runnerCtx.fillStyle = '#FFF';
-            runnerCtx.font = '16px sans-serif';
-            runnerCtx.fillText('🏄‍♀️', playerX, playerY + 5);
+
+            let bounce = Math.sin(Date.now() * 0.015) * 5;
+            
+            runnerCtx.font = '48px sans-serif';
+            runnerCtx.textAlign = 'center';
+            runnerCtx.fillText('🏄‍♀️', pX, pY + bounce);
 
             requestAnimationFrame(updateRunnerLoop);
         }
