@@ -350,7 +350,7 @@
             </div>
         </section>
 
-        <!-- SECTION: 3D THREE.JS SUBWAY RUNNER -->
+        <!-- SECTION: ADVANCED 3D THREE.JS SUBWAY RUNNER -->
         <section id="section-runner" class="tab-content hidden space-y-4">
             <div class="bg-white rounded-3xl p-4 md:p-6 shadow-xl border-2 border-purple-200 text-center space-y-4 max-w-2xl mx-auto relative overflow-hidden">
                 
@@ -376,7 +376,7 @@
                     <div id="runner-start-overlay" class="absolute inset-0 bg-slate-900/85 backdrop-blur-sm flex flex-col items-center justify-center p-6 text-white space-y-4 z-20">
                         <span class="text-5xl animate-bounce">🏄‍♀️✨</span>
                         <h3 class="text-2xl font-bold font-title">Subway English Runner 3D</h3>
-                        <p class="text-xs text-slate-300 max-w-xs">Un véritable moteur 3D Three.js ! Glisse ton doigt ou utilise les flèches pour changer de voie, sauter et glisser sur les barrières.</p>
+                        <p class="text-xs text-slate-300 max-w-xs">Moteur 3D style Subway Surfers : change de voie, saute et attrape le bon mot de vocabulaire !</p>
                         <button onclick="startRunnerGame()" ontouchend="startRunnerGame(); event.preventDefault();" class="bg-pink-500 hover:bg-pink-600 text-white font-bold py-3 px-8 rounded-2xl shadow-lg transition transform hover:scale-105 active:scale-95 cursor-pointer pointer-events-auto">
                             Lancer la course 3D ! 🚀
                         </button>
@@ -513,7 +513,7 @@
         let sentenceScore = 0;
 
         // ==========================================
-        // TRUE 3D THREE.JS SUBWAY RUNNER ENGINE
+        // ADVANCED 3D THREE.JS SUBWAY RUNNER ENGINE
         // ==========================================
         let threeScene, threeCamera, threeRenderer;
         let runnerActive = false;
@@ -523,726 +523,104 @@
         let runnerScore = 0;
         let runnerCoins = 0;
         let runnerTarget = null;
-        let runnerObjects = []; // Barriers, trains, coins
-        let runnerSpeed = 0.35;
+        let runnerObjects = []; 
+        let runnerSpeed = 0.4;
         let runnerMusicPlaying = false;
         let audioCtx = null;
         let playerVelocityY = 0;
         let isJumping = false;
         let isSliding = false;
         let slideTimer = 0;
-        let trackSegments = [];
 
-        function showAlert(msg, icon = '✨') {
-            const box = document.getElementById('custom-alert-box');
-            document.getElementById('custom-alert-msg').textContent = msg;
-            document.getElementById('custom-alert-icon').textContent = icon;
-            box.classList.remove('translate-y-[-100px]', 'opacity-0', 'pointer-events-none');
-            setTimeout(() => {
-                box.classList.add('translate-y-[-100px]', 'opacity-0', 'pointer-events-none');
-            }, 3000);
-        }
-
-        function initAudioEngine() {
-            if (!('speechSynthesis' in window)) return;
-            window.speechSynthesis.cancel();
-            const unlock = new SpeechSynthesisUtterance('');
-            window.speechSynthesis.speak(unlock);
-
-            const voices = window.speechSynthesis.getVoices();
-            const preferred = ["Samantha", "Google US English", "Karen", "Victoria", "Microsoft Zira", "Fiona", "en-US"];
-
-            for (let name of preferred) {
-                const found = voices.find(v => v.lang.startsWith('en') && v.name.includes(name));
-                if (found) { selectedVoice = found; break; }
-            }
-            if (!selectedVoice) selectedVoice = voices.find(v => v.lang.startsWith('en')) || null;
-
-            const badge = document.getElementById('voice-badge');
-            if (selectedVoice) {
-                badge.textContent = selectedVoice.name.split(' ')[0] + " 🌸";
-                badge.className = "bg-green-100 text-green-700 text-xs px-2 py-0.5 rounded-full font-bold";
-            }
-        }
-
-        if ('speechSynthesis' in window) {
-            window.speechSynthesis.onvoiceschanged = initAudioEngine;
-        }
-
-        function speakText(text, buttonElement = null) {
-            if (!('speechSynthesis' in window)) return;
-            window.speechSynthesis.cancel();
-
-            const utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = 'en-US';
-            utterance.rate = 0.85; 
-            utterance.pitch = 1.08; 
-
-            if (selectedVoice) utterance.voice = selectedVoice;
-
-            if (buttonElement) {
-                buttonElement.classList.add('pulse-audio', 'bg-pink-200');
-                utterance.onend = () => buttonElement.classList.remove('pulse-audio', 'bg-pink-200');
-                utterance.onerror = () => buttonElement.classList.remove('pulse-audio', 'bg-pink-200');
-            }
-            window.speechSynthesis.speak(utterance);
-        }
-
-        function renderCards() {
-            const actContainer = document.getElementById('cards-activities');
-            actContainer.innerHTML = '';
-            ACTIVITIES_DATA.forEach(item => {
-                const card = document.createElement('div');
-                card.className = "bg-white rounded-2xl p-4 border border-pink-100 shadow-sm hover:shadow-md card-hover flex flex-col justify-between space-y-3";
-                card.innerHTML = `
-                    <div class="flex items-start justify-between gap-2">
-                        <span class="text-3xl">${item.emoji}</span>
-                        <button onclick="speakText('${item.en.replace(/'/g, "\\'")}', this)" class="bg-pink-50 hover:bg-pink-100 text-pink-600 font-bold px-3 py-1.5 rounded-xl text-xs flex items-center gap-1.5 border border-pink-200 transition active:scale-95 shadow-sm cursor-pointer">
-                            <span class="text-sm">🔊</span> Écouter
-                        </button>
-                    </div>
-                    <div>
-                        <h3 class="text-base font-bold text-purple-900 leading-snug">${item.en}</h3>
-                        <p class="text-xs text-slate-500 mt-0.5">${item.fr}</p>
-                    </div>
-                `;
-                actContainer.appendChild(card);
-            });
-
-            const animContainer = document.getElementById('cards-animals');
-            animContainer.innerHTML = '';
-            ANIMALS_DATA.forEach(item => {
-                const card = document.createElement('div');
-                card.className = "bg-white rounded-2xl p-4 border border-purple-100 shadow-sm hover:shadow-md card-hover flex flex-col justify-between space-y-3";
-                card.innerHTML = `
-                    <div class="flex items-start justify-between gap-2">
-                        <span class="text-3xl">${item.emoji}</span>
-                        <button onclick="speakText('${item.en.replace(/'/g, "\\'")}', this)" class="bg-purple-50 hover:bg-purple-100 text-purple-600 font-bold px-3 py-1.5 rounded-xl text-xs flex items-center gap-1.5 border border-purple-200 transition active:scale-95 shadow-sm cursor-pointer">
-                            <span class="text-sm">🔊</span> Écouter
-                        </button>
-                    </div>
-                    <div>
-                        <h3 class="text-base font-bold text-purple-900 leading-snug">${item.en}</h3>
-                        <p class="text-xs text-slate-500 mt-0.5">${item.fr}</p>
-                    </div>
-                `;
-                animContainer.appendChild(card);
-            });
-        }
-
-        function renderChecklist() {
-            const container = document.getElementById('checklist-container');
-            container.innerHTML = '';
-            let checkedCount = 0;
-
-            CHECKLIST_ITEMS.forEach(item => {
-                const isChecked = !!checklistState[item.id];
-                if (isChecked) checkedCount++;
-
-                const card = document.createElement('div');
-                card.className = `p-4 rounded-2xl border transition flex items-center gap-3 cursor-pointer ${
-                    isChecked ? 'bg-pink-50/80 border-pink-300' : 'bg-slate-50 border-slate-200 hover:border-pink-200'
-                }`;
-                card.onclick = (e) => { if (e.target.tagName !== 'INPUT') toggleChecklistItem(item.id); };
-                card.innerHTML = `
-                    <input type="checkbox" id="${item.id}" ${isChecked ? 'checked' : ''} onchange="toggleChecklistItem('${item.id}')" class="w-5 h-5 accent-pink-500 rounded cursor-pointer">
-                    <div class="flex-1">
-                        <label for="${item.id}" class="text-sm font-semibold text-slate-800 cursor-pointer block">${item.fr}</label>
-                        <span class="text-xs font-bold text-purple-600 bg-purple-50 px-2 py-0.5 rounded-md inline-block mt-1">${item.word}</span>
-                    </div>
-                    <button onclick="event.stopPropagation(); speakText('${item.word.replace(/'/g, "\\'")}', this)" class="text-slate-400 hover:text-pink-500 p-2 rounded-full hover:bg-white text-sm transition cursor-pointer">🔊</button>
-                `;
-                container.appendChild(card);
-            });
-
-            const percent = Math.round((checkedCount / CHECKLIST_ITEMS.length) * 100);
-            document.getElementById('passport-progress-bar').style.width = percent + '%';
-            document.getElementById('passport-percent-text').textContent = percent + '%';
-
-            const certBtn = document.getElementById('certificate-btn');
-            if (percent === 100) {
-                certBtn.disabled = false;
-                certBtn.classList.remove('opacity-50', 'cursor-not-allowed');
-                certBtn.classList.add('animate-bounce');
-            } else {
-                certBtn.disabled = true;
-                certBtn.classList.add('opacity-50', 'cursor-not-allowed');
-                certBtn.classList.remove('animate-bounce');
-            }
-        }
-
-        function toggleChecklistItem(id) {
-            checklistState[id] = !checklistState[id];
-            localStorage.setItem('english_passport_state', JSON.stringify(checklistState));
-            renderChecklist();
-            if (CHECKLIST_ITEMS.every(item => checklistState[item.id])) {
-                triggerConfetti();
-                setTimeout(openCertificateModal, 600);
-            }
-        }
-
-        function resetChecklist() {
-            checklistState = {};
-            localStorage.removeItem('english_passport_state');
-            renderChecklist();
-            showAlert("Passeport réinitialisé avec succès !", "🔄");
-        }
-
-        // --- MATCHING GAME LOGIC ---
-        function initMatchGame() {
-            matchScoreCount = 0;
-            completedMatches = [];
-            isDrawingMatch = false;
-            startMatchNode = null;
-            tempErrorLine = null;
-
-            document.getElementById('match-score').textContent = matchScoreCount;
-            document.getElementById('match-feedback').textContent = "Trace une ligne du mot en anglais à gauche vers sa bonne image à droite !";
-            document.getElementById('match-feedback').className = "h-8 font-bold text-base text-indigo-600";
-
-            matchRoundItems = [...ALL_VOCAB].sort(() => 0.5 - Math.random()).slice(0, matchTotalRounds);
-            renderMatchColumns();
-            setTimeout(resizeMatchCanvas, 100);
-        }
-
-        function resizeMatchCanvas() {
-            const canvas = document.getElementById('match-canvas');
-            const wrapper = document.getElementById('match-game-wrapper');
-            if (!canvas || !wrapper) return;
-            
-            canvas.width = wrapper.offsetWidth;
-            canvas.height = wrapper.offsetHeight;
-            redrawMatchCanvas();
-        }
-
-        function renderMatchColumns() {
-            const leftCol = document.getElementById('match-left-column');
-            const rightCol = document.getElementById('match-right-column');
-            leftCol.innerHTML = '';
-            rightCol.innerHTML = '';
-
-            const shuffledEnglish = [...matchRoundItems].sort(() => 0.5 - Math.random());
-            const shuffledRight = [...matchRoundItems].sort(() => 0.5 - Math.random());
-
-            shuffledEnglish.forEach(item => {
-                const btn = document.createElement('div');
-                btn.id = `en-node-${item.id}`;
-                btn.setAttribute('data-id', item.id);
-                btn.className = "match-node-left relative w-full p-2.5 md:p-3 bg-white hover:bg-indigo-50 border-2 border-indigo-200 rounded-xl font-bold text-indigo-900 text-xs md:text-sm transition flex items-center justify-between shadow-sm cursor-grab active:cursor-grabbing select-none";
-                btn.innerHTML = `
-                    <span>${item.en}</span>
-                    <div class="flex items-center gap-1">
-                        <span class="text-xs text-indigo-400">✏️</span>
-                        <div class="w-3 h-3 rounded-full bg-indigo-400 border border-white shadow-sm"></div>
-                    </div>
-                `;
-                
-                btn.addEventListener('mousedown', (e) => startDrawingLine(e, item, btn, 'left'));
-                btn.addEventListener('touchstart', (e) => startDrawingLine(e, item, btn, 'left'), { passive: false });
-
-                leftCol.appendChild(btn);
-            });
-
-            shuffledRight.forEach(item => {
-                const btn = document.createElement('div');
-                btn.id = `fr-node-${item.id}`;
-                btn.setAttribute('data-id', item.id);
-                btn.className = "match-node-right relative w-full p-2.5 bg-white hover:bg-pink-50 border-2 border-pink-200 rounded-xl font-semibold text-slate-700 text-xs md:text-sm transition flex items-center gap-2 md:gap-3 shadow-sm cursor-pointer select-none";
-                btn.innerHTML = `
-                    <div class="w-3 h-3 rounded-full bg-pink-400 border border-white shadow-sm"></div>
-                    <span class="text-xl md:text-2xl p-1 bg-pink-50 rounded-lg">${item.emoji}</span>
-                    <span class="flex-1 text-left truncate">${item.fr}</span>
-                `;
-
-                btn.addEventListener('mousedown', (e) => startDrawingLine(e, item, btn, 'right'));
-                btn.addEventListener('touchstart', (e) => startDrawingLine(e, item, btn, 'right'), { passive: false });
-
-                rightCol.appendChild(btn);
-            });
-
-            const wrapper = document.getElementById('match-game-wrapper');
-            wrapper.onmousemove = onMatchPointerMove;
-            wrapper.ontouchmove = onMatchPointerMove;
-            window.onmouseup = onMatchPointerUp;
-            window.ontouchend = onMatchPointerUp;
-        }
-
-        function startDrawingLine(e, item, element, side) {
-            if (e.type === 'touchstart') e.preventDefault();
-            if (completedMatches.some(m => m.itemId === item.id)) return;
-
-            speakText(item.en);
-
-            isDrawingMatch = true;
-            const pointer = getPointerPos(e);
-            const wrapperRect = document.getElementById('match-game-wrapper').getBoundingClientRect();
-            
-            const elemRect = element.getBoundingClientRect();
-            const startX = side === 'left' 
-                ? (elemRect.right - wrapperRect.left) 
-                : (elemRect.left - wrapperRect.left);
-            const startY = (elemRect.top + elemRect.height / 2) - wrapperRect.top;
-
-            startMatchNode = {
-                item: item,
-                element: element,
-                side: side,
-                x: startX,
-                y: startY
-            };
-            currentMousePos = { x: pointer.x - wrapperRect.left, y: pointer.y - wrapperRect.top };
-
-            document.getElementById('match-feedback').textContent = `Crayon activé pour "${item.en}" ! Relie-le !`;
-            document.getElementById('match-feedback').className = "h-8 font-bold text-base text-indigo-600";
-
-            redrawMatchCanvas();
-        }
-
-        function getPointerPos(e) {
-            if (e.touches && e.touches.length > 0) {
-                return { x: e.touches[0].clientX, y: e.touches[0].clientY };
-            }
-            return { x: e.clientX, y: e.clientY };
-        }
-
-        function onMatchPointerMove(e) {
-            if (!isDrawingMatch || !startMatchNode) return;
-            if (e.type === 'touchmove') e.preventDefault();
-
-            const pointer = getPointerPos(e);
-            const wrapperRect = document.getElementById('match-game-wrapper').getBoundingClientRect();
-            
-            currentMousePos = {
-                x: pointer.x - wrapperRect.left,
-                y: pointer.y - wrapperRect.top
-            };
-
-            redrawMatchCanvas();
-        }
-
-        function onMatchPointerUp(e) {
-            if (!isDrawingMatch || !startMatchNode) return;
-            isDrawingMatch = false;
-
-            const wrapperRect = document.getElementById('match-game-wrapper').getBoundingClientRect();
-            const pointer = getPointerPos(e.changedTouches ? { touches: e.changedTouches } : e);
-            const dropX = pointer.x - wrapperRect.left;
-            const dropY = pointer.y - wrapperRect.top;
-
-            const targetSide = startMatchNode.side === 'left' ? 'right' : 'left';
-            const targetNodes = document.querySelectorAll(targetSide === 'left' ? '.match-node-left' : '.match-node-right');
-            
-            let matchedTarget = null;
-            targetNodes.forEach(node => {
-                const nodeRect = node.getBoundingClientRect();
-                const nX = targetSide === 'left' 
-                    ? (nodeRect.right - wrapperRect.left) 
-                    : (nodeRect.left - wrapperRect.left);
-                const nY = (nodeRect.top + nodeRect.height / 2) - wrapperRect.top;
-
-                const dist = Math.hypot(nX - dropX, nY - dropY);
-                if (dist < 80) {
-                    const itemId = node.getAttribute('data-id');
-                    const itemObj = matchRoundItems.find(i => i.id === itemId);
-                    matchedTarget = { item: itemObj, element: node, x: nX, y: nY };
-                }
-            });
-
-            if (matchedTarget) {
-                if (startMatchNode.item.id === matchedTarget.item.id) {
-                    completedMatches.push({
-                        itemId: startMatchNode.item.id,
-                        x1: startMatchNode.x,
-                        y1: startMatchNode.y,
-                        x2: matchedTarget.x,
-                        y2: matchedTarget.y
-                    });
-
-                    const leftElem = document.getElementById(`en-node-${startMatchNode.item.id}`);
-                    const rightElem = document.getElementById(`fr-node-${startMatchNode.item.id}`);
-
-                    if (leftElem) {
-                        leftElem.className = "relative w-full p-2.5 md:p-3 bg-green-100 border-2 border-green-400 text-green-800 font-bold rounded-xl text-xs md:text-sm opacity-90 select-none shadow-sm flex items-center justify-between";
-                    }
-                    if (rightElem) {
-                        rightElem.className = "relative w-full p-2.5 bg-green-100 border-2 border-green-400 text-green-800 font-bold rounded-xl text-xs md:text-sm opacity-90 select-none shadow-sm flex items-center gap-2 md:gap-3";
-                    }
-
-                    matchScoreCount++;
-                    document.getElementById('match-score').textContent = matchScoreCount;
-
-                    document.getElementById('match-feedback').textContent = "✨ Super trait ! Bonne association ! 🎉";
-                    document.getElementById('match-feedback').className = "h-8 font-bold text-base text-green-600 animate-pulse";
-                    triggerConfetti();
-
-                    if (matchScoreCount === matchRoundItems.length) {
-                        document.getElementById('match-feedback').textContent = "🏆 Bravo ! Tu as relié tous les mots avec succès ! 🎉";
-                        document.getElementById('match-feedback').className = "h-8 font-bold text-lg text-purple-700 animate-bounce";
-                        triggerConfetti();
-                    }
-                } else {
-                    tempErrorLine = {
-                        x1: startMatchNode.x,
-                        y1: startMatchNode.y,
-                        x2: matchedTarget.x,
-                        y2: matchedTarget.y
-                    };
-                    document.getElementById('match-feedback').textContent = "Oups ! Ce n'est pas le bon mot. Réessaie le crayon ! 🌸";
-                    document.getElementById('match-feedback').className = "h-8 font-bold text-base text-pink-600";
-
-                    setTimeout(() => {
-                        tempErrorLine = null;
-                        redrawMatchCanvas();
-                    }, 800);
-                }
-            } else {
-                document.getElementById('match-feedback').textContent = "Trace ton trait jusqu'à une carte de l'autre côté ! ✏️";
-                document.getElementById('match-feedback').className = "h-8 font-bold text-base text-indigo-500";
-            }
-
-            startMatchNode = null;
-            redrawMatchCanvas();
-        }
-
-        function redrawMatchCanvas() {
-            const canvas = document.getElementById('match-canvas');
-            if (!canvas) return;
-            const ctx = canvas.getContext('2d');
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            completedMatches.forEach(m => {
-                ctx.beginPath();
-                ctx.moveTo(m.x1, m.y1);
-                ctx.lineTo(m.x2, m.y2);
-                ctx.strokeStyle = '#10B981';
-                ctx.lineWidth = 5;
-                ctx.lineCap = 'round';
-                ctx.setLineDash([3, 3]);
-                ctx.stroke();
-                ctx.setLineDash([]);
-
-                ctx.fillStyle = '#059669';
-                ctx.beginPath(); ctx.arc(m.x1, m.y1, 6, 0, Math.PI * 2); ctx.fill();
-                ctx.beginPath(); ctx.arc(m.x2, m.y2, 6, 0, Math.PI * 2); ctx.fill();
-            });
-
-            if (isDrawingMatch && startMatchNode) {
-                ctx.beginPath();
-                ctx.moveTo(startMatchNode.x, startMatchNode.y);
-                ctx.lineTo(currentMousePos.x, currentMousePos.y);
-                ctx.strokeStyle = '#6366F1';
-                ctx.lineWidth = 4;
-                ctx.lineCap = 'round';
-                ctx.stroke();
-
-                ctx.fillStyle = '#4F46E5';
-                ctx.beginPath();
-                ctx.arc(currentMousePos.x, currentMousePos.y, 7, 0, Math.PI * 2);
-                ctx.fill();
-            }
-
-            if (tempErrorLine) {
-                ctx.beginPath();
-                ctx.moveTo(tempErrorLine.x1, tempErrorLine.y1);
-                ctx.lineTo(tempErrorLine.x2, tempErrorLine.y2);
-                ctx.strokeStyle = '#EF4444';
-                ctx.lineWidth = 5;
-                ctx.lineCap = 'round';
-                ctx.stroke();
-            }
-        }
-
-        // --- QUIZ LOGIC ---
-        function initQuiz() { nextQuizQuestion(); }
-
-        function nextQuizQuestion() {
-            document.getElementById('quiz-feedback').textContent = '';
-            currentQuizItem = ALL_VOCAB[Math.floor(Math.random() * ALL_VOCAB.length)];
-
-            const distractors = ALL_VOCAB.filter(i => i.id !== currentQuizItem.id).sort(() => 0.5 - Math.random()).slice(0, 2);
-            const options = [currentQuizItem, ...distractors].sort(() => 0.5 - Math.random());
-            const optionsContainer = document.getElementById('quiz-options');
-            optionsContainer.innerHTML = '';
-
-            options.forEach(opt => {
-                const btn = document.createElement('button');
-                btn.className = "w-full p-4 rounded-2xl border-2 border-slate-100 hover:border-purple-300 bg-slate-50 hover:bg-purple-50 font-semibold text-slate-700 text-left transition flex items-center justify-between text-sm md:text-base shadow-sm cursor-pointer";
-                btn.innerHTML = `<span>${opt.fr} (${opt.en})</span><span class="text-xl">${opt.emoji}</span>`;
-                btn.onclick = () => checkQuizAnswer(opt, btn);
-                optionsContainer.appendChild(btn);
-            });
-            setTimeout(playQuizTargetAudio, 400);
-        }
-
-        function playQuizTargetAudio() {
-            if (currentQuizItem) speakText(currentQuizItem.en, document.getElementById('quiz-audio-btn'));
-        }
-
-        function checkQuizAnswer(selected, buttonElem) {
-            const feedback = document.getElementById('quiz-feedback');
-            if (selected.id === currentQuizItem.id) {
-                feedback.textContent = "✨ Bravo ! C'est la bonne réponse ! 🎉";
-                feedback.className = "h-8 font-bold text-base text-green-600 animate-pulse";
-                buttonElem.classList.add('bg-green-100', 'border-green-400');
-                quizStars += 1;
-                document.getElementById('quiz-stars').textContent = quizStars;
-                triggerConfetti();
-            } else {
-                feedback.textContent = "Oups ! Réécoute bien et réessaye ! 🌸";
-                feedback.className = "h-8 font-bold text-base text-pink-600";
-                buttonElem.classList.add('bg-pink-100', 'border-pink-300');
-            }
-        }
-
-        // --- MEMORY GAME LOGIC ---
-        function initMemoryGame() { resetMemoryUI(); }
-
-        function resetMemoryUI() {
-            document.getElementById('memory-feedback').textContent = '';
-            document.getElementById('memory-options-container').classList.add('hidden');
-            document.getElementById('memory-timer-box').classList.add('hidden');
-            document.getElementById('memory-start-btn').classList.remove('hidden');
-            document.getElementById('memory-instruction').textContent = "Regarde et mémorise bien ces 6 cartes pendant 13 secondes...";
-            
-            memoryRoundCards = [...ALL_VOCAB].sort(() => 0.5 - Math.random()).slice(0, 6);
-            renderMemoryGrid(memoryRoundCards, false);
-        }
-
-        function renderMemoryGrid(cardsToDisplay, isOpaque = false) {
-            const grid = document.getElementById('memory-grid');
-            grid.innerHTML = '';
-            cardsToDisplay.forEach(item => {
-                const card = document.createElement('div');
-                card.className = `bg-teal-50 border-2 border-teal-200 rounded-2xl p-2 text-center flex flex-col items-center justify-center space-y-1 transition-all ${isOpaque ? 'opacity-40 filter grayscale' : 'shadow-sm'}`;
-                card.innerHTML = `
-                    <span class="text-2xl">${item.emoji}</span>
-                    <span class="text-[12px] font-bold text-teal-900 leading-tight">${item.en}</span>
-                `;
-                grid.appendChild(card);
-            });
-        }
-
-        function startMemoryRound() {
-            document.getElementById('memory-start-btn').classList.add('hidden');
-            document.getElementById('memory-timer-box').classList.remove('hidden');
-            document.getElementById('memory-feedback').textContent = '';
-
-            let timeLeft = memoryTotalTime;
-            document.getElementById('memory-timer-count').textContent = timeLeft + 's';
-            document.getElementById('memory-timer-bar').style.width = '100%';
-
-            renderMemoryGrid(memoryRoundCards, false);
-
-            if (memoryTimer) clearInterval(memoryTimer);
-
-            memoryTimer = setInterval(() => {
-                timeLeft--;
-                document.getElementById('memory-timer-count').textContent = timeLeft + 's';
-                document.getElementById('memory-timer-bar').style.width = ((timeLeft / memoryTotalTime) * 100) + '%';
-
-                if (timeLeft <= 0) {
-                    clearInterval(memoryTimer);
-                    hideCardAndAsk();
-                }
-            }, 1000);
-        }
-
-        function hideCardAndAsk() {
-            document.getElementById('memory-timer-box').classList.add('hidden');
-            document.getElementById('memory-instruction').textContent = "Hop ! Une carte a disparu. Laquelle manque ?";
-
-            const missingIdx = Math.floor(Math.random() * memoryRoundCards.length);
-            missingCard = memoryRoundCards[missingIdx];
-
-            const remainingCards = memoryRoundCards.filter((_, idx) => idx !== missingIdx).sort(() => 0.5 - Math.random());
-            renderMemoryGrid(remainingCards, true);
-
-            const remainingIds = new Set(remainingCards.map(c => c.id));
-            const candidateDistractors = ALL_VOCAB.filter(i => !remainingIds.has(i.id) && i.id !== missingCard.id);
-            const hiddenPool = candidateDistractors.sort(() => 0.5 - Math.random()).slice(0, 3);
-            
-            const choices = [missingCard, ...hiddenPool].sort(() => 0.5 - Math.random());
-
-            const choicesContainer = document.getElementById('memory-choices');
-            choicesContainer.innerHTML = '';
-
-            choices.forEach(opt => {
-                const btn = document.createElement('button');
-                btn.className = "p-3 bg-white hover:bg-teal-50 border-2 border-teal-200 rounded-2xl flex flex-col items-center justify-center space-y-1 transition transform active:scale-95 shadow-sm cursor-pointer";
-                btn.innerHTML = `
-                    <span class="text-2xl">${opt.emoji}</span>
-                    <span class="text-xs font-bold text-slate-700">${opt.en}</span>
-                `;
-                btn.onclick = () => checkMemoryAnswer(opt);
-                choicesContainer.appendChild(btn);
-            });
-
-            document.getElementById('memory-options-container').classList.remove('hidden');
-        }
-
-        function checkMemoryAnswer(selectedOpt) {
-            const feedback = document.getElementById('memory-feedback');
-            document.getElementById('memory-options-container').classList.add('hidden');
-
-            if (selectedOpt.id === missingCard.id) {
-                feedback.textContent = "🌟 Incroyable ! Tu as retrouvé la bonne carte ! 🎉";
-                feedback.className = "h-8 font-bold text-base text-teal-600 animate-pulse";
-                memoryScore += 20;
-                document.getElementById('memory-score').textContent = memoryScore;
-                triggerConfetti();
-            } else {
-                feedback.textContent = `Oups ! C'était "${missingCard.en}" (${missingCard.fr}). Réessaie ! 🌸`;
-                feedback.className = "h-8 font-bold text-base text-pink-600";
-            }
-
-            document.getElementById('memory-instruction').textContent = "Prête pour une nouvelle manche ?";
-            document.getElementById('memory-start-btn').textContent = "Manche suivante ➔";
-            document.getElementById('memory-start-btn').classList.remove('hidden');
-        }
-
-        // --- BUILD A SENTENCE LOGIC ---
-        function initSentences() {
-            currentSentenceIdx = Math.floor(Math.random() * SENTENCES_DATA.length);
-            renderSentenceQuestion();
-        }
-
-        function renderSentenceQuestion() {
-            const item = SENTENCES_DATA[currentSentenceIdx];
-            document.getElementById('sentence-feedback').textContent = '';
-            document.getElementById('sentence-prompt').textContent = item.q;
-            document.getElementById('sentence-badge-context').textContent = item.tag;
-            document.getElementById('sentence-context-desc').textContent = item.desc;
-            document.getElementById('sentence-translation').textContent = "Traduction : " + item.fr;
-
-            const optionsContainer = document.getElementById('sentence-options');
-            optionsContainer.innerHTML = '';
-
-            const shuffledOpts = [...item.options].sort(() => 0.5 - Math.random());
-            shuffledOpts.forEach(opt => {
-                const btn = document.createElement('button');
-                btn.className = "w-full p-4 rounded-2xl border-2 border-slate-100 hover:border-pink-300 bg-slate-50 hover:bg-pink-50 font-bold text-slate-700 text-center transition text-base shadow-sm cursor-pointer";
-                btn.textContent = opt;
-                btn.onclick = () => checkSentenceAnswer(opt, item.missing, btn);
-                optionsContainer.appendChild(btn);
-            });
-        }
-
-        function speakSentencePrompt() {
-            const item = SENTENCES_DATA[currentSentenceIdx];
-            const fullSentence = item.q.replace('___', item.missing);
-            speakText(fullSentence);
-        }
-
-        function checkSentenceAnswer(selected, correct, btnElem) {
-            const feedback = document.getElementById('sentence-feedback');
-            if (selected === correct) {
-                feedback.textContent = "✨ Super ! C'est la bonne réponse ! 🎉";
-                feedback.className = "h-8 font-bold text-base text-green-600 animate-pulse";
-                btnElem.classList.add('bg-green-100', 'border-green-400');
-                sentenceScore += 1;
-                document.getElementById('sentence-score').textContent = sentenceScore;
-                
-                speakSentencePrompt();
-                triggerConfetti();
-            } else {
-                feedback.textContent = `Oups ! Réessaie de compléter la phrase ! 🌸`;
-                feedback.className = "h-8 font-bold text-base text-pink-600";
-                btnElem.classList.add('bg-pink-100', 'border-pink-300');
-            }
-        }
-
-        function nextSentenceQuestion() {
-            currentSentenceIdx = (currentSentenceIdx + 1) % SENTENCES_DATA.length;
-            renderSentenceQuestion();
-        }
-
-        // ==========================================
-        // THREE.JS RUNNER ENGINE LOGIC IMPLEMENTATION
-        // ==========================================
         function initThreeRunner() {
             const container = document.getElementById('three-container');
             if (!container) return;
             container.innerHTML = '';
 
             threeScene = new THREE.Scene();
-            threeScene.background = new THREE.Color(0x1e1b4b); // Deep night sky / metro purple
-            threeScene.fog = new THREE.FogExp2(0x1e1b4b, 0.015);
+            threeScene.background = new THREE.Color(0x0f172a); 
+            threeScene.fog = new THREE.FogExp2(0x0f172a, 0.02);
 
-            threeCamera = new THREE.PerspectiveCamera(60, container.clientWidth / container.clientHeight, 0.1, 1000);
-            threeCamera.position.set(0, 3.5, 6);
-            threeCamera.lookAt(0, 1, -3);
+            threeCamera = new THREE.PerspectiveCamera(65, container.clientWidth / container.clientHeight, 0.1, 1000);
+            threeCamera.position.set(0, 3.2, 5.5);
+            threeCamera.lookAt(0, 1.2, -3);
 
             threeRenderer = new THREE.WebGLRenderer({ antialias: true });
             threeRenderer.setSize(container.clientWidth, container.clientHeight);
             threeRenderer.shadowMap.enabled = true;
             container.appendChild(threeRenderer.domElement);
 
-            // Lighting
-            const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
             threeScene.add(ambientLight);
 
-            const dirLight = new THREE.DirectionalLight(0xffd1dc, 0.8);
-            dirLight.position.set(5, 10, 5);
+            const dirLight = new THREE.DirectionalLight(0xfff5f5, 0.9);
+            dirLight.position.set(10, 20, 10);
             dirLight.castShadow = true;
             threeScene.add(dirLight);
 
-            // Create Environment Tracks
-            createTracksAndEnvironment();
+            const purpleLight = new THREE.PointLight(0xa855f7, 1, 50);
+            purpleLight.position.set(-5, 5, -10);
+            threeScene.add(purpleLight);
 
-            // Create Player Model (3D Group with Head, Body, Cap)
-            createPlayer3D();
-
-            // Keyboard and Touch Controls
+            createUrbanEnvironment();
+            createAdvancedPlayer3D();
             setupRunnerControls();
 
             window.addEventListener('resize', onWindowResize);
         }
 
-        function createTracksAndEnvironment() {
-            // Ground / Ballast
-            const groundGeo = new THREE.PlaneGeometry(30, 400);
-            const groundMat = new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.9 });
+        function createUrbanEnvironment() {
+            const groundGeo = new THREE.PlaneGeometry(25, 500);
+            const groundMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.8 });
             const ground = new THREE.Mesh(groundGeo, groundMat);
             ground.rotation.x = -Math.PI / 2;
-            ground.position.z = -150;
+            ground.position.z = -200;
             threeScene.add(ground);
 
-            // Rails for 3 lanes: X = -2.2, 0, 2.2
+            const wallGeo = new THREE.BoxGeometry(2, 15, 500);
+            const wallMat = new THREE.MeshStandardMaterial({ color: 0x334155, roughness: 0.9 });
+            
+            const leftWall = new THREE.Mesh(wallGeo, wallMat);
+            leftWall.position.set(-6, 7.5, -200);
+            threeScene.add(leftWall);
+
+            const rightWall = new THREE.Mesh(wallGeo, wallMat);
+            rightWall.position.set(6, 7.5, -200);
+            threeScene.add(rightWall);
+
             [-2.2, 0, 2.2].forEach(xLane => {
-                const railGeo = new THREE.BoxGeometry(0.15, 0.1, 400);
-                const railMat = new THREE.MeshStandardMaterial({ color: 0x94a3b8, metalness: 0.8 });
+                const railGeo = new THREE.BoxGeometry(0.12, 0.08, 500);
+                const railMat = new THREE.MeshStandardMaterial({ color: 0xccbdcc, metalness: 0.9, roughness: 0.2 });
+                
                 const rail1 = new THREE.Mesh(railGeo, railMat);
-                rail1.position.set(xLane - 0.4, 0.05, -150);
+                rail1.position.set(xLane - 0.35, 0.04, -200);
                 threeScene.add(rail1);
 
                 const rail2 = new THREE.Mesh(railGeo, railMat);
-                rail2.position.set(xLane + 0.4, 0.05, -150);
+                rail2.position.set(xLane + 0.35, 0.04, -200);
                 threeScene.add(rail2);
             });
         }
 
-        function createPlayer3D() {
+        function createAdvancedPlayer3D() {
             playerMesh = new THREE.Group();
 
-            // Body
-            const bodyGeo = new THREE.BoxGeometry(0.8, 1.2, 0.5);
-            const bodyMat = new THREE.MeshStandardMaterial({ color: 0x8b5cf6 });
+            const bodyGeo = new THREE.BoxGeometry(0.65, 0.9, 0.4);
+            const bodyMat = new THREE.MeshStandardMaterial({ color: 0xec4899 });
             const body = new THREE.Mesh(bodyGeo, bodyMat);
-            body.position.y = 0.6;
+            body.position.y = 0.55;
             playerMesh.add(body);
 
-            // Head
-            const headGeo = new THREE.SphereGeometry(0.4, 16, 16);
+            const headGeo = new THREE.SphereGeometry(0.32, 16, 16);
             const headMat = new THREE.MeshStandardMaterial({ color: 0xfbcfe8 });
             const head = new THREE.Mesh(headGeo, headMat);
-            head.position.y = 1.4;
+            head.position.y = 1.25;
             playerMesh.add(head);
 
-            // Cap
-            const capGeo = new THREE.BoxGeometry(0.5, 0.2, 0.6);
-            const capMat = new THREE.MeshStandardMaterial({ color: 0xec4899 });
+            const capGeo = new THREE.BoxGeometry(0.42, 0.15, 0.5);
+            const capMat = new THREE.MeshStandardMaterial({ color: 0x8b5cf6 });
             const cap = new THREE.Mesh(capGeo, capMat);
-            cap.position.set(0, 1.65, 0.1);
+            cap.position.set(0, 1.45, 0.08);
             playerMesh.add(cap);
 
             playerMesh.position.set(0, 0, 0);
@@ -1307,7 +685,7 @@
         function triggerJump() {
             if (!isJumping && !isSliding) {
                 isJumping = true;
-                playerVelocityY = 0.22;
+                playerVelocityY = 0.24;
                 playBeepSound(600, 0.1);
             }
         }
@@ -1315,8 +693,8 @@
         function triggerSlide() {
             if (!isJumping && !isSliding) {
                 isSliding = true;
-                slideTimer = 40; // frames in slide posture
-                if (playerMesh) playerMesh.scale.set(1, 0.5, 1);
+                slideTimer = 45; 
+                if (playerMesh) playerMesh.scale.set(1, 0.45, 1);
                 playBeepSound(400, 0.1);
             }
         }
@@ -1352,36 +730,40 @@
         function spawnRunnerWave() {
             let lanes = [0, 1, 2].sort(() => 0.5 - Math.random());
             let correctLane = lanes[0];
-            let zPos = -120;
+            let zPos = -140;
 
-            // Spawn correct word barrier/sign
-            spawnBarrier(correctLane, zPos, runnerTarget.en, runnerTarget.emoji, true);
+            spawnDetailedBarrier(correctLane, zPos, runnerTarget.en, runnerTarget.emoji, true);
 
-            // Spawn wrong word barriers on other lanes
             let wrongPool = ALL_VOCAB.filter(w => w.en !== runnerTarget.en).sort(() => 0.5 - Math.random());
             for (let i = 1; i < 3; i++) {
-                spawnBarrier(lanes[i], zPos, wrongPool[i-1].en, wrongPool[i-1].emoji, false);
+                spawnDetailedBarrier(lanes[i], zPos, wrongPool[i-1].en, wrongPool[i-1].emoji, false);
             }
 
-            // Spawn coins
             let coinLane = Math.floor(Math.random() * 3);
-            for (let c = 0; c < 4; c++) {
-                spawnCoin(coinLane, zPos + 15 + (c * 5));
+            for (let c = 0; c < 5; c++) {
+                spawn3DCoin(coinLane, zPos + 20 + (c * 6));
             }
         }
 
-        function spawnBarrier(lane, z, text, emoji, isCorrect) {
+        function spawnDetailedBarrier(lane, z, text, emoji, isCorrect) {
             const lanesX = [-2.2, 0, 2.2];
             const group = new THREE.Group();
 
-            const barGeo = new THREE.BoxGeometry(1.6, 1.0, 0.3);
-            const barMat = new THREE.MeshStandardMaterial({
-                color: isCorrect ? 0xfbcfe8 : 0xcbd5e1,
-                roughness: 0.5
+            const boxGeo = new THREE.BoxGeometry(1.7, 1.2, 0.6);
+            const boxMat = new THREE.MeshStandardMaterial({
+                color: isCorrect ? 0xf472b6 : 0x64748b,
+                roughness: 0.4,
+                metalness: 0.3
             });
-            const mesh = new THREE.Mesh(barGeo, barMat);
-            mesh.position.y = 0.5;
+            const mesh = new THREE.Mesh(boxGeo, boxMat);
+            mesh.position.y = 0.6;
             group.add(mesh);
+
+            const panelGeo = new THREE.BoxGeometry(1.5, 0.4, 0.1);
+            const panelMat = new THREE.MeshBasicMaterial({ color: isCorrect ? 0xfdf2f8 : 0xf1f5f9 });
+            const panel = new THREE.Mesh(panelGeo, panelMat);
+            panel.position.set(0, 1.35, 0);
+            group.add(panel);
 
             group.position.set(lanesX[lane], 0, z);
             threeScene.add(group);
@@ -1396,13 +778,13 @@
             });
         }
 
-        function spawnCoin(lane, z) {
+        function spawn3DCoin(lane, z) {
             const lanesX = [-2.2, 0, 2.2];
-            const coinGeo = new THREE.CylinderGeometry(0.3, 0.3, 0.08, 16);
-            const coinMat = new THREE.MeshStandardMaterial({ color: 0xfbbf24, metalness: 0.9, roughness: 0.2 });
+            const coinGeo = new THREE.CylinderGeometry(0.35, 0.35, 0.1, 20);
+            const coinMat = new THREE.MeshStandardMaterial({ color: 0xfbbf24, metalness: 0.9, roughness: 0.1 });
             const coin = new THREE.Mesh(coinGeo, coinMat);
             coin.rotation.x = Math.PI / 2;
-            coin.position.set(lanesX[lane], 1.0, z);
+            coin.position.set(lanesX[lane], 1.2, z);
             threeScene.add(coin);
 
             runnerObjects.push({
@@ -1416,14 +798,12 @@
         function animateRunnerLoop() {
             if (!runnerActive) return;
 
-            // Smooth lateral player movement
             if (playerMesh) {
-                playerMesh.position.x += (targetLaneX - playerMesh.position.x) * 0.2;
+                playerMesh.position.x += (targetLaneX - playerMesh.position.x) * 0.25;
 
-                // Jump physics
                 if (isJumping) {
                     playerMesh.position.y += playerVelocityY;
-                    playerVelocityY -= 0.015; // gravity
+                    playerVelocityY -= 0.016;
                     if (playerMesh.position.y <= 0) {
                         playerMesh.position.y = 0;
                         isJumping = false;
@@ -1431,7 +811,6 @@
                     }
                 }
 
-                // Slide logic
                 if (isSliding) {
                     slideTimer--;
                     if (slideTimer <= 0) {
@@ -1440,54 +819,49 @@
                     }
                 }
 
-                // Running bobbing animation
                 if (!isJumping) {
-                    playerMesh.rotation.z = Math.sin(Date.now() * 0.02) * 0.05;
+                    playerMesh.rotation.z = Math.sin(Date.now() * 0.02) * 0.06;
                 }
             }
 
-            // Move objects toward player
             for (let i = runnerObjects.length - 1; i >= 0; i--) {
                 let obj = runnerObjects[i];
                 obj.z += runnerSpeed;
                 obj.mesh.position.z = obj.z;
 
                 if (obj.type === 'coin') {
-                    obj.mesh.rotation.y += 0.05;
+                    obj.mesh.rotation.y += 0.08;
                 }
 
-                // Collision detection with player (Player is around Z = 0)
-                if (Math.abs(obj.z) < 0.6 && obj.lane === runnerLane) {
+                if (Math.abs(obj.z) < 0.7 && obj.lane === runnerLane) {
                     if (obj.type === 'coin') {
                         runnerCoins += 1;
                         document.getElementById('runner-coins').textContent = runnerCoins;
                         threeScene.remove(obj.mesh);
                         runnerObjects.splice(i, 1);
-                        playBeepSound(700, 0.05);
+                        playBeepSound(750, 0.05);
                     } else if (obj.type === 'barrier') {
                         if (obj.isCorrect) {
-                            runnerScore += 15;
+                            runnerScore += 20;
                             document.getElementById('runner-score').textContent = runnerScore;
-                            document.getElementById('runner-feedback').textContent = `✨ BRAVO ! "${obj.text}" trouvé ! 🎉`;
+                            document.getElementById('runner-feedback').textContent = `✨ EXCELLENT ! "${obj.text}" attrapé ! 🎉`;
                             document.getElementById('runner-feedback').className = "h-6 font-bold text-sm text-green-500 animate-pulse";
                             speakText(obj.text);
                             triggerConfetti();
-                            playBeepSound(900, 0.15);
+                            playBeepSound(950, 0.15);
                         } else {
-                            document.getElementById('runner-feedback').textContent = `Oups ! C'était le mauvais mot ! 🌸`;
+                            document.getElementById('runner-feedback').textContent = `Oups ! Ce n'était pas le bon mot ! 🌸`;
                             document.getElementById('runner-feedback').className = "h-6 font-bold text-sm text-pink-500";
                             playBeepSound(200, 0.2);
                         }
 
-                        // Clean up current wave and spawn next target
                         runnerObjects.forEach(o => threeScene.remove(o.mesh));
                         runnerObjects = [];
-                        setTimeout(pickNewRunnerTarget, 800);
+                        setTimeout(pickNewRunnerTarget, 700);
                         break;
                     }
                 }
 
-                // Remove out of bounds objects
                 if (obj.z > 10) {
                     threeScene.remove(obj.mesh);
                     runnerObjects.splice(i, 1);
