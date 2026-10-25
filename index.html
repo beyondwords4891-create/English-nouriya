@@ -12,6 +12,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Canvas Confetti Library -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <!-- Three.js Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -150,7 +152,7 @@
                 <span>✍️ Phrases</span>
             </button>
             <button onclick="switchTab('runner')" id="tab-runner" class="tab-btn px-3 md:px-4 py-2.5 rounded-2xl font-bold text-xs md:text-sm transition bg-white/70 text-slate-600 hover:bg-pink-100 flex items-center gap-1.5 cursor-pointer">
-                <span>🏄‍♀️ Course aux Mots</span>
+                <span>🏄‍♀️ Course aux Mots 3D</span>
             </button>
         </div>
 
@@ -348,7 +350,7 @@
             </div>
         </section>
 
-        <!-- SECTION: SUBWAY SURFER 3D METRO RUNNER -->
+        <!-- SECTION: 3D THREE.JS SUBWAY RUNNER -->
         <section id="section-runner" class="tab-content hidden space-y-4">
             <div class="bg-white rounded-3xl p-4 md:p-6 shadow-xl border-2 border-purple-200 text-center space-y-4 max-w-2xl mx-auto relative overflow-hidden">
                 
@@ -368,19 +370,20 @@
                 </div>
 
                 <div id="runner-touch-area" class="relative w-full aspect-[4/3] max-h-[380px] bg-slate-900 rounded-2xl overflow-hidden shadow-inner border-4 border-purple-300 touch-none">
-                    <canvas id="runner-canvas" class="w-full h-full block"></canvas>
+                    <!-- Three.js Canvas Container -->
+                    <div id="three-container" class="w-full h-full absolute inset-0"></div>
 
-                    <div id="runner-start-overlay" class="absolute inset-0 bg-slate-900/80 backdrop-blur-sm flex flex-col items-center justify-center p-6 text-white space-y-4 z-20">
-                        <span class="text-5xl animate-bounce">👧🏽🧢</span>
-                        <h3 class="text-2xl font-bold font-title">Subway English Surfer 3D</h3>
-                        <p class="text-xs text-slate-300 max-w-xs">Glisse ton doigt sur les 3 rails de métro pour guider ta championne et briser les barrières des bons mots !</p>
+                    <div id="runner-start-overlay" class="absolute inset-0 bg-slate-900/85 backdrop-blur-sm flex flex-col items-center justify-center p-6 text-white space-y-4 z-20">
+                        <span class="text-5xl animate-bounce">🏄‍♀️✨</span>
+                        <h3 class="text-2xl font-bold font-title">Subway English Runner 3D</h3>
+                        <p class="text-xs text-slate-300 max-w-xs">Un véritable moteur 3D Three.js ! Glisse ton doigt ou utilise les flèches pour changer de voie, sauter et glisser sur les barrières.</p>
                         <button onclick="startRunnerGame()" ontouchend="startRunnerGame(); event.preventDefault();" class="bg-pink-500 hover:bg-pink-600 text-white font-bold py-3 px-8 rounded-2xl shadow-lg transition transform hover:scale-105 active:scale-95 cursor-pointer pointer-events-auto">
-                            Lancer la course ! 🚀
+                            Lancer la course 3D ! 🚀
                         </button>
                     </div>
                 </div>
 
-                <p class="text-xs text-slate-400 font-semibold">👆 Astuce tablette : Glisse ton doigt vers la gauche ou la droite sur l'écran pour bouger de rail.</p>
+                <p class="text-xs text-slate-400 font-semibold">👆 Commandes : Flèches Gauche/Droite (ou Swipe), Flèche Haut pour Sauter, Flèche Bas pour Glisser.</p>
 
                 <div id="runner-feedback" class="h-6 font-bold text-sm text-purple-600"></div>
             </div>
@@ -509,20 +512,26 @@
         let currentSentenceIdx = 0;
         let sentenceScore = 0;
 
-        // --- SUBWAY SURFER 3D METRO RUNNER STATE ---
-        let runnerCanvas, runnerCtx;
+        // ==========================================
+        // TRUE 3D THREE.JS SUBWAY RUNNER ENGINE
+        // ==========================================
+        let threeScene, threeCamera, threeRenderer;
         let runnerActive = false;
-        let runnerLane = 1; 
-        let runnerPlayerX = 1; 
+        let runnerLane = 1; // 0: Left (-2.2), 1: Center (0), 2: Right (2.2)
+        let targetLaneX = 0;
+        let playerMesh = null;
         let runnerScore = 0;
         let runnerCoins = 0;
         let runnerTarget = null;
-        let runnerItems = [];
-        let runnerCoinList = [];
-        let runnerRoadOffset = 0; 
-        let runnerSpeed = 2.0; 
+        let runnerObjects = []; // Barriers, trains, coins
+        let runnerSpeed = 0.35;
         let runnerMusicPlaying = false;
         let audioCtx = null;
+        let playerVelocityY = 0;
+        let isJumping = false;
+        let isSliding = false;
+        let slideTimer = 0;
+        let trackSegments = [];
 
         function showAlert(msg, icon = '✨') {
             const box = document.getElementById('custom-alert-box');
@@ -1147,13 +1156,113 @@
             renderSentenceQuestion();
         }
 
-        // --- SUBWAY SURFER 3D METRO RUNNER LOGIC ---
-        function initRunnerCanvas() {
-            runnerCanvas = document.getElementById('runner-canvas');
-            if (!runnerCanvas) return;
-            runnerCtx = runnerCanvas.getContext('2d');
-            runnerCanvas.width = 600;
-            runnerCanvas.height = 400;
+        // ==========================================
+        // THREE.JS RUNNER ENGINE LOGIC IMPLEMENTATION
+        // ==========================================
+        function initThreeRunner() {
+            const container = document.getElementById('three-container');
+            if (!container) return;
+            container.innerHTML = '';
+
+            threeScene = new THREE.Scene();
+            threeScene.background = new THREE.Color(0x1e1b4b); // Deep night sky / metro purple
+            threeScene.fog = new THREE.FogExp2(0x1e1b4b, 0.015);
+
+            threeCamera = new THREE.PerspectiveCamera(60, container.clientWidth / container.clientHeight, 0.1, 1000);
+            threeCamera.position.set(0, 3.5, 6);
+            threeCamera.lookAt(0, 1, -3);
+
+            threeRenderer = new THREE.WebGLRenderer({ antialias: true });
+            threeRenderer.setSize(container.clientWidth, container.clientHeight);
+            threeRenderer.shadowMap.enabled = true;
+            container.appendChild(threeRenderer.domElement);
+
+            // Lighting
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
+            threeScene.add(ambientLight);
+
+            const dirLight = new THREE.DirectionalLight(0xffd1dc, 0.8);
+            dirLight.position.set(5, 10, 5);
+            dirLight.castShadow = true;
+            threeScene.add(dirLight);
+
+            // Create Environment Tracks
+            createTracksAndEnvironment();
+
+            // Create Player Model (3D Group with Head, Body, Cap)
+            createPlayer3D();
+
+            // Keyboard and Touch Controls
+            setupRunnerControls();
+
+            window.addEventListener('resize', onWindowResize);
+        }
+
+        function createTracksAndEnvironment() {
+            // Ground / Ballast
+            const groundGeo = new THREE.PlaneGeometry(30, 400);
+            const groundMat = new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.9 });
+            const ground = new THREE.Mesh(groundGeo, groundMat);
+            ground.rotation.x = -Math.PI / 2;
+            ground.position.z = -150;
+            threeScene.add(ground);
+
+            // Rails for 3 lanes: X = -2.2, 0, 2.2
+            [-2.2, 0, 2.2].forEach(xLane => {
+                const railGeo = new THREE.BoxGeometry(0.15, 0.1, 400);
+                const railMat = new THREE.MeshStandardMaterial({ color: 0x94a3b8, metalness: 0.8 });
+                const rail1 = new THREE.Mesh(railGeo, railMat);
+                rail1.position.set(xLane - 0.4, 0.05, -150);
+                threeScene.add(rail1);
+
+                const rail2 = new THREE.Mesh(railGeo, railMat);
+                rail2.position.set(xLane + 0.4, 0.05, -150);
+                threeScene.add(rail2);
+            });
+        }
+
+        function createPlayer3D() {
+            playerMesh = new THREE.Group();
+
+            // Body
+            const bodyGeo = new THREE.BoxGeometry(0.8, 1.2, 0.5);
+            const bodyMat = new THREE.MeshStandardMaterial({ color: 0x8b5cf6 });
+            const body = new THREE.Mesh(bodyGeo, bodyMat);
+            body.position.y = 0.6;
+            playerMesh.add(body);
+
+            // Head
+            const headGeo = new THREE.SphereGeometry(0.4, 16, 16);
+            const headMat = new THREE.MeshStandardMaterial({ color: 0xfbcfe8 });
+            const head = new THREE.Mesh(headGeo, headMat);
+            head.position.y = 1.4;
+            playerMesh.add(head);
+
+            // Cap
+            const capGeo = new THREE.BoxGeometry(0.5, 0.2, 0.6);
+            const capMat = new THREE.MeshStandardMaterial({ color: 0xec4899 });
+            const cap = new THREE.Mesh(capGeo, capMat);
+            cap.position.set(0, 1.65, 0.1);
+            playerMesh.add(cap);
+
+            playerMesh.position.set(0, 0, 0);
+            threeScene.add(playerMesh);
+        }
+
+        function setupRunnerControls() {
+            window.addEventListener('keydown', (e) => {
+                if (!runnerActive) return;
+                if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') moveRunnerLeft();
+                if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') moveRunnerRight();
+                if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W' || e.key === ' ') {
+                    e.preventDefault();
+                    triggerJump();
+                }
+                if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') {
+                    e.preventDefault();
+                    triggerSlide();
+                }
+            });
 
             const touchArea = document.getElementById('runner-touch-area');
             let touchStartX = 0;
@@ -1169,291 +1278,232 @@
                 let diffX = e.changedTouches[0].clientX - touchStartX;
                 let diffY = e.changedTouches[0].clientY - touchStartY;
 
-                if (Math.abs(diffX) > 30) {
-                    if (diffX > 0) moveRunnerRight();
-                    else moveRunnerLeft();
-                } else if (Math.abs(diffY) < 20) {
-                    let rect = touchArea.getBoundingClientRect();
-                    let clickX = e.changedTouches[0].clientX - rect.left;
-                    if (clickX < rect.width / 2) moveRunnerLeft();
-                    else moveRunnerRight();
+                if (Math.abs(diffX) > Math.abs(diffY)) {
+                    if (diffX > 30) moveRunnerRight();
+                    else if (diffX < -30) moveRunnerLeft();
+                } else {
+                    if (diffY < -30) triggerJump();
+                    else if (diffY > 30) triggerSlide();
                 }
                 e.preventDefault();
             }, { passive: false });
         }
 
-        function startRunnerGame() {
-            if (runnerCanvas) {
-                const container = runnerCanvas.parentElement;
-                runnerCanvas.width = container && container.clientWidth ? container.clientWidth : 600;
-                runnerCanvas.height = 400;
+        function moveRunnerLeft() {
+            if (runnerLane > 0) runnerLane--;
+            updateTargetLaneX();
+        }
+
+        function moveRunnerRight() {
+            if (runnerLane < 2) runnerLane++;
+            updateTargetLaneX();
+        }
+
+        function updateTargetLaneX() {
+            const lanes = [-2.2, 0, 2.2];
+            targetLaneX = lanes[runnerLane];
+        }
+
+        function triggerJump() {
+            if (!isJumping && !isSliding) {
+                isJumping = true;
+                playerVelocityY = 0.22;
+                playBeepSound(600, 0.1);
             }
+        }
+
+        function triggerSlide() {
+            if (!isJumping && !isSliding) {
+                isSliding = true;
+                slideTimer = 40; // frames in slide posture
+                if (playerMesh) playerMesh.scale.set(1, 0.5, 1);
+                playBeepSound(400, 0.1);
+            }
+        }
+
+        function startRunnerGame() {
+            if (!threeScene) initThreeRunner();
 
             const overlay = document.getElementById('runner-start-overlay');
-            if (overlay) {
-                overlay.classList.add('hidden');
-            }
+            if (overlay) overlay.classList.add('hidden');
 
             runnerActive = true;
             runnerScore = 0;
             runnerCoins = 0;
             runnerLane = 1;
-            runnerPlayerX = 1; 
-            runnerItems = [];
-            runnerCoinList = [];
-            runnerRoadOffset = 0;
-            
+            updateTargetLaneX();
+            runnerObjects.forEach(obj => threeScene.remove(obj.mesh));
+            runnerObjects = [];
+
             document.getElementById('runner-score').textContent = runnerScore;
             document.getElementById('runner-coins').textContent = runnerCoins;
-            
+
             pickNewRunnerTarget();
-            requestAnimationFrame(updateRunnerLoop);
+            animateRunnerLoop();
         }
 
         function pickNewRunnerTarget() {
             runnerTarget = ALL_VOCAB[Math.floor(Math.random() * ALL_VOCAB.length)];
             document.getElementById('runner-target-word').textContent = `${runnerTarget.en} ${runnerTarget.emoji}`;
-            if (typeof speakText === 'function') speakText(runnerTarget.en);
+            speakText(runnerTarget.en);
             spawnRunnerWave();
         }
 
         function spawnRunnerWave() {
             let lanes = [0, 1, 2].sort(() => 0.5 - Math.random());
             let correctLane = lanes[0];
-            
-            runnerItems.push({
-                lane: correctLane,
-                z: 400,
-                text: runnerTarget.en,
-                emoji: runnerTarget.emoji,
-                isCorrect: true
-            });
+            let zPos = -120;
 
+            // Spawn correct word barrier/sign
+            spawnBarrier(correctLane, zPos, runnerTarget.en, runnerTarget.emoji, true);
+
+            // Spawn wrong word barriers on other lanes
             let wrongPool = ALL_VOCAB.filter(w => w.en !== runnerTarget.en).sort(() => 0.5 - Math.random());
             for (let i = 1; i < 3; i++) {
-                runnerItems.push({
-                    lane: lanes[i],
-                    z: 400,
-                    text: wrongPool[i-1].en,
-                    emoji: wrongPool[i-1].emoji,
-                    isCorrect: false
-                });
+                spawnBarrier(lanes[i], zPos, wrongPool[i-1].en, wrongPool[i-1].emoji, false);
             }
 
+            // Spawn coins
             let coinLane = Math.floor(Math.random() * 3);
-            for (let c = 0; c < 3; c++) {
-                runnerCoinList.push({ lane: coinLane, z: 400 + (c * 60) });
+            for (let c = 0; c < 4; c++) {
+                spawnCoin(coinLane, zPos + 15 + (c * 5));
             }
         }
 
-        function moveRunnerLeft() { if (runnerLane > 0) runnerLane--; }
-        function moveRunnerRight() { if (runnerLane < 2) runnerLane++; }
+        function spawnBarrier(lane, z, text, emoji, isCorrect) {
+            const lanesX = [-2.2, 0, 2.2];
+            const group = new THREE.Group();
 
-        function updateRunnerLoop() {
-            if (!runnerActive || !runnerCtx) return;
+            const barGeo = new THREE.BoxGeometry(1.6, 1.0, 0.3);
+            const barMat = new THREE.MeshStandardMaterial({
+                color: isCorrect ? 0xfbcfe8 : 0xcbd5e1,
+                roughness: 0.5
+            });
+            const mesh = new THREE.Mesh(barGeo, barMat);
+            mesh.position.y = 0.5;
+            group.add(mesh);
 
-            const w = runnerCanvas.width;
-            const h = runnerCanvas.height;
+            group.position.set(lanesX[lane], 0, z);
+            threeScene.add(group);
 
-            runnerPlayerX += (runnerLane - runnerPlayerX) * 0.2;
+            runnerObjects.push({
+                mesh: group,
+                lane: lane,
+                z: z,
+                isCorrect: isCorrect,
+                text: text,
+                type: 'barrier'
+            });
+        }
 
-            // --- 1. DÉCOR 3D SUBWAY SURFERS (Ciel urbain, Murs de tunnel, Voies) ---
-            let skyGrad = runnerCtx.createLinearGradient(0, 0, 0, h * 0.45);
-            skyGrad.addColorStop(0, '#f43f5e'); 
-            skyGrad.addColorStop(1, '#a855f7');
-            runnerCtx.fillStyle = skyGrad;
-            runnerCtx.fillRect(0, 0, w, h);
+        function spawnCoin(lane, z) {
+            const lanesX = [-2.2, 0, 2.2];
+            const coinGeo = new THREE.CylinderGeometry(0.3, 0.3, 0.08, 16);
+            const coinMat = new THREE.MeshStandardMaterial({ color: 0xfbbf24, metalness: 0.9, roughness: 0.2 });
+            const coin = new THREE.Mesh(coinGeo, coinMat);
+            coin.rotation.x = Math.PI / 2;
+            coin.position.set(lanesX[lane], 1.0, z);
+            threeScene.add(coin);
 
-            let horizonY = h * 0.45;
-            let centerX = w / 2;
+            runnerObjects.push({
+                mesh: coin,
+                lane: lane,
+                z: z,
+                type: 'coin'
+            });
+        }
 
-            let roadTopWidth = w * 0.15;
-            let roadBottomWidth = w * 0.90;
+        function animateRunnerLoop() {
+            if (!runnerActive) return;
 
-            // Murs de tunnel latéraux avec texture briques/relief
-            runnerCtx.fillStyle = '#334155'; 
-            runnerCtx.beginPath();
-            runnerCtx.moveTo(0, h);
-            runnerCtx.lineTo(centerX - roadBottomWidth / 2, h);
-            runnerCtx.lineTo(centerX - roadTopWidth / 2, horizonY);
-            runnerCtx.lineTo(0, horizonY);
-            runnerCtx.fill();
+            // Smooth lateral player movement
+            if (playerMesh) {
+                playerMesh.position.x += (targetLaneX - playerMesh.position.x) * 0.2;
 
-            runnerCtx.fillStyle = '#1e293b';
-            runnerCtx.beginPath();
-            runnerCtx.moveTo(w, h);
-            runnerCtx.lineTo(centerX + roadBottomWidth / 2, h);
-            runnerCtx.lineTo(centerX + roadTopWidth / 2, horizonY);
-            runnerCtx.lineTo(w, horizonY);
-            runnerCtx.fill();
-
-            // Sol principal
-            runnerCtx.fillStyle = '#0f172a';
-            runnerCtx.beginPath();
-            runnerCtx.moveTo(centerX - roadBottomWidth / 2, h);
-            runnerCtx.lineTo(centerX + roadBottomWidth / 2, h);
-            runnerCtx.lineTo(centerX + roadTopWidth / 2, horizonY);
-            runnerCtx.lineTo(centerX - roadTopWidth / 2, horizonY);
-            runnerCtx.fill();
-
-            function project(lane, z) {
-                let scale = 200 / (200 + z);
-                let roadWidthAtZ = roadTopWidth + (roadBottomWidth - roadTopWidth) * (1 - (z / 400));
-                let laneWidthAtZ = roadWidthAtZ / 3;
-                let leftEdge = centerX - roadWidthAtZ / 2;
-                
-                let x = leftEdge + laneWidthAtZ * (lane + 0.5);
-                let y = horizonY + (h - horizonY) * (1 - (z / 400));
-                return { x, y, scale };
-            }
-
-            // --- 2. DESSIN DES 3 RAILS DE MÉTRO EN PERSPECTIVE ---
-            runnerRoadOffset = (runnerRoadOffset + runnerSpeed) % 40;
-            
-            for (let l = 0; l < 3; l++) {
-                for (let z = runnerRoadOffset; z < 400; z += 35) {
-                    let p1 = project(l - 0.25, z);
-                    let p2 = project(l + 0.25, z);
-                    
-                    runnerCtx.fillStyle = '#78350f';
-                    runnerCtx.beginPath();
-                    runnerCtx.rect(p1.x - 2, p1.y, (p2.x - p1.x) + 4, Math.max(2, 6 * p1.scale));
-                    runnerCtx.fill();
+                // Jump physics
+                if (isJumping) {
+                    playerMesh.position.y += playerVelocityY;
+                    playerVelocityY -= 0.015; // gravity
+                    if (playerMesh.position.y <= 0) {
+                        playerMesh.position.y = 0;
+                        isJumping = false;
+                        playerVelocityY = 0;
+                    }
                 }
 
-                let pTopL = project(l - 0.2, 400);
-                let pBotL = project(l - 0.2, 0);
-                let pTopR = project(l + 0.2, 400);
-                let pBotR = project(l + 0.2, 0);
+                // Slide logic
+                if (isSliding) {
+                    slideTimer--;
+                    if (slideTimer <= 0) {
+                        isSliding = false;
+                        playerMesh.scale.set(1, 1, 1);
+                    }
+                }
 
-                runnerCtx.strokeStyle = '#94a3b8';
-                runnerCtx.lineWidth = Math.max(1, 3 * pBotL.scale);
-                runnerCtx.beginPath();
-                runnerCtx.moveTo(pTopL.x, pTopL.y); runnerCtx.lineTo(pBotL.x, pBotL.y);
-                runnerCtx.moveTo(pTopR.x, pTopR.y); runnerCtx.lineTo(pBotR.x, pBotR.y);
-                runnerCtx.stroke();
+                // Running bobbing animation
+                if (!isJumping) {
+                    playerMesh.rotation.z = Math.sin(Date.now() * 0.02) * 0.05;
+                }
             }
 
-            // --- 3. PIÈCES DORÉES ---
-            for (let i = runnerCoinList.length - 1; i >= 0; i--) {
-                let coin = runnerCoinList[i];
-                coin.z -= runnerSpeed;
+            // Move objects toward player
+            for (let i = runnerObjects.length - 1; i >= 0; i--) {
+                let obj = runnerObjects[i];
+                obj.z += runnerSpeed;
+                obj.mesh.position.z = obj.z;
 
-                let p = project(coin.lane, coin.z);
-                if (coin.z > 0 && coin.z < 400) {
-                    let radius = Math.max(4, 14 * p.scale);
-                    runnerCtx.fillStyle = '#fbbf24';
-                    runnerCtx.beginPath();
-                    runnerCtx.arc(p.x, p.y - 15 * p.scale, radius, 0, Math.PI * 2);
-                    runnerCtx.fill();
-                    runnerCtx.strokeStyle = '#d97706';
-                    runnerCtx.lineWidth = 2;
-                    runnerCtx.stroke();
-                    runnerCtx.fillStyle = '#fff';
-                    runnerCtx.font = `${Math.max(8, Math.floor(12 * p.scale))}px sans-serif`;
-                    runnerCtx.textAlign = 'center';
-                    runnerCtx.fillText('★', p.x, p.y - 15 * p.scale + radius * 0.4);
+                if (obj.type === 'coin') {
+                    obj.mesh.rotation.y += 0.05;
+                }
 
-                    if (coin.z < 20 && Math.abs(coin.lane - runnerPlayerX) < 0.4) {
+                // Collision detection with player (Player is around Z = 0)
+                if (Math.abs(obj.z) < 0.6 && obj.lane === runnerLane) {
+                    if (obj.type === 'coin') {
                         runnerCoins += 1;
                         document.getElementById('runner-coins').textContent = runnerCoins;
-                        runnerCoinList.splice(i, 1);
-                        playBeepSound(600, 0.05);
-                    }
-                } else if (coin.z <= 0) {
-                    runnerCoinList.splice(i, 1);
-                }
-            }
-
-            // --- 4. BARRIÈRES ET PANNEAUX DE MÉTRO 3D (STYLE SUBWAY SURFERS) ---
-            for (let i = runnerItems.length - 1; i >= 0; i--) {
-                let item = runnerItems[i];
-                item.z -= runnerSpeed;
-
-                let p = project(item.lane, item.z);
-                if (item.z > 0 && item.z < 400) {
-                    let boxWidth = Math.max(80, 180 * p.scale);
-                    let boxHeight = Math.max(45, 90 * p.scale);
-
-                    // Poteaux de soutien de la barrière 3D
-                    runnerCtx.fillStyle = '#475569';
-                    runnerCtx.fillRect(p.x - boxWidth / 2 + 5, p.y - boxHeight / 2, 8, boxHeight);
-                    runnerCtx.fillRect(p.x + boxWidth / 2 - 13, p.y - boxHeight / 2, 8, boxHeight);
-
-                    // Panneau principal de la barrière
-                    runnerCtx.fillStyle = item.isCorrect ? '#fbcfe8' : '#e2e8f0';
-                    runnerCtx.strokeStyle = item.isCorrect ? '#ec4899' : '#64748b';
-                    runnerCtx.lineWidth = Math.max(3, 5 * p.scale);
-                    
-                    runnerCtx.beginPath();
-                    runnerCtx.roundRect(p.x - boxWidth / 2, p.y - boxHeight, boxWidth, boxHeight, 12);
-                    runnerCtx.fill();
-                    runnerCtx.stroke();
-
-                    // Texte du mot anglais sur la barrière 3D
-                    let fontSize = Math.max(11, Math.floor(17 * p.scale));
-                    runnerCtx.fillStyle = item.isCorrect ? '#831843' : '#334155';
-                    runnerCtx.font = `bold ${fontSize}px Fredoka, sans-serif`;
-                    runnerCtx.textAlign = 'center';
-                    runnerCtx.fillText(`${item.emoji} ${item.text}`, p.x, p.y - boxHeight / 2 + fontSize * 0.35);
-
-                    // Collision joueur / barrière
-                    if (item.z < 25 && item.z > -10 && Math.abs(item.lane - runnerPlayerX) < 0.45) {
-                        if (item.isCorrect) {
-                            runnerScore += 10;
+                        threeScene.remove(obj.mesh);
+                        runnerObjects.splice(i, 1);
+                        playBeepSound(700, 0.05);
+                    } else if (obj.type === 'barrier') {
+                        if (obj.isCorrect) {
+                            runnerScore += 15;
                             document.getElementById('runner-score').textContent = runnerScore;
-                            document.getElementById('runner-feedback').textContent = "✨ BRAVO ! C'est le bon mot ! 🎉";
+                            document.getElementById('runner-feedback').textContent = `✨ BRAVO ! "${obj.text}" trouvé ! 🎉`;
                             document.getElementById('runner-feedback').className = "h-6 font-bold text-sm text-green-500 animate-pulse";
-                            if (typeof speakText === 'function') speakText(item.text);
-                            if (typeof triggerConfetti === 'function') triggerConfetti();
-                            playBeepSound(800, 0.15);
+                            speakText(obj.text);
+                            triggerConfetti();
+                            playBeepSound(900, 0.15);
                         } else {
-                            runnerItems = [];
-                            document.getElementById('runner-feedback').textContent = "Oups ! Mauvais mot ! 🌸";
+                            document.getElementById('runner-feedback').textContent = `Oups ! C'était le mauvais mot ! 🌸`;
                             document.getElementById('runner-feedback').className = "h-6 font-bold text-sm text-pink-500";
                             playBeepSound(200, 0.2);
                         }
-                        runnerItems = [];
-                        setTimeout(pickNewRunnerTarget, 1000);
+
+                        // Clean up current wave and spawn next target
+                        runnerObjects.forEach(o => threeScene.remove(o.mesh));
+                        runnerObjects = [];
+                        setTimeout(pickNewRunnerTarget, 800);
                         break;
                     }
-                } else if (item.z <= 0) {
-                    runnerItems.splice(i, 1);
+                }
+
+                // Remove out of bounds objects
+                if (obj.z > 10) {
+                    threeScene.remove(obj.mesh);
+                    runnerObjects.splice(i, 1);
                 }
             }
 
-            // --- 5. L'AVATAR DE LA PETITE FILLE (VUE DE DOS AVEC CASQUETTE ET ROBE) ---
-            let playerProj = project(runnerPlayerX, 0);
-            let pX = playerProj.x;
-            let pY = h - 65;
+            threeRenderer.render(threeScene, threeCamera);
+            requestAnimationFrame(animateRunnerLoop);
+        }
 
-            // Ombre au sol
-            runnerCtx.fillStyle = 'rgba(0, 0, 0, 0.4)';
-            runnerCtx.beginPath();
-            runnerCtx.ellipse(pX, pY + 30, 22, 8, 0, 0, Math.PI * 2);
-            runnerCtx.fill();
-
-            // Rebond de course fluide
-            let bounce = Math.sin(Date.now() * 0.015) * 4;
-
-            // Tête & Casquette
-            runnerCtx.fillStyle = '#fbcfe8';
-            runnerCtx.beginPath(); runnerCtx.arc(pX, pY - 20 + bounce, 12, 0, Math.PI * 2); runnerCtx.fill();
-            runnerCtx.fillStyle = '#ec4899'; 
-            runnerCtx.beginPath(); runnerCtx.arc(pX, pY - 24 + bounce, 10, Math.PI, Math.PI * 2); runnerCtx.fill();
-
-            // Robe / Corps coloré
-            runnerCtx.fillStyle = '#8b5cf6'; 
-            runnerCtx.beginPath(); runnerCtx.roundRect(pX - 10, pY - 8 + bounce, 20, 18, 4); runnerCtx.fill();
-            runnerCtx.fillStyle = '#ec4899'; 
-            runnerCtx.beginPath();
-            runnerCtx.moveTo(pX - 12, pY + 10 + bounce);
-            runnerCtx.lineTo(pX + 12, pY + 10 + bounce);
-            runnerCtx.lineTo(pX + 16, pY + 22 + bounce);
-            runnerCtx.lineTo(pX - 16, pY + 22 + bounce);
-            runnerCtx.fill();
-
-            requestAnimationFrame(updateRunnerLoop);
+        function onWindowResize() {
+            const container = document.getElementById('three-container');
+            if (!container || !threeCamera || !threeRenderer) return;
+            threeCamera.aspect = container.clientWidth / container.clientHeight;
+            threeCamera.updateProjectionMatrix();
+            threeRenderer.setSize(container.clientWidth, container.clientHeight);
         }
 
         function toggleRunnerMusic() {
@@ -1501,7 +1551,7 @@
                 initSentences();
             } else if (tabName === 'runner') {
                 activeTabBtn.classList.add('bg-purple-500', 'text-white', 'shadow-md');
-                setTimeout(initRunnerCanvas, 50);
+                setTimeout(initThreeRunner, 100);
             } else {
                 activeTabBtn.classList.add('bg-purple-500', 'text-white', 'shadow-md');
             }
