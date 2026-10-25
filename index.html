@@ -348,7 +348,7 @@
             </div>
         </section>
 
-        <!-- SECTION: SUBWAY SURFER WORD RUNNER -->
+        <!-- SECTION: SUBWAY SURFER 3D METRO RUNNER -->
         <section id="section-runner" class="tab-content hidden space-y-4">
             <div class="bg-white rounded-3xl p-4 md:p-6 shadow-xl border-2 border-purple-200 text-center space-y-4 max-w-2xl mx-auto relative overflow-hidden">
                 
@@ -371,16 +371,16 @@
                     <canvas id="runner-canvas" class="w-full h-full block"></canvas>
 
                     <div id="runner-start-overlay" class="absolute inset-0 bg-slate-900/80 backdrop-blur-sm flex flex-col items-center justify-center p-6 text-white space-y-4 z-20">
-                        <span class="text-5xl animate-bounce">🏄‍♀️</span>
-                        <h3 class="text-2xl font-bold font-title">Word Surfer 3D</h3>
-                        <p class="text-xs text-slate-300 max-w-xs">Glisse ton doigt à gauche/droite ou touche l'écran pour changer de voie tranquillement dans la rue !</p>
+                        <span class="text-5xl animate-bounce">👧🏽🧢</span>
+                        <h3 class="text-2xl font-bold font-title">Subway English Surfer 3D</h3>
+                        <p class="text-xs text-slate-300 max-w-xs">Glisse ton doigt sur les 3 rails de métro pour guider ta championne et briser les barrières des bons mots !</p>
                         <button onclick="startRunnerGame()" ontouchend="startRunnerGame(); event.preventDefault();" class="bg-pink-500 hover:bg-pink-600 text-white font-bold py-3 px-8 rounded-2xl shadow-lg transition transform hover:scale-105 active:scale-95 cursor-pointer pointer-events-auto">
                             Lancer la course ! 🚀
                         </button>
                     </div>
                 </div>
 
-                <p class="text-xs text-slate-400 font-semibold">👆 Astuce tablette : Glisse ton doigt vers la gauche ou la droite sur l'écran pour bouger.</p>
+                <p class="text-xs text-slate-400 font-semibold">👆 Astuce tablette : Glisse ton doigt vers la gauche ou la droite sur l'écran pour bouger de rail.</p>
 
                 <div id="runner-feedback" class="h-6 font-bold text-sm text-purple-600"></div>
             </div>
@@ -476,7 +476,6 @@
         let memoryTimer = null;
         let memoryTotalTime = 13;
 
-        // Matching Game Canvas & Drawing State
         let matchRoundItems = [];
         let completedMatches = [];
         let matchScoreCount = 0;
@@ -487,7 +486,6 @@
         let currentMousePos = { x: 0, y: 0 };
         let tempErrorLine = null;
 
-        // Build a Sentence Logic State
         const SENTENCES_DATA = [
             { tag: "🏫 À la récréation", desc: "Se présenter à un autre enfant", q: "Hello! My name ___ Nouriya.", missing: "is", options: ["is", "am", "are"], fr: "Bonjour ! Je m'appelle Nouriya." },
             { tag: "🏫 À la récréation", desc: "Exprimer son humeur", q: "I ___ happy to meet you!", missing: "am", options: ["am", "is", "can"], fr: "Je suis contente de te rencontrer !" },
@@ -511,7 +509,7 @@
         let currentSentenceIdx = 0;
         let sentenceScore = 0;
 
-        // --- SUBWAY SURFER 3D IMMERSIVE RUNNER STATE (Vitesse ralentie à 2.0) ---
+        // --- SUBWAY SURFER 3D METRO RUNNER STATE ---
         let runnerCanvas, runnerCtx;
         let runnerActive = false;
         let runnerLane = 1; // 0: Gauche, 1: Centre, 2: Droite
@@ -522,7 +520,7 @@
         let runnerItems = [];
         let runnerCoinList = [];
         let runnerRoadOffset = 0; 
-        let runnerSpeed = 2.0; // Vitesse ralentie pour bien lire
+        let runnerSpeed = 2.0; 
         let runnerMusicPlaying = false;
         let audioCtx = null;
 
@@ -1149,7 +1147,7 @@
             renderSentenceQuestion();
         }
 
-        // --- SUBWAY SURFER 3D IMMERSIVE RUNNER LOGIC ---
+        // --- SUBWAY SURFER 3D METRO RUNNER LOGIC ---
         function initRunnerCanvas() {
             runnerCanvas = document.getElementById('runner-canvas');
             if (!runnerCanvas) return;
@@ -1219,7 +1217,7 @@
             spawnRunnerWave();
         }
 
-    function spawnRunnerWave() {
+        function spawnRunnerWave() {
             let lanes = [0, 1, 2].sort(() => 0.5 - Math.random());
             let correctLane = lanes[0];
             
@@ -1259,10 +1257,10 @@
 
             runnerPlayerX += (runnerLane - runnerPlayerX) * 0.2;
 
-            // --- 1. DÉCOR 3D DE LA RUE ---
+            // --- 1. DÉCOR 3D SUBWAY SURFERS (Ciel, Murs de tunnel, Voies) ---
             let skyGrad = runnerCtx.createLinearGradient(0, 0, 0, h * 0.45);
-            skyGrad.addColorStop(0, '#38bdf8');
-            skyGrad.addColorStop(1, '#e879f9');
+            skyGrad.addColorStop(0, '#f43f5e'); 
+            skyGrad.addColorStop(1, '#a855f7');
             runnerCtx.fillStyle = skyGrad;
             runnerCtx.fillRect(0, 0, w, h);
 
@@ -1270,10 +1268,10 @@
             let centerX = w / 2;
 
             let roadTopWidth = w * 0.15;
-            let roadBottomWidth = w * 0.85;
+            let roadBottomWidth = w * 0.90;
 
-            // Trottoirs gauche/droite
-            runnerCtx.fillStyle = '#94a3b8';
+            // Murs latéraux
+            runnerCtx.fillStyle = '#334155'; 
             runnerCtx.beginPath();
             runnerCtx.moveTo(0, h);
             runnerCtx.lineTo(centerX - roadBottomWidth / 2, h);
@@ -1281,7 +1279,7 @@
             runnerCtx.lineTo(0, horizonY);
             runnerCtx.fill();
 
-            runnerCtx.fillStyle = '#64748b';
+            runnerCtx.fillStyle = '#1e293b';
             runnerCtx.beginPath();
             runnerCtx.moveTo(w, h);
             runnerCtx.lineTo(centerX + roadBottomWidth / 2, h);
@@ -1289,32 +1287,14 @@
             runnerCtx.lineTo(w, horizonY);
             runnerCtx.fill();
 
-            // Route principale
-            runnerCtx.fillStyle = '#1e293b';
+            // Sol principal
+            runnerCtx.fillStyle = '#0f172a';
             runnerCtx.beginPath();
             runnerCtx.moveTo(centerX - roadBottomWidth / 2, h);
             runnerCtx.lineTo(centerX + roadBottomWidth / 2, h);
             runnerCtx.lineTo(centerX + roadTopWidth / 2, horizonY);
             runnerCtx.lineTo(centerX - roadTopWidth / 2, horizonY);
             runnerCtx.fill();
-
-            // Lignes de séparation de voies (vitesse ralentie à runnerSpeed)
-            runnerRoadOffset = (runnerRoadOffset + runnerSpeed) % 40;
-            runnerCtx.strokeStyle = '#cbd5e1';
-            runnerCtx.lineWidth = 3;
-            for (let l = 1; l < 3; l++) {
-                let bottomX = centerX - roadBottomWidth / 2 + (roadBottomWidth / 3) * l;
-                let topX = centerX - roadTopWidth / 2 + (roadTopWidth / 3) * l;
-                
-                runnerCtx.beginPath();
-                for (let y = horizonY + runnerRoadOffset; y < h; y += 40) {
-                    let progress = (y - horizonY) / (h - horizonY);
-                    let currX = topX + (bottomX - topX) * progress;
-                    runnerCtx.moveTo(currX, y);
-                    runnerCtx.lineTo(currX, Math.min(h, y + 20));
-                }
-                runnerCtx.stroke();
-            }
 
             function project(lane, z) {
                 let scale = 200 / (200 + z);
@@ -1327,7 +1307,34 @@
                 return { x, y, scale };
             }
 
-            // --- 2. PIÈCES ---
+            // --- 2. DESSIN DES 3 RAILS DE MÉTRO EN PERSPECTIVE ---
+            runnerRoadOffset = (runnerRoadOffset + runnerSpeed) % 40;
+            
+            for (let l = 0; l < 3; l++) {
+                for (let z = runnerRoadOffset; z < 400; z += 35) {
+                    let p1 = project(l - 0.25, z);
+                    let p2 = project(l + 0.25, z);
+                    
+                    runnerCtx.fillStyle = '#78350f';
+                    runnerCtx.beginPath();
+                    runnerCtx.rect(p1.x - 2, p1.y, (p2.x - p1.x) + 4, Math.max(2, 6 * p1.scale));
+                    runnerCtx.fill();
+                }
+
+                let pTopL = project(l - 0.2, 400);
+                let pBotL = project(l - 0.2, 0);
+                let pTopR = project(l + 0.2, 400);
+                let pBotR = project(l + 0.2, 0);
+
+                runnerCtx.strokeStyle = '#94a3b8';
+                runnerCtx.lineWidth = Math.max(1, 3 * pBotL.scale);
+                runnerCtx.beginPath();
+                runnerCtx.moveTo(pTopL.x, pTopL.y); runnerCtx.lineTo(pBotL.x, pBotL.y);
+                runnerCtx.moveTo(pTopR.x, pTopR.y); runnerCtx.lineTo(pBotR.x, pBotR.y);
+                runnerCtx.stroke();
+            }
+
+            // --- 3. PIÈCES DORÉES ---
             for (let i = runnerCoinList.length - 1; i >= 0; i--) {
                 let coin = runnerCoinList[i];
                 coin.z -= runnerSpeed;
@@ -1337,7 +1344,7 @@
                     let radius = Math.max(4, 14 * p.scale);
                     runnerCtx.fillStyle = '#fbbf24';
                     runnerCtx.beginPath();
-                    runnerCtx.arc(p.x, p.y, radius, 0, Math.PI * 2);
+                    runnerCtx.arc(p.x, p.y - 15 * p.scale, radius, 0, Math.PI * 2);
                     runnerCtx.fill();
                     runnerCtx.strokeStyle = '#d97706';
                     runnerCtx.lineWidth = 2;
@@ -1345,7 +1352,7 @@
                     runnerCtx.fillStyle = '#fff';
                     runnerCtx.font = `${Math.max(8, Math.floor(12 * p.scale))}px sans-serif`;
                     runnerCtx.textAlign = 'center';
-                    runnerCtx.fillText('★', p.x, p.y + radius * 0.4);
+                    runnerCtx.fillText('★', p.x, p.y - 15 * p.scale + radius * 0.4);
 
                     if (coin.z < 20 && Math.abs(coin.lane - runnerPlayerX) < 0.4) {
                         runnerCoins += 1;
@@ -1358,30 +1365,30 @@
                 }
             }
 
-            // --- 3. MOTS (OBJETS 3D) ---
+            // --- 4. BARRIÈRES ET PANNEAUX DE MÉTRO 3D ---
             for (let i = runnerItems.length - 1; i >= 0; i--) {
                 let item = runnerItems[i];
                 item.z -= runnerSpeed;
 
                 let p = project(item.lane, item.z);
                 if (item.z > 0 && item.z < 400) {
-                    let boxWidth = Math.max(60, 140 * p.scale);
-                    let boxHeight = Math.max(30, 70 * p.scale);
+                    let boxWidth = Math.max(70, 160 * p.scale);
+                    let boxHeight = Math.max(35, 75 * p.scale);
 
-                    runnerCtx.fillStyle = item.isCorrect ? '#e0e7ff' : '#f1f5f9';
-                    runnerCtx.strokeStyle = '#6366f1';
-                    runnerCtx.lineWidth = Math.max(1, 3 * p.scale);
+                    runnerCtx.fillStyle = item.isCorrect ? '#fbcfe8' : '#e2e8f0';
+                    runnerCtx.strokeStyle = item.isCorrect ? '#ec4899' : '#64748b';
+                    runnerCtx.lineWidth = Math.max(2, 4 * p.scale);
                     
                     runnerCtx.beginPath();
-                    runnerCtx.roundRect(p.x - boxWidth / 2, p.y - boxHeight / 2, boxWidth, boxHeight, 8);
+                    runnerCtx.roundRect(p.x - boxWidth / 2, p.y - boxHeight, boxWidth, boxHeight, 10);
                     runnerCtx.fill();
                     runnerCtx.stroke();
 
-                    let fontSize = Math.max(10, Math.floor(16 * p.scale));
-                    runnerCtx.fillStyle = '#312e81';
+                    let fontSize = Math.max(10, Math.floor(15 * p.scale));
+                    runnerCtx.fillStyle = item.isCorrect ? '#831843' : '#334155';
                     runnerCtx.font = `bold ${fontSize}px Fredoka, sans-serif`;
                     runnerCtx.textAlign = 'center';
-                    runnerCtx.fillText(`${item.emoji} ${item.text}`, p.x, p.y + fontSize * 0.35);
+                    runnerCtx.fillText(`${item.emoji} ${item.text}`, p.x, p.y - boxHeight / 2 + fontSize * 0.35);
 
                     if (item.z < 25 && item.z > -10 && Math.abs(item.lane - runnerPlayerX) < 0.45) {
                         if (item.isCorrect) {
@@ -1406,21 +1413,32 @@
                 }
             }
 
-            // --- 4. AVATAR AU PREMIER PLAN ---
+            // --- 5. L'AVATAR DE LA PETITE FILLE (VUE DE DOS) ---
             let playerProj = project(runnerPlayerX, 0);
             let pX = playerProj.x;
-            let pY = h - 60;
+            let pY = h - 65;
 
-            runnerCtx.fillStyle = 'rgba(0, 0, 0, 0.3)';
+            runnerCtx.fillStyle = 'rgba(0, 0, 0, 0.4)';
             runnerCtx.beginPath();
-            runnerCtx.ellipse(pX, pY + 25, 25, 10, 0, 0, Math.PI * 2);
+            runnerCtx.ellipse(pX, pY + 30, 22, 8, 0, 0, Math.PI * 2);
             runnerCtx.fill();
 
-            let bounce = Math.sin(Date.now() * 0.015) * 5;
-            
-            runnerCtx.font = '48px sans-serif';
-            runnerCtx.textAlign = 'center';
-            runnerCtx.fillText('🏄‍♀️', pX, pY + bounce);
+            let bounce = Math.sin(Date.now() * 0.015) * 4;
+
+            runnerCtx.fillStyle = '#fbcfe8';
+            runnerCtx.beginPath(); runnerCtx.arc(pX, pY - 20 + bounce, 12, 0, Math.PI * 2); runnerCtx.fill();
+            runnerCtx.fillStyle = '#ec4899'; 
+            runnerCtx.beginPath(); runnerCtx.arc(pX, pY - 24 + bounce, 10, Math.PI, Math.PI * 2); runnerCtx.fill();
+
+            runnerCtx.fillStyle = '#8b5cf6'; 
+            runnerCtx.beginPath(); runnerCtx.roundRect(pX - 10, pY - 8 + bounce, 20, 18, 4); runnerCtx.fill();
+            runnerCtx.fillStyle = '#ec4899'; 
+            runnerCtx.beginPath();
+            runnerCtx.moveTo(pX - 12, pY + 10 + bounce);
+            runnerCtx.lineTo(pX + 12, pY + 10 + bounce);
+            runnerCtx.lineTo(pX + 16, pY + 22 + bounce);
+            runnerCtx.lineTo(pX - 16, pY + 22 + bounce);
+            runnerCtx.fill();
 
             requestAnimationFrame(updateRunnerLoop);
         }
