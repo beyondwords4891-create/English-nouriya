@@ -90,7 +90,7 @@
 </head>
 <body class="text-slate-700 pb-12">
 
-    <!-- Custom Notification Box (Replacing alerts) -->
+    <!-- Custom Notification Box -->
     <div id="custom-alert-box" class="fixed top-4 right-4 z-50 transform transition-all duration-300 translate-y-[-100px] opacity-0 pointer-events-none">
         <div class="bg-white border-2 border-purple-300 rounded-2xl shadow-xl p-4 flex items-center gap-3">
             <span id="custom-alert-icon" class="text-2xl">✨</span>
@@ -98,7 +98,7 @@
         </div>
     </div>
 
-    <!-- Header & Audio Activation Banner -->
+    <!-- Header -->
     <header class="bg-white/85 backdrop-blur-md sticky top-0 z-40 border-b border-pink-200 shadow-sm">
         <div class="max-w-5xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-2">
             <div class="flex items-center gap-3">
@@ -118,13 +118,13 @@
 
     <div class="max-w-5xl mx-auto px-4 pt-6 space-y-8">
 
-        <!-- Banner Welcome -->
+        <!-- Welcome Banner -->
         <div class="bg-gradient-to-r from-pink-100 via-purple-100 to-indigo-100 rounded-3xl p-6 shadow-sm border border-white flex flex-col md:flex-row items-center gap-6">
             <div class="text-6xl animate-bounce">🦄</div>
             <div class="space-y-2 text-center md:text-left flex-1">
                 <h2 class="text-2xl md:text-3xl font-bold text-purple-800">Coucou Championne ! 👋</h2>
                 <p class="text-slate-600 text-sm md:text-base">
-                    Découvre les activités et les animaux en anglais avec Samantha, entraîne ton vocabulaire, teste tes jeux et valide ton <strong>Passeport</strong> !
+                    Découvre les activités et les animaux en anglais, entraîne ton vocabulaire, teste tes jeux et valide ton <strong>Passeport</strong> !
                 </p>
             </div>
         </div>
@@ -145,6 +145,9 @@
             </button>
             <button onclick="switchTab('memory')" id="tab-memory" class="tab-btn px-3 md:px-4 py-2.5 rounded-2xl font-bold text-xs md:text-sm transition bg-white/70 text-slate-600 hover:bg-pink-100 flex items-center gap-1.5 cursor-pointer">
                 <span>🧩 Disparition</span>
+            </button>
+            <button onclick="switchTab('sentences')" id="tab-sentences" class="tab-btn px-3 md:px-4 py-2.5 rounded-2xl font-bold text-xs md:text-sm transition bg-white/70 text-slate-600 hover:bg-pink-100 flex items-center gap-1.5 cursor-pointer">
+                <span>✍️ Faire des phrases</span>
             </button>
         </div>
 
@@ -251,7 +254,7 @@
 
                 <div class="space-y-3">
                     <h2 class="text-2xl font-bold text-purple-800">Écoute et devine le mot !</h2>
-                    <p class="text-sm text-slate-500">Clique sur le gros bouton audio pour écouter Samantha, puis choisis le mot correct.</p>
+                    <p class="text-sm text-slate-500">Clique sur le gros bouton audio pour écouter, puis choisis le mot correct.</p>
                 </div>
 
                 <div class="py-4">
@@ -311,6 +314,36 @@
             </div>
         </section>
 
+        <!-- SECTION: BUILD A SENTENCE -->
+        <section id="section-sentences" class="tab-content hidden space-y-6">
+            <div class="bg-white rounded-3xl p-6 md:p-8 shadow-xl border-2 border-pink-200 text-center space-y-6 max-w-2xl mx-auto">
+                <div class="flex justify-between items-center border-b border-pink-100 pb-4">
+                    <span class="bg-pink-100 text-pink-600 font-bold px-3 py-1 rounded-full text-xs">Construction de phrases</span>
+                    <div class="flex items-center gap-1 text-yellow-500 font-bold text-lg">
+                        <span>⭐</span> <span id="sentence-score">0</span>
+                    </div>
+                </div>
+
+                <div class="space-y-3">
+                    <h2 class="text-2xl font-bold text-purple-800">Construis ta phrase ! ✍️</h2>
+                    <p class="text-sm text-slate-500">Choisis le bon mot pour compléter la phrase en anglais.</p>
+                </div>
+
+                <div class="p-6 bg-pink-50 rounded-2xl border border-pink-100 space-y-2">
+                    <p id="sentence-prompt" class="text-2xl font-bold text-purple-900">My name ___ Emma.</p>
+                    <p id="sentence-translation" class="text-xs text-slate-500 italic">Je m'appelle Emma.</p>
+                </div>
+
+                <div class="grid grid-cols-1 gap-3" id="sentence-options"></div>
+
+                <div id="sentence-feedback" class="h-8 font-bold text-base transition-all"></div>
+
+                <button onclick="nextSentenceQuestion()" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2.5 px-6 rounded-2xl shadow transition cursor-pointer">
+                    Phrase suivante ➔
+                </button>
+            </div>
+        </section>
+
     </div>
 
     <!-- CERTIFICATE MODAL -->
@@ -356,12 +389,7 @@
             { id: "a11", en: "Tag", fr: "Jeu du chat", emoji: "🏷️" },
             { id: "a12", en: "Board games", fr: "Jeux de société", emoji: "🎲" },
             { id: "a13", en: "Puzzles", fr: "Puzzles", emoji: "🧩" },
-            { id: "a14", en: "Jump rope", fr: "Corde à sauter", emoji: "🪢" },
-            { id: "a15", en: "Play football", fr: "Jouer au football", emoji: "⚽" },
-            { id: "a16", en: "Play basketball", fr: "Jouer au basket", emoji: "🏀" },
-            { id: "a17", en: "Ride a bike", fr: "Faire du vélo", emoji: "🚲" },
-            { id: "a18", en: "Swim", fr: "Nager", emoji: "🏊" },
-            { id: "a19", en: "Skate", fr: "Faire du skate", emoji: "🛹" }
+            { id: "a14", en: "Jump rope", fr: "Corde à sauter", emoji: "🪢" }
         ];
 
         const ANIMALS_DATA = [
@@ -411,6 +439,17 @@
         let startMatchNode = null;
         let currentMousePos = { x: 0, y: 0 };
         let tempErrorLine = null;
+
+        // Build a Sentence Logic State
+        const SENTENCES_DATA = [
+            { q: "My name ___ Emma.", missing: "is", options: ["is", "am", "are"], fr: "Je m'appelle Emma." },
+            { q: "I ___ happy.", missing: "am", options: ["is", "am", "are"], fr: "Je suis contente." },
+            { q: "I like ___.", missing: "dancing", options: ["dancing", "football", "cat"], fr: "J'aime danser." },
+            { q: "I can ___.", missing: "swim", options: ["swim", "dog", "book"], fr: "Je sais nager." },
+            { q: "I want ___ play.", missing: "to", options: ["to", "is", "a"], fr: "Je veux jouer." }
+        ];
+        let currentSentenceIdx = 0;
+        let sentenceScore = 0;
 
         function showAlert(msg, icon = '✨') {
             const box = document.getElementById('custom-alert-box');
@@ -979,6 +1018,62 @@
             document.getElementById('memory-start-btn').classList.remove('hidden');
         }
 
+        // --- BUILD A SENTENCE LOGIC ---
+        // STRICT RULE: No audio plays when loading/displaying sentence. Audio ONLY plays upon correct selection.
+        function initSentences() {
+            currentSentenceIdx = Math.floor(Math.random() * SENTENCES_DATA.length);
+            renderSentenceQuestion();
+        }
+
+        function renderSentenceQuestion() {
+            const item = SENTENCES_DATA[currentSentenceIdx];
+            document.getElementById('sentence-feedback').textContent = '';
+            document.getElementById('sentence-prompt').textContent = item.q;
+            document.getElementById('sentence-translation').textContent = item.fr;
+
+            const optionsContainer = document.getElementById('sentence-options');
+            optionsContainer.innerHTML = '';
+
+            const shuffledOpts = [...item.options].sort(() => 0.5 - Math.random());
+            shuffledOpts.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = "w-full p-4 rounded-2xl border-2 border-slate-100 hover:border-pink-300 bg-slate-50 hover:bg-pink-50 font-semibold text-slate-700 text-center transition text-base shadow-sm cursor-pointer";
+                btn.textContent = opt;
+                btn.onclick = () => checkSentenceAnswer(opt, item.missing, btn);
+                optionsContainer.appendChild(btn);
+            });
+            // Intentionally NO audio play call here!
+        }
+
+        function checkSentenceAnswer(selected, correct, btnElem) {
+            const feedback = document.getElementById('sentence-feedback');
+            const item = SENTENCES_DATA[currentSentenceIdx];
+
+            if (selected === correct) {
+                const completeSentence = item.q.replace('___', correct);
+                document.getElementById('sentence-prompt').textContent = completeSentence;
+
+                feedback.textContent = "✨ Super ! C'est exact ! 🎉";
+                feedback.className = "h-8 font-bold text-base text-green-600 animate-pulse";
+                btnElem.classList.add('bg-green-100', 'border-green-400');
+                sentenceScore += 1;
+                document.getElementById('sentence-score').textContent = sentenceScore;
+                
+                // Audio plays ONLY NOW when answer is validated and correct
+                speakText(completeSentence);
+                triggerConfetti();
+            } else {
+                feedback.textContent = `Oups ! Ce n'est pas la bonne réponse. Réessaie ! 🌸`;
+                feedback.className = "h-8 font-bold text-base text-pink-600";
+                btnElem.classList.add('bg-pink-100', 'border-pink-300');
+            }
+        }
+
+        function nextSentenceQuestion() {
+            currentSentenceIdx = (currentSentenceIdx + 1) % SENTENCES_DATA.length;
+            renderSentenceQuestion();
+        }
+
         function switchTab(tabName) {
             if (memoryTimer) clearInterval(memoryTimer);
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
@@ -996,6 +1091,9 @@
             } else if (tabName === 'match') {
                 activeTabBtn.classList.add('bg-indigo-600', 'text-white', 'shadow-md');
                 initMatchGame();
+            } else if (tabName === 'sentences') {
+                activeTabBtn.classList.add('bg-purple-500', 'text-white', 'shadow-md');
+                initSentences();
             } else {
                 activeTabBtn.classList.add('bg-purple-500', 'text-white', 'shadow-md');
             }
