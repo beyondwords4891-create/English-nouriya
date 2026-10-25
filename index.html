@@ -90,7 +90,7 @@
 </head>
 <body class="text-slate-700 pb-12">
 
-    <!-- Custom Notification Box -->
+    <!-- Custom Notification Box (Replacing alerts) -->
     <div id="custom-alert-box" class="fixed top-4 right-4 z-50 transform transition-all duration-300 translate-y-[-100px] opacity-0 pointer-events-none">
         <div class="bg-white border-2 border-purple-300 rounded-2xl shadow-xl p-4 flex items-center gap-3">
             <span id="custom-alert-icon" class="text-2xl">✨</span>
@@ -98,7 +98,7 @@
         </div>
     </div>
 
-    <!-- Header -->
+    <!-- Header & Audio Activation Banner -->
     <header class="bg-white/85 backdrop-blur-md sticky top-0 z-40 border-b border-pink-200 shadow-sm">
         <div class="max-w-5xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-2">
             <div class="flex items-center gap-3">
@@ -118,13 +118,13 @@
 
     <div class="max-w-5xl mx-auto px-4 pt-6 space-y-8">
 
-        <!-- Welcome Banner -->
+        <!-- Banner Welcome -->
         <div class="bg-gradient-to-r from-pink-100 via-purple-100 to-indigo-100 rounded-3xl p-6 shadow-sm border border-white flex flex-col md:flex-row items-center gap-6">
             <div class="text-6xl animate-bounce">🦄</div>
             <div class="space-y-2 text-center md:text-left flex-1">
                 <h2 class="text-2xl md:text-3xl font-bold text-purple-800">Coucou Championne ! 👋</h2>
                 <p class="text-slate-600 text-sm md:text-base">
-                    Découvre les activités et les animaux en anglais, entraîne ton vocabulaire, teste tes jeux et valide ton <strong>Passeport</strong> !
+                    Découvre les activités et les animaux en anglais avec Samantha, entraîne ton vocabulaire, teste tes jeux et valide ton <strong>Passeport</strong> !
                 </p>
             </div>
         </div>
@@ -254,7 +254,7 @@
 
                 <div class="space-y-3">
                     <h2 class="text-2xl font-bold text-purple-800">Écoute et devine le mot !</h2>
-                    <p class="text-sm text-slate-500">Clique sur le gros bouton audio pour écouter, puis choisis le mot correct.</p>
+                    <p class="text-sm text-slate-500">Clique sur le gros bouton audio pour écouter Samantha, puis choisis le mot correct.</p>
                 </div>
 
                 <div class="py-4">
@@ -318,20 +318,21 @@
         <section id="section-sentences" class="tab-content hidden space-y-6">
             <div class="bg-white rounded-3xl p-6 md:p-8 shadow-xl border-2 border-pink-200 text-center space-y-6 max-w-2xl mx-auto">
                 <div class="flex justify-between items-center border-b border-pink-100 pb-4">
-                    <span class="bg-pink-100 text-pink-600 font-bold px-3 py-1 rounded-full text-xs">Construction de phrases</span>
+                    <span id="sentence-badge-context" class="bg-purple-100 text-purple-700 font-bold px-3 py-1 rounded-full text-xs">🏫 À la récréation</span>
                     <div class="flex items-center gap-1 text-yellow-500 font-bold text-lg">
                         <span>⭐</span> <span id="sentence-score">0</span>
                     </div>
                 </div>
 
-                <div class="space-y-3">
+                <div class="space-y-2">
+                    <p id="sentence-context-desc" class="text-xs font-bold uppercase tracking-wider text-purple-500">Se présenter aux autres enfants</p>
                     <h2 class="text-2xl font-bold text-purple-800">Construis ta phrase ! ✍️</h2>
-                    <p class="text-sm text-slate-500">Choisis le bon mot pour compléter la phrase en anglais.</p>
+                    <p class="text-sm text-slate-500">Choisis le bon mot pour compléter la conversation en anglais.</p>
                 </div>
 
-                <div class="p-6 bg-pink-50 rounded-2xl border border-pink-100 space-y-2">
-                    <p id="sentence-prompt" class="text-2xl font-bold text-purple-900">My name ___ Emma.</p>
-                    <p id="sentence-translation" class="text-xs text-slate-500 italic">Je m'appelle Emma.</p>
+                <div class="p-6 bg-gradient-to-r from-pink-50 to-purple-50 rounded-2xl border border-pink-100 space-y-2">
+                    <p id="sentence-prompt" class="text-xl md:text-2xl font-bold text-purple-900">My name ___ Emma.</p>
+                    <p id="sentence-translation" class="text-xs text-slate-500 italic">Traduction : Je m'appelle Emma.</p>
                 </div>
 
                 <div class="grid grid-cols-1 gap-3" id="sentence-options"></div>
@@ -389,7 +390,12 @@
             { id: "a11", en: "Tag", fr: "Jeu du chat", emoji: "🏷️" },
             { id: "a12", en: "Board games", fr: "Jeux de société", emoji: "🎲" },
             { id: "a13", en: "Puzzles", fr: "Puzzles", emoji: "🧩" },
-            { id: "a14", en: "Jump rope", fr: "Corde à sauter", emoji: "🪢" }
+            { id: "a14", en: "Jump rope", fr: "Corde à sauter", emoji: "🪢" },
+            { id: "a15", en: "Play football", fr: "Jouer au football", emoji: "⚽" },
+            { id: "a16", en: "Play basketball", fr: "Jouer au basket", emoji: "🏀" },
+            { id: "a17", en: "Ride a bike", fr: "Faire du vélo", emoji: "🚲" },
+            { id: "a18", en: "Swim", fr: "Nager", emoji: "🏊" },
+            { id: "a19", en: "Skate", fr: "Faire du skate", emoji: "🛹" }
         ];
 
         const ANIMALS_DATA = [
@@ -440,14 +446,33 @@
         let currentMousePos = { x: 0, y: 0 };
         let tempErrorLine = null;
 
-        // Build a Sentence Logic State
+        // Build a Sentence Logic State (18 phrases en situation)
         const SENTENCES_DATA = [
-            { q: "My name ___ Emma.", missing: "is", options: ["is", "am", "are"], fr: "Je m'appelle Emma." },
-            { q: "I ___ happy.", missing: "am", options: ["is", "am", "are"], fr: "Je suis contente." },
-            { q: "I like ___.", missing: "dancing", options: ["dancing", "football", "cat"], fr: "J'aime danser." },
-            { q: "I can ___.", missing: "swim", options: ["swim", "dog", "book"], fr: "Je sais nager." },
-            { q: "I want ___ play.", missing: "to", options: ["to", "is", "a"], fr: "Je veux jouer." }
+            // SITUATION 1 : À la récréation (Se présenter / Rencontrer un ami)
+            { tag: "🏫 À la récréation", desc: "Se présenter à un autre enfant", q: "Hello! My name ___ Nouriya.", missing: "is", options: ["is", "am", "are"], fr: "Bonjour ! Je m'appelle Nouriya." },
+            { tag: "🏫 À la récréation", desc: "Exprimer son humeur", q: "I ___ happy to meet you!", missing: "am", options: ["am", "is", "can"], fr: "Je suis contente de te rencontrer !" },
+            { tag: "🏫 À la récréation", desc: "S'inviter à jouer", q: "Can I play ___ you?", missing: "with", options: ["with", "to", "at"], fr: "Est-ce que je peux jouer avec toi ?" },
+            { tag: "🏫 À la récréation", desc: "Proposer un jeu classique", q: "Let's play ___ and seek!", missing: "hide", options: ["hide", "jump", "dance"], fr: "Jouons à cache-cache !" },
+            { tag: "🏫 À la récréation", desc: "Demander le prénom", q: "What ___ your name?", missing: "is", options: ["is", "are", "do"], fr: "Comment tu t'appelles ?" },
+            { tag: "🏫 À la récréation", desc: "Montrer un objet/jeu", q: "Look! This is ___ new ball.", missing: "my", options: ["my", "I", "me"], fr: "Regarde ! C'est mon nouveau ballon." },
+
+            // SITUATION 2 : Au parc de jeux (Jeux & Loisirs)
+            { tag: "🛝 Au parc de jeux", desc: "Dire ce qu'on aime faire", q: "I like ___ on the swing!", missing: "swinging", options: ["swinging", "cat", "apple"], fr: "J'aime faire de la balançoire !" },
+            { tag: "🛝 Au parc de jeux", desc: "Parler de ses capacités", q: "I can ___ very fast!", missing: "run", options: ["run", "is", "blue"], fr: "Je sais courir très vite !" },
+            { tag: "🛝 Au parc de jeux", desc: "Faire du vélo", q: "Can you ride ___ bike?", missing: "a", options: ["a", "are", "is"], fr: "Sais-tu faire du vélo ?" },
+            { tag: "🛝 Au parc de jeux", desc: "Demander gentiment", q: "Can I try ___ turn?", missing: "my", options: ["my", "I", "am"], fr: "Puis-je essayer mon tour ?" },
+            { tag: "🛝 Au parc de jeux", desc: "Inviter un ami à sauter", q: "Let's ___ rope together!", missing: "jump", options: ["jump", "draw", "swim"], fr: "Sautons à la corde ensemble !" },
+            { tag: "🛝 Au parc de jeux", desc: "Parler des animaux qu'on aperçoit", q: "Look at that cute ___!", missing: "dog", options: ["dog", "run", "play"], fr: "Regarde ce mignon chien !" },
+
+            // SITUATION 3 : Au parc d'attractions / Fête (Attractions & Partage)
+            { tag: "🎡 Parc d'attractions", desc: "Exprimer ses envies de jeux", q: "I want ___ go on the carousel!", missing: "to", options: ["to", "is", "and"], fr: "Je veux aller sur le carrousel !" },
+            { tag: "🎡 Parc d'attractions", desc: "Rejoindre un groupe d'enfants", q: "Can I ___ you in line?", missing: "join", options: ["join", "sing", "color"], fr: "Est-ce que je peux vous rejoindre dans la queue ?" },
+            { tag: "🎡 Parc d'attractions", desc: "Partager une gourmandise", q: "Do you ___ ice cream?", missing: "want", options: ["want", "am", "is"], fr: "Est-ce que tu veux de la glace ?" },
+            { tag: "🎡 Parc d'attractions", desc: "Dire ce qu'on n'aime pas trop", q: "I don't ___ fast rides.", missing: "like", options: ["like", "can", "am"], fr: "Je n'aime pas les manèges trop rapides." },
+            { tag: "🎡 Parc d'attractions", desc: "Encourager un ami", q: "You ___ do it! Go!", missing: "can", options: ["can", "is", "are"], fr: "Tu peux le faire ! Vas-y !" },
+            { tag: "🎡 Parc d'attractions", desc: "Remercier un copain", q: "Thank you for playing ___ me!", missing: "with", options: ["with", "for", "on"], fr: "Merci d'avoir joué avec moi !" }
         ];
+
         let currentSentenceIdx = 0;
         let sentenceScore = 0;
 
@@ -1019,7 +1044,6 @@
         }
 
         // --- BUILD A SENTENCE LOGIC ---
-        // STRICT RULE: No audio plays when loading/displaying sentence. Audio ONLY plays upon correct selection.
         function initSentences() {
             currentSentenceIdx = Math.floor(Math.random() * SENTENCES_DATA.length);
             renderSentenceQuestion();
@@ -1029,7 +1053,9 @@
             const item = SENTENCES_DATA[currentSentenceIdx];
             document.getElementById('sentence-feedback').textContent = '';
             document.getElementById('sentence-prompt').textContent = item.q;
-            document.getElementById('sentence-translation').textContent = item.fr;
+            document.getElementById('sentence-badge-context').textContent = item.tag;
+            document.getElementById('sentence-context-desc').textContent = item.desc;
+            document.getElementById('sentence-translation').textContent = "Traduction : " + item.fr;
 
             const optionsContainer = document.getElementById('sentence-options');
             optionsContainer.innerHTML = '';
@@ -1037,33 +1063,33 @@
             const shuffledOpts = [...item.options].sort(() => 0.5 - Math.random());
             shuffledOpts.forEach(opt => {
                 const btn = document.createElement('button');
-                btn.className = "w-full p-4 rounded-2xl border-2 border-slate-100 hover:border-pink-300 bg-slate-50 hover:bg-pink-50 font-semibold text-slate-700 text-center transition text-base shadow-sm cursor-pointer";
+                btn.className = "w-full p-4 rounded-2xl border-2 border-slate-100 hover:border-pink-300 bg-slate-50 hover:bg-pink-50 font-bold text-slate-700 text-center transition text-base shadow-sm cursor-pointer";
                 btn.textContent = opt;
                 btn.onclick = () => checkSentenceAnswer(opt, item.missing, btn);
                 optionsContainer.appendChild(btn);
             });
-            // Intentionally NO audio play call here!
+        }
+
+        function speakSentencePrompt() {
+            const item = SENTENCES_DATA[currentSentenceIdx];
+            const fullSentence = item.q.replace('___', item.missing);
+            speakText(fullSentence);
         }
 
         function checkSentenceAnswer(selected, correct, btnElem) {
             const feedback = document.getElementById('sentence-feedback');
-            const item = SENTENCES_DATA[currentSentenceIdx];
-
             if (selected === correct) {
-                const completeSentence = item.q.replace('___', correct);
-                document.getElementById('sentence-prompt').textContent = completeSentence;
-
-                feedback.textContent = "✨ Super ! C'est exact ! 🎉";
+                feedback.textContent = "✨ Super ! C'est la bonne réponse ! 🎉";
                 feedback.className = "h-8 font-bold text-base text-green-600 animate-pulse";
                 btnElem.classList.add('bg-green-100', 'border-green-400');
                 sentenceScore += 1;
                 document.getElementById('sentence-score').textContent = sentenceScore;
                 
-                // Audio plays ONLY NOW when answer is validated and correct
-                speakText(completeSentence);
+                // L'audio ne se joue qu'une fois la bonne réponse trouvée
+                speakSentencePrompt();
                 triggerConfetti();
             } else {
-                feedback.textContent = `Oups ! Ce n'est pas la bonne réponse. Réessaie ! 🌸`;
+                feedback.textContent = `Oups ! Réessaie de compléter la phrase ! 🌸`;
                 feedback.className = "h-8 font-bold text-base text-pink-600";
                 btnElem.classList.add('bg-pink-100', 'border-pink-300');
             }
