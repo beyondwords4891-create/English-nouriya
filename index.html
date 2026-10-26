@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My English Learning Adventure</title>
+    <title>My English Adventure</title>
     <!-- Google Fonts: Fredoka & Nunito -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -124,7 +124,7 @@
             <div class="space-y-2 text-center md:text-left flex-1">
                 <h2 class="text-2xl md:text-3xl font-bold text-purple-800">Coucou Championne ! 👋</h2>
                 <p class="text-slate-600 text-sm md:text-base">
-                    Découvre les activités et les animaux en anglais, entraîne ton vocabulaire, teste tes jeux et valide ton <strong>Passeport</strong> !
+                    Découvre les activités, animaux, émotions et vêtements en anglais, entraîne ton vocabulaire, teste tes jeux et valide ton <strong>Passeport</strong> !
                 </p>
             </div>
         </div>
@@ -158,7 +158,7 @@
                     <div>
                         <span class="bg-purple-100 text-purple-700 font-bold px-3 py-1 rounded-full text-xs">Mon suivi personnel</span>
                         <h2 class="text-2xl font-bold text-pink-600 mt-1">📋 Mon Passeport d'Anglais</h2>
-                        <p class="text-sm text-slate-500">Coche chaque activité ou animal que tu sais nommer ! Ta progression est sauvegardée.</p>
+                        <p class="text-sm text-slate-500">Coche chaque famille de mots que tu sais nommer ! Ta progression est sauvegardée.</p>
                     </div>
                     <div class="w-full md:w-64 bg-slate-100 p-3 rounded-2xl border border-pink-100">
                         <div class="flex justify-between text-xs font-bold mb-1">
@@ -200,6 +200,62 @@
                     <h2 class="text-xl font-bold text-slate-800">Animaux & Familiers (Animals)</h2>
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" id="cards-animals"></div>
+            </div>
+
+            <div class="space-y-4 pt-4 border-t border-pink-200">
+                <div class="flex items-center gap-3">
+                    <span class="p-2 bg-yellow-100 text-yellow-600 rounded-2xl text-xl">😊</span>
+                    <h2 class="text-xl font-bold text-slate-800">Émotions & Sentiments (Feelings & Emotions)</h2>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" id="cards-emotions"></div>
+            </div>
+
+            <div class="space-y-4 pt-4 border-t border-pink-200">
+                <div class="flex items-center gap-3">
+                    <span class="p-2 bg-indigo-100 text-indigo-600 rounded-2xl text-xl">👗</span>
+                    <h2 class="text-xl font-bold text-slate-800">Vêtements & Couleurs (Clothes & Colors)</h2>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" id="cards-clothes"></div>
+            </div>
+
+            <div class="space-y-4 pt-4 border-t border-pink-200">
+                <div class="flex items-center gap-3">
+                    <span class="p-2 bg-emerald-100 text-emerald-600 rounded-2xl text-xl">🍎</span>
+                    <h2 class="text-xl font-bold text-slate-800">Nourriture & Boissons (Food & Drinks)</h2>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" id="cards-food"></div>
+            </div>
+
+            <div class="space-y-4 pt-4 border-t border-pink-200">
+                <div class="flex items-center gap-3">
+                    <span class="p-2 bg-rose-100 text-rose-600 rounded-2xl text-xl">👨‍👩‍👧‍👦</span>
+                    <h2 class="text-xl font-bold text-slate-800">La Famille & Les Amis (Family & Friends)</h2>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" id="cards-family"></div>
+            </div>
+
+            <div class="space-y-4 pt-4 border-t border-pink-200">
+                <div class="flex items-center gap-3">
+                    <span class="p-2 bg-teal-100 text-teal-600 rounded-2xl text-xl">👀</span>
+                    <h2 class="text-xl font-bold text-slate-800">Les Parties du Corps (Body Parts)</h2>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" id="cards-body"></div>
+            </div>
+
+            <div class="space-y-4 pt-4 border-t border-pink-200">
+                <div class="flex items-center gap-3">
+                    <span class="p-2 bg-sky-100 text-sky-600 rounded-2xl text-xl">⛅</span>
+                    <h2 class="text-xl font-bold text-slate-800">La Météo & Les Saisons (Weather & Seasons)</h2>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" id="cards-weather"></div>
+            </div>
+
+            <div class="space-y-4 pt-4 border-t border-pink-200">
+                <div class="flex items-center gap-3">
+                    <span class="p-2 bg-orange-100 text-orange-600 rounded-2xl text-xl">⚡</span>
+                    <h2 class="text-xl font-bold text-slate-800">Verbes d'Action Essentiels (Action Words)</h2>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" id="cards-actions"></div>
             </div>
         </section>
 
@@ -327,7 +383,7 @@
                 <div class="space-y-2">
                     <p id="sentence-context-desc" class="text-xs font-bold uppercase tracking-wider text-purple-500">Utiliser tout le vocabulaire en anglais</p>
                     <h2 class="text-2xl font-bold text-purple-800">Construis ta phrase ! ✍️</h2>
-                    <p class="text-sm text-slate-500">Choisis le mot correct pour compléter la phrase. (Aucun indice visuel !)</p>
+                    <p class="text-sm text-slate-500">Choisis le mot correct pour compléter la phrase. (Logique par famille !)</p>
                 </div>
 
                 <div class="p-6 bg-gradient-to-r from-pink-50 to-purple-50 rounded-2xl border border-pink-100 space-y-2">
@@ -377,26 +433,17 @@
 
     <script>
         const ACTIVITIES_DATA = [
-            { id: "a1", en: "Skating", fr: "Faire du patin / skate", type: "activity", verb: "is fun" },
-            { id: "a2", en: "Drawing", fr: "Dessiner", type: "activity", verb: "is creative" },
-            { id: "a3", en: "Swimming", fr: "Nager", type: "activity", verb: "is great" },
-            { id: "a4", en: "Dancing", fr: "Danser", type: "activity", verb: "is cool" },
-            { id: "a5", en: "Reading", fr: "Lire", type: "activity", verb: "is nice" },
-            { id: "a6", en: "Painting", fr: "Peindre", type: "activity", verb: "is awesome" },
-            { id: "a7", en: "Singing", fr: "Chanter", type: "activity", verb: "is lovely" },
-            { id: "a8", en: "Cycling", fr: "Faire du vélo", type: "activity", verb: "is exciting" },
-            { id: "a9", en: "Playing", fr: "Jouer", type: "activity", verb: "is joyful" },
-            { id: "a10", en: "Hide-and-seek", fr: "Cache-cache", type: "activity", verb: "is fun" },
-            { id: "a11", en: "Tag", fr: "Jeu du chat", type: "activity", verb: "is fast" },
-            { id: "a12", en: "Board games", fr: "Jeux de société", type: "activity", verb: "are great" },
-            { id: "a13", en: "Puzzles", fr: "Puzzles", type: "activity", verb: "are clever" },
-            { id: "a14", en: "Jump rope", fr: "Corde à sauter", type: "activity", verb: "is active" },
-            { id: "a15", en: "Play football", fr: "Jouer au football", type: "activity", verb: "is energetic" },
-            { id: "a16", en: "Play basketball", fr: "Jouer au basket", type: "activity", verb: "is high-flying" },
-            { id: "a17", en: "Ride a bike", fr: "Faire du vélo", type: "activity", verb: "is smooth" },
-            { id: "a18", en: "Swim", fr: "Nager", type: "activity", verb: "is refreshing" },
-            { id: "a19", en: "Skate", fr: "Faire du skate", type: "activity", verb: "is thrilling" }
-        ].map(item => ({ ...item, emoji: getEmojiForItem(item.en) }));
+            { id: "a1", en: "Skating", fr: "Faire du patin / skate", type: "activity", emoji: "🛼" },
+            { id: "a2", en: "Drawing", fr: "Dessiner", type: "activity", emoji: "✏️" },
+            { id: "a3", en: "Swimming", fr: "Nager", type: "activity", emoji: "🏊‍♀️" },
+            { id: "a4", en: "Dancing", fr: "Danser", type: "activity", emoji: "💃" },
+            { id: "a5", en: "Reading", fr: "Lire", type: "activity", emoji: "📖" },
+            { id: "a6", en: "Painting", fr: "Peindre", type: "activity", emoji: "🎨" },
+            { id: "a7", en: "Singing", fr: "Chanter", type: "activity", emoji: "🎤" },
+            { id: "a8", en: "Cycling", fr: "Faire du vélo", type: "activity", emoji: "🚲" },
+            { id: "a9", en: "Playing", fr: "Jouer", type: "activity", emoji: "⚽" },
+            { id: "a10", en: "Hide-and-seek", fr: "Cache-cache", type: "activity", emoji: "🏃" }
+        ];
 
         const ANIMALS_DATA = [
             { id: "an1", en: "Cat", fr: "Chat", type: "animal", emoji: "🐱" },
@@ -405,34 +452,104 @@
             { id: "an4", en: "Hamster", fr: "Hamster", type: "animal", emoji: "🐹" },
             { id: "an5", en: "Fish", fr: "Poisson", type: "animal", emoji: "🐠" },
             { id: "an6", en: "Bird", fr: "Oiseau", type: "animal", emoji: "🐦" },
-            { id: "an7", en: "Snail", fr: "Escargot", type: "animal", emoji: "🐌" },
-            { id: "an8", en: "Butterfly", fr: "Papillon", type: "animal", emoji: "🦋" },
-            { id: "an9", en: "Lion", fr: "Lion", type: "animal", emoji: "🦁" },
-            { id: "an10", en: "Tiger", fr: "Tigre", type: "animal", emoji: "🐯" }
+            { id: "an7", en: "Lion", fr: "Lion", type: "animal", emoji: "🦁" },
+            { id: "an8", en: "Tiger", fr: "Tigre", type: "animal", emoji: "🐯" }
         ];
 
-        function getEmojiForItem(enName) {
-            const map = {
-                "Skating": "🛼", "Drawing": "✏️", "Swimming": "🏊‍♀️", "Dancing": "💃",
-                "Reading": "📖", "Painting": "🎨", "Singing": "🎤", "Cycling": "🚲",
-                "Playing": "⚽", "Hide-and-seek": "🏃", "Tag": "🏷️", "Board games": "🎲",
-                "Puzzles": "🧩", "Jump rope": "🪢", "Play football": "⚽", "Play basketball": "🏀",
-                "Ride a bike": "🚲", "Swim": "🏊", "Skate": "🛹"
-            };
-            return map[enName] || "✨";
-        }
+        const EMOTIONS_DATA = [
+            { id: "e1", en: "Happy", fr: "Heureux / heureuse", type: "emotion", emoji: "😊" },
+            { id: "e2", en: "Sad", fr: "Triste", type: "emotion", emoji: "😢" },
+            { id: "e3", en: "Angry", fr: "En colère", type: "emotion", emoji: "😡" },
+            { id: "e4", en: "Tired", fr: "Fatigué(e)", type: "emotion", emoji: "😴" },
+            { id: "e5", en: "Excited", fr: "Enthousiaste", type: "emotion", emoji: "🤩" },
+            { id: "e6", en: "Scared", fr: "Effrayé(e)", type: "emotion", emoji: "😱" },
+            { id: "e7", en: "Bored", fr: "Qui s'ennuie", type: "emotion", emoji: "🥱" },
+            { id: "e8", en: "Hungry", fr: "Affamé(e) / qui a faim", type: "emotion", emoji: "😋" },
+            { id: "e9", en: "Thirsty", fr: "Qui a soif", type: "emotion", emoji: "🥤" }
+        ];
 
-        const ALL_VOCAB = [...ACTIVITIES_DATA, ...ANIMALS_DATA];
+        const CLOTHES_DATA = [
+            { id: "cl1", en: "T-shirt", fr: "Un tee-shirt", type: "clothes", emoji: "👕" },
+            { id: "cl2", en: "Trousers", fr: "Un pantalon", type: "clothes", emoji: "👖" },
+            { id: "cl3", en: "Dress", fr: "Une robe", type: "clothes", emoji: "👗" },
+            { id: "cl4", en: "Skirt", fr: "Une jupe", type: "clothes", emoji: "👚" },
+            { id: "cl5", en: "Shoes", fr: "Des chaussures", type: "clothes", emoji: "👟" },
+            { id: "cl6", en: "Socks", fr: "Des chaussettes", type: "clothes", emoji: "🧦" },
+            { id: "cl7", en: "Jacket", fr: "Une veste", type: "clothes", emoji: "🧥" }
+        ];
+
+        const FOOD_DATA = [
+            { id: "f1", en: "Apple", fr: "Une pomme", type: "food", emoji: "🍎" },
+            { id: "f2", en: "Banana", fr: "Une banane", type: "food", emoji: "🍌" },
+            { id: "f3", en: "Sandwich", fr: "Un sandwich", type: "food", emoji: "🥪" },
+            { id: "f4", en: "Pizza", fr: "Une pizza", type: "food", emoji: "🍕" },
+            { id: "f5", en: "Pasta", fr: "Des pâtes", type: "food", emoji: "🍝" },
+            { id: "f6", en: "Rice", fr: "Du riz", type: "food", emoji: "🍚" },
+            { id: "f7", en: "Chicken", fr: "Du poulet", type: "food", emoji: "🍗" },
+            { id: "f8", en: "Water", fr: "De l'eau", type: "food", emoji: "💧" },
+            { id: "f9", en: "Milk", fr: "Du lait", type: "food", emoji: "🥛" },
+            { id: "f10", en: "Juice", fr: "Du jus", type: "food", emoji: "🧃" }
+        ];
+
+        const FAMILY_DATA = [
+            { id: "fa1", en: "Mum", fr: "Maman", type: "family", emoji: "👩" },
+            { id: "fa2", en: "Dad", fr: "Papa", type: "family", emoji: "👨" },
+            { id: "fa3", en: "Sister", fr: "Sœur", type: "family", emoji: "👧" },
+            { id: "fa4", en: "Brother", fr: "Frère", type: "family", emoji: "👦" },
+            { id: "fa5", en: "Grandmother", fr: "Grand-mère", type: "family", emoji: "👵" },
+            { id: "fa6", en: "Grandfather", fr: "Grand-père", type: "family", emoji: "👴" },
+            { id: "fa7", en: "Friend", fr: "Ami(e)", type: "family", emoji: "🧑‍🤝‍🧑" }
+        ];
+
+        const BODY_DATA = [
+            { id: "b1", en: "Head", fr: "Tête", type: "body", emoji: "👤" },
+            { id: "b2", en: "Eyes", fr: "Yeux", type: "body", emoji: "👀" },
+            { id: "b3", en: "Ears", fr: "Oreilles", type: "body", emoji: "👂" },
+            { id: "b4", en: "Nose", fr: "Nez", type: "body", emoji: "👃" },
+            { id: "b5", en: "Mouth", fr: "Bouche", type: "body", emoji: "👄" },
+            { id: "b6", en: "Hands", fr: "Mains", type: "body", emoji: "✋" },
+            { id: "b7", en: "Legs", fr: "Jambes", type: "body", emoji: "🦵" },
+            { id: "b8", en: "Feet", fr: "Pieds", type: "body", emoji: "🦶" }
+        ];
+
+        const WEATHER_DATA = [
+            { id: "w1", en: "Sunny", fr: "Ensoleillé", type: "weather", emoji: "☀️" },
+            { id: "w2", en: "Rainy", fr: "Pluvieux", type: "weather", emoji: "🌧️" },
+            { id: "w3", en: "Cloudy", fr: "Nuageux", type: "weather", emoji: "☁️" },
+            { id: "w4", en: "Windy", fr: "Venteux", type: "weather", emoji: "💨" },
+            { id: "w5", en: "Hot", fr: "Chaud", type: "weather", emoji: "🔥" },
+            { id: "w6", en: "Cold", fr: "Froid", type: "weather", emoji: "❄️" },
+            { id: "w7", en: "Spring", fr: "Printemps", type: "weather", emoji: "🌱" },
+            { id: "w8", en: "Summer", fr: "Été", type: "weather", emoji: "🏖️" }
+        ];
+
+        const ACTIONS_DATA = [
+            { id: "ac1", en: "Go", fr: "Aller", type: "action", emoji: "🚀" },
+            { id: "ac2", en: "Eat", fr: "Manger", type: "action", emoji: "🍽️" },
+            { id: "ac3", en: "Drink", fr: "Boire", type: "action", emoji: "🧋" },
+            { id: "ac4", en: "Read", fr: "Lire", type: "action", emoji: "📚" },
+            { id: "ac5", en: "Write", fr: "Écrire", type: "action", emoji: "✍️" },
+            { id: "ac6", en: "Speak", fr: "Parler", type: "action", emoji: "💬" },
+            { id: "ac7", en: "Listen", fr: "Écouter", type: "action", emoji: "🎧" },
+            { id: "ac8", en: "Open", fr: "Ouvrir", type: "action", emoji: "📂" },
+            { id: "ac9", en: "Close", fr: "Fermer", type: "action", emoji: "📕" }
+        ];
+
+        const ALL_VOCAB = [
+            ...ACTIVITIES_DATA, ...ANIMALS_DATA, ...EMOTIONS_DATA, 
+            ...CLOTHES_DATA, ...FOOD_DATA, ...FAMILY_DATA, 
+            ...BODY_DATA, ...WEATHER_DATA, ...ACTIONS_DATA
+        ];
 
         const CHECKLIST_ITEMS = [
             { id: "c1", fr: "Je connais le vocabulaire des animaux", word: "Animals" },
             { id: "c2", fr: "Je sais exprimer mes goûts et loisirs", word: "Activities & Hobbies" },
-            { id: "c3", fr: "Je sais me présenter en anglais", word: "Self introduction" },
-            { id: "c4", fr: "Je sais compter jusqu'à 10 et dire les couleurs", word: "Numbers & Colors" },
-            { id: "c5", fr: "Je connais les formules de politesse", word: "Greetings & Courtesy" },
-            { id: "c6", fr: "Je sais reconnaître les mots à l'écoute", word: "Listening skills" },
-            { id: "c7", fr: "Je sais associer un mot avec son image", word: "Word matching" },
-            { id: "c8", fr: "Je sais mémoriser des mots en anglais", word: "Memory challenge" }
+            { id: "c3", fr: "Je sais exprimer mes émotions", word: "Feelings & Emotions" },
+            { id: "c4", fr: "Je connais les vêtements et couleurs", word: "Clothes & Colors" },
+            { id: "c5", fr: "Je sais nommer la nourriture et les boissons", word: "Food & Drinks" },
+            { id: "c6", fr: "Je sais nommer ma famille et mes amis", word: "Family & Friends" },
+            { id: "c7", fr: "Je connais les parties du corps", word: "Body Parts" },
+            { id: "c8", fr: "Je sais parler de la météo et des saisons", word: "Weather & Seasons" }
         ];
 
         let checklistState = JSON.parse(localStorage.getItem('english_passport_state') || '{}');
@@ -514,16 +631,17 @@
             window.speechSynthesis.speak(utterance);
         }
 
-        function renderCards() {
-            const actContainer = document.getElementById('cards-activities');
-            actContainer.innerHTML = '';
-            ACTIVITIES_DATA.forEach(item => {
+        function renderCategoryCards(containerId, dataArray, borderColor) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            container.innerHTML = '';
+            dataArray.forEach(item => {
                 const card = document.createElement('div');
-                card.className = "bg-white rounded-2xl p-4 border border-pink-100 shadow-sm hover:shadow-md card-hover flex flex-col justify-between space-y-3";
+                card.className = `bg-white rounded-2xl p-4 border border-${borderColor}-100 shadow-sm hover:shadow-md card-hover flex flex-col justify-between space-y-3`;
                 card.innerHTML = `
                     <div class="flex items-start justify-between gap-2">
                         <span class="text-3xl">${item.emoji}</span>
-                        <button onclick="speakText('${item.en.replace(/'/g, "\\'")}', this)" class="bg-pink-50 hover:bg-pink-100 text-pink-600 font-bold px-3 py-1.5 rounded-xl text-xs flex items-center gap-1.5 border border-pink-200 transition active:scale-95 shadow-sm cursor-pointer">
+                        <button onclick="speakText('${item.en.replace(/'/g, "\\'")}', this)" class="bg-${borderColor}-50 hover:bg-${borderColor}-100 text-${borderColor}-600 font-bold px-3 py-1.5 rounded-xl text-xs flex items-center gap-1.5 border border-${borderColor}-200 transition active:scale-95 shadow-sm cursor-pointer">
                             <span class="text-sm">🔊</span> Écouter
                         </button>
                     </div>
@@ -532,28 +650,20 @@
                         <p class="text-xs text-slate-500 mt-0.5">${item.fr}</p>
                     </div>
                 `;
-                actContainer.appendChild(card);
+                container.appendChild(card);
             });
+        }
 
-            const animContainer = document.getElementById('cards-animals');
-            animContainer.innerHTML = '';
-            ANIMALS_DATA.forEach(item => {
-                const card = document.createElement('div');
-                card.className = "bg-white rounded-2xl p-4 border border-purple-100 shadow-sm hover:shadow-md card-hover flex flex-col justify-between space-y-3";
-                card.innerHTML = `
-                    <div class="flex items-start justify-between gap-2">
-                        <span class="text-3xl">${item.emoji}</span>
-                        <button onclick="speakText('${item.en.replace(/'/g, "\\'")}', this)" class="bg-purple-50 hover:bg-purple-100 text-purple-600 font-bold px-3 py-1.5 rounded-xl text-xs flex items-center gap-1.5 border border-purple-200 transition active:scale-95 shadow-sm cursor-pointer">
-                            <span class="text-sm">🔊</span> Écouter
-                        </button>
-                    </div>
-                    <div>
-                        <h3 class="text-base font-bold text-purple-900 leading-snug">${item.en}</h3>
-                        <p class="text-xs text-slate-500 mt-0.5">${item.fr}</p>
-                    </div>
-                `;
-                animContainer.appendChild(card);
-            });
+        function renderCards() {
+            renderCategoryCards('cards-activities', ACTIVITIES_DATA, 'pink');
+            renderCategoryCards('cards-animals', ANIMALS_DATA, 'purple');
+            renderCategoryCards('cards-emotions', EMOTIONS_DATA, 'yellow');
+            renderCategoryCards('cards-clothes', CLOTHES_DATA, 'indigo');
+            renderCategoryCards('cards-food', FOOD_DATA, 'emerald');
+            renderCategoryCards('cards-family', FAMILY_DATA, 'rose');
+            renderCategoryCards('cards-body', BODY_DATA, 'teal');
+            renderCategoryCards('cards-weather', WEATHER_DATA, 'sky');
+            renderCategoryCards('cards-actions', ACTIONS_DATA, 'orange');
         }
 
         function renderChecklist() {
@@ -920,7 +1030,7 @@
             }
         }
 
-        // --- MEMORY GAME LOGIC (DRAW FROM ENTIRE VOCABULARY POOL) ---
+        // --- MEMORY GAME LOGIC ---
         function initMemoryGame() { resetMemoryUI(); }
 
         function resetMemoryUI() {
@@ -930,7 +1040,6 @@
             document.getElementById('memory-start-btn').classList.remove('hidden');
             document.getElementById('memory-instruction').textContent = "Regarde et mémorise bien ces 6 cartes pendant 13 secondes...";
             
-            // Randomly select 6 cards from the FULL vocabulary pool (activities + animals)
             memoryRoundCards = [...ALL_VOCAB].sort(() => 0.5 - Math.random()).slice(0, 6);
             renderMemoryGrid(memoryRoundCards, false);
         }
@@ -958,7 +1067,6 @@
             document.getElementById('memory-timer-count').textContent = timeLeft + 's';
             document.getElementById('memory-timer-bar').style.width = '100%';
 
-            // Fresh pick of 6 cards across all vocab
             memoryRoundCards = [...ALL_VOCAB].sort(() => 0.5 - Math.random()).slice(0, 6);
             renderMemoryGrid(memoryRoundCards, false);
 
@@ -987,7 +1095,6 @@
             renderMemoryGrid(remainingCards, true);
 
             const remainingIds = new Set(remainingCards.map(c => c.id));
-            // Distractors drawn randomly from all remaining items in ALL_VOCAB
             const candidateDistractors = ALL_VOCAB.filter(i => !remainingIds.has(i.id) && i.id !== missingCard.id);
             const hiddenPool = candidateDistractors.sort(() => 0.5 - Math.random()).slice(0, 3);
             
@@ -1030,105 +1137,33 @@
             document.getElementById('memory-start-btn').classList.remove('hidden');
         }
 
-        // --- BUILD A SENTENCE DYNAMIC GENERATOR (NO EMOJIS IN OPTIONS) ---
-        const ANIMAL_TEMPLATES = [
-            {
-                tag: "🐾 Les Animaux",
-                desc: "Observer un animal",
-                prompt: "Look at the cute ___!",
-                frTemplate: (item) => `Regarde ce mignon ${item.fr.toLowerCase()} !`,
-                type: "animal"
-            },
-            {
-                tag: "🐾 Les Animaux",
-                desc: "Exprimer ses préférences",
-                prompt: "I really love my ___.",
-                frTemplate: (item) => `J'aime vraiment mon ${item.fr.toLowerCase()}.`,
-                type: "animal"
-            },
-            {
-                tag: "🐾 Les Animaux",
-                desc: "Poser une question",
-                prompt: "Where is the ___?",
-                frTemplate: (item) => `Où est le ${item.fr.toLowerCase()} ?`,
-                type: "animal"
-            },
-            {
-                tag: "🐾 Les Animaux",
-                desc: "Jouer avec les animaux",
-                prompt: "I like to play with the ___.",
-                frTemplate: (item) => `J'aime jouer avec le ${item.fr.toLowerCase()}.`,
-                type: "animal"
-            },
-            {
-                tag: "🐾 Les Animaux",
-                desc: "Montrer un animal",
-                prompt: "Do you see that ___?",
-                frTemplate: (item) => `Est-ce que tu vois ce ${item.fr.toLowerCase()} ?`,
-                type: "animal"
-            }
-        ];
-
-        const ACTIVITY_TEMPLATES = [
-            {
-                tag: "🎨 Activités & Loisirs",
-                desc: "Parler de ses passions",
-                prompt: "I love ___ on weekends!",
-                frTemplate: (item) => `J'adore ${item.fr.toLowerCase()} le week-end !`,
-                type: "activity"
-            },
-            {
-                tag: "🎨 Activités & Loisirs",
-                desc: "Proposer une activité",
-                prompt: "Let's go ___ together!",
-                frTemplate: (item) => `Allons ${item.fr.toLowerCase()} ensemble !`,
-                type: "activity"
-            },
-            {
-                tag: "🎨 Activités & Loisirs",
-                desc: "Exprimer ses goûts",
-                prompt: "My favourite hobby is ___.",
-                frTemplate: (item) => `Mon loisir préféré est : ${item.fr.toLowerCase()}.`,
-                type: "activity"
-            },
-            {
-                tag: "🎨 Activités & Loisirs",
-                desc: "Découvrir un nouveau jeu",
-                prompt: "I want to try ___ today.",
-                frTemplate: (item) => `Je veux essayer : ${item.fr.toLowerCase()} aujourd'hui.`,
-                type: "activity"
-            },
-            {
-                tag: "🎨 Activités & Loisirs",
-                desc: "Parler d'un ami",
-                prompt: "She is really good at ___.",
-                frTemplate: (item) => `Elle est très douée pour ${item.fr.toLowerCase()}.`,
-                type: "activity"
-            }
+        // --- BUILD A SENTENCE DYNAMIC GENERATOR (STRICTLY LOGICAL) ---
+        const SENTENCE_TEMPLATES = [
+            { type: "animal", prompt: "Look at the cute ___!", fr: (i) => `Regarde ce mignon ${i.fr.toLowerCase()} !` },
+            { type: "activity", prompt: "I love ___ on weekends!", fr: (i) => `J'adore ${i.fr.toLowerCase()} le week-end !` },
+            { type: "emotion", prompt: "Today I am very ___.", fr: (i) => `Aujourd'hui je suis très ${i.fr.toLowerCase()}.` },
+            { type: "clothes", prompt: "I am wearing a nice ___.", fr: (i) => `Je porte un(e) beau/belle ${i.fr.toLowerCase()}.` },
+            { type: "food", prompt: "Can I have some ___ please?", fr: (i) => `Puis-je avoir ${i.fr.toLowerCase()} s'il vous plaît ?` },
+            { type: "family", prompt: "This is my lovely ___.", fr: (i) => `Voici mon/ma ${i.fr.toLowerCase()} adoré(e).` },
+            { type: "body", prompt: "Touch your ___!", fr: (i) => `Touche ton/tes ${i.fr.toLowerCase()} !` },
+            { type: "weather", prompt: "It is very ___ today.", fr: (i) => `Il fait très ${i.fr.toLowerCase()} aujourd'hui.` },
+            { type: "action", prompt: "I like to ___ with my friends.", fr: (i) => `J'aime ${i.fr.toLowerCase()} avec mes amis.` }
         ];
 
         function generateRandomSentence() {
-            // Pick any random target item from ALL_VOCAB
-            const targetItem = ALL_VOCAB[Math.floor(Math.random() * ALL_VOCAB.length)];
-            
-            // Choose suitable template pool based on type
-            const pool = targetItem.type === "animal" ? ANIMAL_TEMPLATES : ACTIVITY_TEMPLATES;
-            const template = pool[Math.floor(Math.random() * pool.length)];
+            const template = SENTENCE_TEMPLATES[Math.floor(Math.random() * SENTENCE_TEMPLATES.length)];
+            const pool = ALL_VOCAB.filter(i => i.type === template.type);
+            const targetItem = pool[Math.floor(Math.random() * pool.length)];
 
-            // Select 2 distractors from the SAME category for balanced choices
-            const sameTypeDistractors = ALL_VOCAB.filter(i => i.id !== targetItem.id && i.type === targetItem.type);
-            const distractors = sameTypeDistractors.sort(() => 0.5 - Math.random()).slice(0, 2);
-
+            const distractors = pool.filter(i => i.id !== targetItem.id).sort(() => 0.5 - Math.random()).slice(0, 2);
             const options = [targetItem, ...distractors].sort(() => 0.5 - Math.random());
 
             return {
-                tag: template.tag,
-                desc: template.desc,
                 prompt: template.prompt.replace("___", "___"),
                 fullSentence: template.prompt.replace("___", targetItem.en),
                 targetWord: targetItem.en,
-                fr: template.frTemplate(targetItem),
-                options: options.map(o => o.en) // STRICTLY TEXT WORDS ONLY, NO EMOJIS!
+                fr: template.fr(targetItem),
+                options: options.map(o => o.en)
             };
         }
 
@@ -1141,8 +1176,6 @@
 
             document.getElementById('sentence-feedback').textContent = '';
             document.getElementById('sentence-prompt').textContent = currentGeneratedSentence.prompt;
-            document.getElementById('sentence-badge-context').textContent = currentGeneratedSentence.tag;
-            document.getElementById('sentence-context-desc').textContent = currentGeneratedSentence.desc;
             document.getElementById('sentence-translation').textContent = "Traduction : " + currentGeneratedSentence.fr;
 
             const optionsContainer = document.getElementById('sentence-options');
@@ -1150,7 +1183,6 @@
 
             currentGeneratedSentence.options.forEach(wordOption => {
                 const btn = document.createElement('button');
-                // Clean button styling containing ONLY text words
                 btn.className = "w-full p-4 rounded-2xl border-2 border-slate-100 hover:border-pink-300 bg-slate-50 hover:bg-pink-50 font-bold text-slate-800 text-center transition text-base shadow-sm cursor-pointer";
                 btn.textContent = wordOption;
                 btn.onclick = () => checkSentenceAnswer(wordOption, currentGeneratedSentence.targetWord, btn);
@@ -1165,7 +1197,6 @@
                 feedback.className = "h-8 font-bold text-base text-green-600 animate-pulse";
                 btnElem.classList.add('bg-green-100', 'border-green-400');
                 
-                // Display filled-in sentence
                 document.getElementById('sentence-prompt').textContent = currentGeneratedSentence.fullSentence;
                 sentenceScore += 1;
                 document.getElementById('sentence-score').textContent = sentenceScore;
@@ -1173,7 +1204,7 @@
                 speakText(currentGeneratedSentence.fullSentence);
                 triggerConfetti();
             } else {
-                feedback.textContent = `Oups ! Réessaie de compléter la phrase ! 🌸`;
+                feedback.textContent = `Oups ! Réessaie de compléter la phrase avec le bon mot ! 🌸`;
                 feedback.className = "h-8 font-bold text-base text-pink-600";
                 btnElem.classList.add('bg-pink-100', 'border-pink-300');
             }
