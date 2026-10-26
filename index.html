@@ -98,7 +98,7 @@
         </div>
     </div>
 
-    <!-- Header -->
+    <!-- Header & Audio Activation Banner -->
     <header class="bg-white/85 backdrop-blur-md sticky top-0 z-40 border-b border-pink-200 shadow-sm">
         <div class="max-w-5xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-2">
             <div class="flex items-center gap-3">
@@ -118,7 +118,7 @@
 
     <div class="max-w-5xl mx-auto px-4 pt-6 space-y-8">
 
-        <!-- Welcome Banner -->
+        <!-- Banner Welcome -->
         <div class="bg-gradient-to-r from-pink-100 via-purple-100 to-indigo-100 rounded-3xl p-6 shadow-sm border border-white flex flex-col md:flex-row items-center gap-6">
             <div class="text-6xl animate-bounce">🦄</div>
             <div class="space-y-2 text-center md:text-left flex-1">
@@ -147,7 +147,7 @@
                 <span>🧩 Disparition</span>
             </button>
             <button onclick="switchTab('sentences')" id="tab-sentences" class="tab-btn px-3 md:px-4 py-2.5 rounded-2xl font-bold text-xs md:text-sm transition bg-white/70 text-slate-600 hover:bg-pink-100 flex items-center gap-1.5 cursor-pointer">
-                <span>✍️ Faire des phrases</span>
+                <span>✍️ Phrases</span>
             </button>
         </div>
 
@@ -318,20 +318,21 @@
         <section id="section-sentences" class="tab-content hidden space-y-6">
             <div class="bg-white rounded-3xl p-6 md:p-8 shadow-xl border-2 border-pink-200 text-center space-y-6 max-w-2xl mx-auto">
                 <div class="flex justify-between items-center border-b border-pink-100 pb-4">
-                    <span class="bg-pink-100 text-pink-600 font-bold px-3 py-1 rounded-full text-xs">Construction de phrases</span>
+                    <span id="sentence-badge-context" class="bg-purple-100 text-purple-700 font-bold px-3 py-1 rounded-full text-xs">🏫 Pratique du Vocabulaire</span>
                     <div class="flex items-center gap-1 text-yellow-500 font-bold text-lg">
                         <span>⭐</span> <span id="sentence-score">0</span>
                     </div>
                 </div>
 
-                <div class="space-y-3">
+                <div class="space-y-2">
+                    <p id="sentence-context-desc" class="text-xs font-bold uppercase tracking-wider text-purple-500">Utiliser tout le vocabulaire en anglais</p>
                     <h2 class="text-2xl font-bold text-purple-800">Construis ta phrase ! ✍️</h2>
-                    <p class="text-sm text-slate-500">Choisis le bon mot pour compléter la phrase en anglais.</p>
+                    <p class="text-sm text-slate-500">Choisis le mot correct pour compléter la phrase. (Aucun indice visuel !)</p>
                 </div>
 
-                <div class="p-6 bg-pink-50 rounded-2xl border border-pink-100 space-y-2">
-                    <p id="sentence-prompt" class="text-2xl font-bold text-purple-900">My name ___ Emma.</p>
-                    <p id="sentence-translation" class="text-xs text-slate-500 italic">Je m'appelle Emma.</p>
+                <div class="p-6 bg-gradient-to-r from-pink-50 to-purple-50 rounded-2xl border border-pink-100 space-y-2">
+                    <p id="sentence-prompt" class="text-xl md:text-2xl font-bold text-purple-900">I love ___!</p>
+                    <p id="sentence-translation" class="text-xs text-slate-500 italic">Traduction : J'adore...</p>
                 </div>
 
                 <div class="grid grid-cols-1 gap-3" id="sentence-options"></div>
@@ -376,34 +377,50 @@
 
     <script>
         const ACTIVITIES_DATA = [
-            { id: "a1", en: "Skating", fr: "Faire du patin / skate", emoji: "🛼" },
-            { id: "a2", en: "Drawing", fr: "Dessiner", emoji: "✏️" },
-            { id: "a3", en: "Swimming", fr: "Nager", emoji: "🏊‍♀️" },
-            { id: "a4", en: "Dancing", fr: "Danser", emoji: "💃" },
-            { id: "a5", en: "Reading", fr: "Lire", emoji: "📖" },
-            { id: "a6", en: "Painting", fr: "Peindre", emoji: "🎨" },
-            { id: "a7", en: "Singing", fr: "Chanter", emoji: "🎤" },
-            { id: "a8", en: "Cycling", fr: "Faire du vélo", emoji: "🚲" },
-            { id: "a9", en: "Playing", fr: "Jouer", emoji: "⚽" },
-            { id: "a10", en: "Hide-and-seek", fr: "Cache-cache", emoji: "🏃" },
-            { id: "a11", en: "Tag", fr: "Jeu du chat", emoji: "🏷️" },
-            { id: "a12", en: "Board games", fr: "Jeux de société", emoji: "🎲" },
-            { id: "a13", en: "Puzzles", fr: "Puzzles", emoji: "🧩" },
-            { id: "a14", en: "Jump rope", fr: "Corde à sauter", emoji: "🪢" }
-        ];
+            { id: "a1", en: "Skating", fr: "Faire du patin / skate", type: "activity", verb: "is fun" },
+            { id: "a2", en: "Drawing", fr: "Dessiner", type: "activity", verb: "is creative" },
+            { id: "a3", en: "Swimming", fr: "Nager", type: "activity", verb: "is great" },
+            { id: "a4", en: "Dancing", fr: "Danser", type: "activity", verb: "is cool" },
+            { id: "a5", en: "Reading", fr: "Lire", type: "activity", verb: "is nice" },
+            { id: "a6", en: "Painting", fr: "Peindre", type: "activity", verb: "is awesome" },
+            { id: "a7", en: "Singing", fr: "Chanter", type: "activity", verb: "is lovely" },
+            { id: "a8", en: "Cycling", fr: "Faire du vélo", type: "activity", verb: "is exciting" },
+            { id: "a9", en: "Playing", fr: "Jouer", type: "activity", verb: "is joyful" },
+            { id: "a10", en: "Hide-and-seek", fr: "Cache-cache", type: "activity", verb: "is fun" },
+            { id: "a11", en: "Tag", fr: "Jeu du chat", type: "activity", verb: "is fast" },
+            { id: "a12", en: "Board games", fr: "Jeux de société", type: "activity", verb: "are great" },
+            { id: "a13", en: "Puzzles", fr: "Puzzles", type: "activity", verb: "are clever" },
+            { id: "a14", en: "Jump rope", fr: "Corde à sauter", type: "activity", verb: "is active" },
+            { id: "a15", en: "Play football", fr: "Jouer au football", type: "activity", verb: "is energetic" },
+            { id: "a16", en: "Play basketball", fr: "Jouer au basket", type: "activity", verb: "is high-flying" },
+            { id: "a17", en: "Ride a bike", fr: "Faire du vélo", type: "activity", verb: "is smooth" },
+            { id: "a18", en: "Swim", fr: "Nager", type: "activity", verb: "is refreshing" },
+            { id: "a19", en: "Skate", fr: "Faire du skate", type: "activity", verb: "is thrilling" }
+        ].map(item => ({ ...item, emoji: getEmojiForItem(item.en) }));
 
         const ANIMALS_DATA = [
-            { id: "an1", en: "Cat", fr: "Chat", emoji: "🐱" },
-            { id: "an2", en: "Dog", fr: "Chien", emoji: "🐶" },
-            { id: "an3", en: "Rabbit", fr: "Lapin", emoji: "🐰" },
-            { id: "an4", en: "Hamster", fr: "Hamster", emoji: "🐹" },
-            { id: "an5", en: "Fish", fr: "Poisson", emoji: "🐠" },
-            { id: "an6", en: "Bird", fr: "Oiseau", emoji: "🐦" },
-            { id: "an7", en: "Snail", fr: "Escargot", emoji: "🐌" },
-            { id: "an8", en: "Butterfly", fr: "Papillon", emoji: "🦋" },
-            { id: "an9", en: "Lion", fr: "Lion", emoji: "🦁" },
-            { id: "an10", en: "Tiger", fr: "Tigre", emoji: "🐯" }
+            { id: "an1", en: "Cat", fr: "Chat", type: "animal", emoji: "🐱" },
+            { id: "an2", en: "Dog", fr: "Chien", type: "animal", emoji: "🐶" },
+            { id: "an3", en: "Rabbit", fr: "Lapin", type: "animal", emoji: "🐰" },
+            { id: "an4", en: "Hamster", fr: "Hamster", type: "animal", emoji: "🐹" },
+            { id: "an5", en: "Fish", fr: "Poisson", type: "animal", emoji: "🐠" },
+            { id: "an6", en: "Bird", fr: "Oiseau", type: "animal", emoji: "🐦" },
+            { id: "an7", en: "Snail", fr: "Escargot", type: "animal", emoji: "🐌" },
+            { id: "an8", en: "Butterfly", fr: "Papillon", type: "animal", emoji: "🦋" },
+            { id: "an9", en: "Lion", fr: "Lion", type: "animal", emoji: "🦁" },
+            { id: "an10", en: "Tiger", fr: "Tigre", type: "animal", emoji: "🐯" }
         ];
+
+        function getEmojiForItem(enName) {
+            const map = {
+                "Skating": "🛼", "Drawing": "✏️", "Swimming": "🏊‍♀️", "Dancing": "💃",
+                "Reading": "📖", "Painting": "🎨", "Singing": "🎤", "Cycling": "🚲",
+                "Playing": "⚽", "Hide-and-seek": "🏃", "Tag": "🏷️", "Board games": "🎲",
+                "Puzzles": "🧩", "Jump rope": "🪢", "Play football": "⚽", "Play basketball": "🏀",
+                "Ride a bike": "🚲", "Swim": "🏊", "Skate": "🛹"
+            };
+            return map[enName] || "✨";
+        }
 
         const ALL_VOCAB = [...ACTIVITIES_DATA, ...ANIMALS_DATA];
 
@@ -429,7 +446,6 @@
         let memoryTimer = null;
         let memoryTotalTime = 13;
 
-        // Matching Game Canvas & Drawing State
         let matchRoundItems = [];
         let completedMatches = [];
         let matchScoreCount = 0;
@@ -440,15 +456,7 @@
         let currentMousePos = { x: 0, y: 0 };
         let tempErrorLine = null;
 
-        // Build a Sentence Logic State
-        const SENTENCES_DATA = [
-            { q: "My name ___ Emma.", missing: "is", options: ["is", "am", "are"], fr: "Je m'appelle Emma." },
-            { q: "I ___ happy.", missing: "am", options: ["is", "am", "are"], fr: "Je suis contente." },
-            { q: "I like ___.", missing: "dancing", options: ["dancing", "football", "cat"], fr: "J'aime danser." },
-            { q: "I can ___.", missing: "swim", options: ["swim", "dog", "book"], fr: "Je sais nager." },
-            { q: "I want ___ play.", missing: "to", options: ["to", "is", "a"], fr: "Je veux jouer." }
-        ];
-        let currentSentenceIdx = 0;
+        let currentGeneratedSentence = null;
         let sentenceScore = 0;
 
         function showAlert(msg, icon = '✨') {
@@ -805,7 +813,7 @@
                         x2: matchedTarget.x,
                         y2: matchedTarget.y
                     };
-                    document.getElementById('match-feedback').textContent = "Oups ! Ce n'est pas le bon mot. Réessaie le crayon ! 🌸";
+                    document.getElementById('match-feedback').textContent = "Oups ! Ce n'est pas le bon mot. Réessaie ! 🌸";
                     document.getElementById('match-feedback').className = "h-8 font-bold text-base text-pink-600";
 
                     setTimeout(() => {
@@ -912,7 +920,7 @@
             }
         }
 
-        // --- MEMORY GAME LOGIC ---
+        // --- MEMORY GAME LOGIC (DRAW FROM ENTIRE VOCABULARY POOL) ---
         function initMemoryGame() { resetMemoryUI(); }
 
         function resetMemoryUI() {
@@ -922,6 +930,7 @@
             document.getElementById('memory-start-btn').classList.remove('hidden');
             document.getElementById('memory-instruction').textContent = "Regarde et mémorise bien ces 6 cartes pendant 13 secondes...";
             
+            // Randomly select 6 cards from the FULL vocabulary pool (activities + animals)
             memoryRoundCards = [...ALL_VOCAB].sort(() => 0.5 - Math.random()).slice(0, 6);
             renderMemoryGrid(memoryRoundCards, false);
         }
@@ -949,6 +958,8 @@
             document.getElementById('memory-timer-count').textContent = timeLeft + 's';
             document.getElementById('memory-timer-bar').style.width = '100%';
 
+            // Fresh pick of 6 cards across all vocab
+            memoryRoundCards = [...ALL_VOCAB].sort(() => 0.5 - Math.random()).slice(0, 6);
             renderMemoryGrid(memoryRoundCards, false);
 
             if (memoryTimer) clearInterval(memoryTimer);
@@ -976,6 +987,7 @@
             renderMemoryGrid(remainingCards, true);
 
             const remainingIds = new Set(remainingCards.map(c => c.id));
+            // Distractors drawn randomly from all remaining items in ALL_VOCAB
             const candidateDistractors = ALL_VOCAB.filter(i => !remainingIds.has(i.id) && i.id !== missingCard.id);
             const hiddenPool = candidateDistractors.sort(() => 0.5 - Math.random()).slice(0, 3);
             
@@ -1018,64 +1030,162 @@
             document.getElementById('memory-start-btn').classList.remove('hidden');
         }
 
-        // --- BUILD A SENTENCE LOGIC ---
-        // STRICT RULE: No audio plays when loading/displaying sentence. Audio ONLY plays upon correct selection.
+        // --- BUILD A SENTENCE DYNAMIC GENERATOR (NO EMOJIS IN OPTIONS) ---
+        const ANIMAL_TEMPLATES = [
+            {
+                tag: "🐾 Les Animaux",
+                desc: "Observer un animal",
+                prompt: "Look at the cute ___!",
+                frTemplate: (item) => `Regarde ce mignon ${item.fr.toLowerCase()} !`,
+                type: "animal"
+            },
+            {
+                tag: "🐾 Les Animaux",
+                desc: "Exprimer ses préférences",
+                prompt: "I really love my ___.",
+                frTemplate: (item) => `J'aime vraiment mon ${item.fr.toLowerCase()}.`,
+                type: "animal"
+            },
+            {
+                tag: "🐾 Les Animaux",
+                desc: "Poser une question",
+                prompt: "Where is the ___?",
+                frTemplate: (item) => `Où est le ${item.fr.toLowerCase()} ?`,
+                type: "animal"
+            },
+            {
+                tag: "🐾 Les Animaux",
+                desc: "Jouer avec les animaux",
+                prompt: "I like to play with the ___.",
+                frTemplate: (item) => `J'aime jouer avec le ${item.fr.toLowerCase()}.`,
+                type: "animal"
+            },
+            {
+                tag: "🐾 Les Animaux",
+                desc: "Montrer un animal",
+                prompt: "Do you see that ___?",
+                frTemplate: (item) => `Est-ce que tu vois ce ${item.fr.toLowerCase()} ?`,
+                type: "animal"
+            }
+        ];
+
+        const ACTIVITY_TEMPLATES = [
+            {
+                tag: "🎨 Activités & Loisirs",
+                desc: "Parler de ses passions",
+                prompt: "I love ___ on weekends!",
+                frTemplate: (item) => `J'adore ${item.fr.toLowerCase()} le week-end !`,
+                type: "activity"
+            },
+            {
+                tag: "🎨 Activités & Loisirs",
+                desc: "Proposer une activité",
+                prompt: "Let's go ___ together!",
+                frTemplate: (item) => `Allons ${item.fr.toLowerCase()} ensemble !`,
+                type: "activity"
+            },
+            {
+                tag: "🎨 Activités & Loisirs",
+                desc: "Exprimer ses goûts",
+                prompt: "My favourite hobby is ___.",
+                frTemplate: (item) => `Mon loisir préféré est : ${item.fr.toLowerCase()}.`,
+                type: "activity"
+            },
+            {
+                tag: "🎨 Activités & Loisirs",
+                desc: "Découvrir un nouveau jeu",
+                prompt: "I want to try ___ today.",
+                frTemplate: (item) => `Je veux essayer : ${item.fr.toLowerCase()} aujourd'hui.`,
+                type: "activity"
+            },
+            {
+                tag: "🎨 Activités & Loisirs",
+                desc: "Parler d'un ami",
+                prompt: "She is really good at ___.",
+                frTemplate: (item) => `Elle est très douée pour ${item.fr.toLowerCase()}.`,
+                type: "activity"
+            }
+        ];
+
+        function generateRandomSentence() {
+            // Pick any random target item from ALL_VOCAB
+            const targetItem = ALL_VOCAB[Math.floor(Math.random() * ALL_VOCAB.length)];
+            
+            // Choose suitable template pool based on type
+            const pool = targetItem.type === "animal" ? ANIMAL_TEMPLATES : ACTIVITY_TEMPLATES;
+            const template = pool[Math.floor(Math.random() * pool.length)];
+
+            // Select 2 distractors from the SAME category for balanced choices
+            const sameTypeDistractors = ALL_VOCAB.filter(i => i.id !== targetItem.id && i.type === targetItem.type);
+            const distractors = sameTypeDistractors.sort(() => 0.5 - Math.random()).slice(0, 2);
+
+            const options = [targetItem, ...distractors].sort(() => 0.5 - Math.random());
+
+            return {
+                tag: template.tag,
+                desc: template.desc,
+                prompt: template.prompt.replace("___", "___"),
+                fullSentence: template.prompt.replace("___", targetItem.en),
+                targetWord: targetItem.en,
+                fr: template.frTemplate(targetItem),
+                options: options.map(o => o.en) // STRICTLY TEXT WORDS ONLY, NO EMOJIS!
+            };
+        }
+
         function initSentences() {
-            currentSentenceIdx = Math.floor(Math.random() * SENTENCES_DATA.length);
-            renderSentenceQuestion();
+            nextSentenceQuestion();
         }
 
         function renderSentenceQuestion() {
-            const item = SENTENCES_DATA[currentSentenceIdx];
+            currentGeneratedSentence = generateRandomSentence();
+
             document.getElementById('sentence-feedback').textContent = '';
-            document.getElementById('sentence-prompt').textContent = item.q;
-            document.getElementById('sentence-translation').textContent = item.fr;
+            document.getElementById('sentence-prompt').textContent = currentGeneratedSentence.prompt;
+            document.getElementById('sentence-badge-context').textContent = currentGeneratedSentence.tag;
+            document.getElementById('sentence-context-desc').textContent = currentGeneratedSentence.desc;
+            document.getElementById('sentence-translation').textContent = "Traduction : " + currentGeneratedSentence.fr;
 
             const optionsContainer = document.getElementById('sentence-options');
             optionsContainer.innerHTML = '';
 
-            const shuffledOpts = [...item.options].sort(() => 0.5 - Math.random());
-            shuffledOpts.forEach(opt => {
+            currentGeneratedSentence.options.forEach(wordOption => {
                 const btn = document.createElement('button');
-                btn.className = "w-full p-4 rounded-2xl border-2 border-slate-100 hover:border-pink-300 bg-slate-50 hover:bg-pink-50 font-semibold text-slate-700 text-center transition text-base shadow-sm cursor-pointer";
-                btn.textContent = opt;
-                btn.onclick = () => checkSentenceAnswer(opt, item.missing, btn);
+                // Clean button styling containing ONLY text words
+                btn.className = "w-full p-4 rounded-2xl border-2 border-slate-100 hover:border-pink-300 bg-slate-50 hover:bg-pink-50 font-bold text-slate-800 text-center transition text-base shadow-sm cursor-pointer";
+                btn.textContent = wordOption;
+                btn.onclick = () => checkSentenceAnswer(wordOption, currentGeneratedSentence.targetWord, btn);
                 optionsContainer.appendChild(btn);
             });
-            // Intentionally NO audio play call here!
         }
 
-        function checkSentenceAnswer(selected, correct, btnElem) {
+        function checkSentenceAnswer(selectedWord, correctWord, btnElem) {
             const feedback = document.getElementById('sentence-feedback');
-            const item = SENTENCES_DATA[currentSentenceIdx];
-
-            if (selected === correct) {
-                const completeSentence = item.q.replace('___', correct);
-                document.getElementById('sentence-prompt').textContent = completeSentence;
-
-                feedback.textContent = "✨ Super ! C'est exact ! 🎉";
+            if (selectedWord === correctWord) {
+                feedback.textContent = "✨ Super ! C'est la bonne réponse ! 🎉";
                 feedback.className = "h-8 font-bold text-base text-green-600 animate-pulse";
                 btnElem.classList.add('bg-green-100', 'border-green-400');
+                
+                // Display filled-in sentence
+                document.getElementById('sentence-prompt').textContent = currentGeneratedSentence.fullSentence;
                 sentenceScore += 1;
                 document.getElementById('sentence-score').textContent = sentenceScore;
                 
-                // Audio plays ONLY NOW when answer is validated and correct
-                speakText(completeSentence);
+                speakText(currentGeneratedSentence.fullSentence);
                 triggerConfetti();
             } else {
-                feedback.textContent = `Oups ! Ce n'est pas la bonne réponse. Réessaie ! 🌸`;
+                feedback.textContent = `Oups ! Réessaie de compléter la phrase ! 🌸`;
                 feedback.className = "h-8 font-bold text-base text-pink-600";
                 btnElem.classList.add('bg-pink-100', 'border-pink-300');
             }
         }
 
         function nextSentenceQuestion() {
-            currentSentenceIdx = (currentSentenceIdx + 1) % SENTENCES_DATA.length;
             renderSentenceQuestion();
         }
 
         function switchTab(tabName) {
             if (memoryTimer) clearInterval(memoryTimer);
+
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
             document.querySelectorAll('.tab-btn').forEach(el => {
                 el.classList.remove('bg-purple-500', 'bg-teal-600', 'bg-indigo-600', 'text-white', 'shadow-md');
